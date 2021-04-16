@@ -1,19 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roundnet League - Gérez votre championnat de Roundnet !</title>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/glitch.css">
+
+    <title>[ &#8227; ] Found Footage Findr</title>
 </head>
+
 <body>
     <!-- CONTAINER -->
     <div id="container">
-        <header></header>
-        <main></main>
-        <footer></footer>
-
+        <div id="flex-wrapper">
+            <header>
+                <div class="play-vhs animate-flicker">
+                    STOP
+                </div>
+                <h1 class="glitch gl-5">
+                    <div id="app-logo">[<span class="red app-logo__play">&#8227;</span>]</div>
+                    <div id="app-title">FOUND <br> FOOTAGE <br> FINDR<span class="red">.</span></div>
+                </h1>
+            </header>
+            <main>
+                <h2>Votre tape n'attend que <br> <span class="italic">vous</span>.</h2>
+                <section>
+                    <p>En 10 questions, obtenez le found footage parfait à voir ce soir.</p>
+                    <p>97% de réussite selon l'INSEE.</p>
+                </section>
+                <button id="launch-game">Find My Tape</button>
+            </main>
+            <footer>
+                <div>SLP 00: 00: 00</div>
+                <div>Found by <a href="https://twitter.com/RobinSouriau" target="_blank">Robin Souriau</a> | 2021
+                </div>
+            </footer>
+        </div>
     </div>
-    
+
+    <script src="js/main.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,238 @@
+/* REFERENCES 
+
+Nuancier : https://htmlcolorcodes.com/fr/selecteur-de-couleur/
+Triadique : #2d3033, #332d30, #30332d
+
+
+*/
+
+:root {
+    --grey-dark: #151718;
+    --grey-light: #E5E5E5;
+    --red: #d00005;
+}
+
+/* POLICE */
+
+@font-face {
+    font-family: 'VCR';
+    src: url('../fonts/vcr.ttf');
+}
+
+/* FLICKER */
+
+@keyframes flickerAnimation {
+    0% {
+        opacity: 0;
+    }
+
+    49% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    99% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.animate-flicker {
+    animation: flickerAnimation 5s infinite;
+}
+
+/* GENERAL */
+
+body {
+    font-family: 'VCR', sans-serif;
+    color: var(--grey-light);
+}
+
+@keyframes animatedBackground {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 100% 3%;
+    }
+}
+
+#container {
+    padding: .5rem;
+    background-color: var(--grey-dark);
+    background-image: url('../img/noise.png');
+    background-position: 0px 0px;
+    animation: animatedBackground .3s ease-in infinite;
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+
+#flex-wrapper {
+    padding: 2rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: calc(100vh - 2rem);
+    box-sizing: border-box;
+    max-width: 1500px;
+    margin: auto;
+}
+
+.red {
+    color: var(--red);
+}
+
+.italic {
+    font-style: italic;
+}
+
+p {
+    font-size: 0.9rem;
+    margin-bottom: .5rem;
+    word-break: keep-all;
+}
+
+a:visited {
+    color: var(--grey-light);
+}
+
+
+/* HEADER */
+
+header {
+
+    display: flex;
+    justify-content: space-between;
+}
+
+header h1 {
+    font-size: 2rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.timecode {
+    font-size: 0.6rem;
+}
+
+#app-logo {
+    position: relative;
+    top: 1px;
+}
+
+.app-logo__play {
+    position: relative;
+    bottom: 3px;
+}
+
+/* #app-title {
+    width: min-content;
+} */
+
+/* MAIN */
+
+main {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    align-self: flex-end;
+    text-align: center;
+}
+
+main h2 {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    line-height: 1.3;
+}
+
+section {
+    margin-bottom: 2em;
+}
+
+button {
+    width: fit-content;
+    font-size: 1.3rem;
+    color: var(--grey-dark);
+    background: var(--grey-light);
+    border: none;
+    font-family: "VCR", sans-serif;
+    padding: 1em;
+    box-shadow: 4px 4px var(--grey-light);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, color 0.1s ease, background 0.2s ease;
+    box-sizing: border-box;
+    opacity: .92;
+}
+
+button:hover {
+    color: var(--grey-dark);
+    background: var(--grey-light);
+    box-shadow: 1px 1px var(--grey-light);
+}
+
+#launch-game {
+    align-self: center;
+}
+
+/* FOOTER */
+
+footer {
+    font-size: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+/* RESPONSIVE > 600PX && < 900PX */
+@media screen and (min-width:600px) {
+    /* header>div, header h1 {
+        margin-right:auto;
+    } */
+
+    html {
+        font-size: 20px;
+    }
+
+    #flex-wrapper {
+        padding: 2rem 1rem 0 1rem;
+    }
+
+    main {
+        text-align: right;
+    }
+
+    #launch-game {
+        align-self: flex-end;
+    }
+
+    button {
+        font-size: 1.1rem;
+    }
+}
+
+
+/* RESPONSIVE > 900PX */
+
+@media screen and (min-width:900px) {
+
+    /* header>div, header h1 {
+        margin-right:auto;
+    } */
+    html {
+        font-size: 25px;
+    }
+
+    button {
+        font-size: 1rem;
+    }
+}
