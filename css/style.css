@@ -23,29 +23,75 @@ Triadique : #2d3033, #332d30, #30332d
 
 @keyframes flickerAnimation {
     0% {
-        opacity: 0;
+        opacity: 1;
     }
 
     49% {
-        opacity: 0;
+        opacity: 1;
     }
 
     50% {
-        opacity: 1;
+        opacity: 0;
     }
 
     99% {
-        opacity: 1;
+        opacity: 0;
     }
 
     100% {
-        opacity: 0;
+        opacity: 1;
     }
 }
 
 .animate-flicker {
-    animation: flickerAnimation 5s infinite;
+    animation: flickerAnimation 4s infinite;
 }
+
+/* TYPING EFFECTS & DELAYED DISPLAY
+    https://codepen.io/denic/pen/GRoOxbM */
+
+@keyframes typing {
+    from {
+        width: 0
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent
+    }
+}
+
+@keyframes transitionDisplay {
+    0% {
+        opacity: 0;
+    }
+    99.99999% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.typing-effect {
+    width: 29ch;
+    animation: typing 3s steps(29), blink .5s step-end infinite alternate;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: auto;
+    /* border-right: 3px solid var(--grey-light); */
+}
+
+.typing-last {
+    width: 5ch;
+    animation: transitionDisplay 4s ease-in, typing 1.5s steps(5) 4s, blink .5s step-end infinite alternate;
+}
+
+.delayed-display {
+    animation: transitionDisplay 6s ease-in;
+}
+
 
 /* GENERAL */
 
@@ -71,7 +117,7 @@ body {
     background-position: 0px 0px;
     animation: animatedBackground .3s ease-in infinite;
     box-sizing: border-box;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 
@@ -108,9 +154,9 @@ a:visited {
 /* HEADER */
 
 header {
-
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 header h1 {
@@ -131,7 +177,7 @@ header h1 {
 
 .app-logo__play {
     position: relative;
-    bottom: 3px;
+    bottom: 6px;
 }
 
 /* #app-title {
@@ -163,7 +209,7 @@ button {
     font-size: 1.3rem;
     color: var(--grey-dark);
     background: var(--grey-light);
-    border: none;
+    border: 3px solid transparent;
     font-family: "VCR", sans-serif;
     padding: 1em;
     box-shadow: 4px 4px var(--grey-light);
@@ -171,16 +217,24 @@ button {
     transition: box-shadow 0.2s ease, color 0.1s ease, background 0.2s ease;
     box-sizing: border-box;
     opacity: .92;
+    text-transform: uppercase;
 }
 
 button:hover {
-    color: var(--grey-dark);
-    background: var(--grey-light);
-    box-shadow: 1px 1px var(--grey-light);
+    color: var(--grey-light);
+    background: transparent;
+    box-shadow: 8px 8px var(--grey-light);
+    border: 3px solid var(--grey-light);
 }
 
 #launch-game {
     align-self: center;
+    font-weight: bold;
+}
+
+span.circle-button {
+    position: relative;
+    bottom: 2px;
 }
 
 /* FOOTER */
@@ -189,16 +243,11 @@ footer {
     font-size: 0.6rem;
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
 }
-
-
 
 /* RESPONSIVE > 600PX && < 900PX */
 @media screen and (min-width:600px) {
-    /* header>div, header h1 {
-        margin-right:auto;
-    } */
-
     html {
         font-size: 20px;
     }
@@ -218,16 +267,17 @@ footer {
     button {
         font-size: 1.1rem;
     }
+
+    .typing-effect {
+        margin: initial;
+        margin-left: auto;
+    }
 }
 
 
 /* RESPONSIVE > 900PX */
 
 @media screen and (min-width:900px) {
-
-    /* header>div, header h1 {
-        margin-right:auto;
-    } */
     html {
         font-size: 25px;
     }
@@ -235,4 +285,41 @@ footer {
     button {
         font-size: 1rem;
     }
+
+    #slp {
+        font-size: 1.2rem;
+    }
+
+    .play-vhs {
+        font-size: 1.5rem;
+    }
+}
+
+
+/* RESPONSIVE < 300PX HAUTEUR, SMARTPHONE HORIZONTAL */
+
+@media screen and (max-height:500px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-height:350px) {
+    #flex-wrapper {
+        padding: 0;
+        min-height: calc(100vh - 1rem);
+    }
+
+    section,
+    main h2 {
+        margin-bottom: .5rem
+    }
+
+    /* .play vhs, header h1 {
+        margin-right: auto;
+    }
+
+    header h1 {
+        margin-left: auto;
+    } */
 }
