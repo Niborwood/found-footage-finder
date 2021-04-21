@@ -12,6 +12,15 @@ Triadique : #2d3033, #332d30, #30332d
     --red: #d00005;
 }
 
+#slp, .play-vhs, #app-logo {
+    cursor: default;
+}
+
+::selection {
+    background-color: transparent;
+    color: #898989;
+}
+
 /* POLICE */
 
 @font-face {
@@ -74,6 +83,15 @@ Triadique : #2d3033, #332d30, #30332d
     }
 }
 
+@keyframes transitionDisplayFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 .typing-effect {
     width: 29ch;
     animation: typing 3s steps(29), blink .5s step-end infinite alternate;
@@ -85,11 +103,22 @@ Triadique : #2d3033, #332d30, #30332d
 
 .typing-last {
     width: 5ch;
-    animation: transitionDisplay 4s ease-in, typing 1.5s steps(5) 4s, blink .5s step-end infinite alternate;
+    animation: transitionDisplay 3s ease-in, typing 1.5s steps(5) 3s, blink .5s step-end infinite alternate;
+    padding-right: 2px;
 }
 
 .delayed-display {
-    animation: transitionDisplay 6s ease-in;
+    animation: transitionDisplay 5.5s ease-in;
+}
+
+/* .delayed-display-fade {
+    opacity: 0;
+    animation: transitionDisplayFade 2s ease-in 5s forwards;
+} */
+
+.delayed-display-fade__question {
+    opacity: 0;
+    animation: transitionDisplayFade 2s ease-in 2s forwards;
 }
 
 
@@ -100,7 +129,7 @@ body {
     color: var(--grey-light);
 }
 
-@keyframes animatedBackground {
+/* @keyframes animatedBackground {
     from {
         background-position: 0 0;
     }
@@ -108,16 +137,18 @@ body {
     to {
         background-position: 100% 3%;
     }
-}
+} */
 
 #container {
     padding: .5rem;
     background-color: var(--grey-dark);
-    background-image: url('../img/noise.png');
-    background-position: 0px 0px;
-    animation: animatedBackground .3s ease-in infinite;
+    background-image: url('../img/noise.gif');
+    /* background-position: 0px 0px; */
+    /* animation: animatedBackground .3s ease-in infinite; */
     box-sizing: border-box;
     min-height: 100vh;
+    background-blend-mode: color-dodge;
+    background-size: cover;
 }
 
 
@@ -126,7 +157,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: calc(100vh - 2rem);
+    min-height: calc(100vh - 1.25rem);
     box-sizing: border-box;
     max-width: 1500px;
     margin: auto;
@@ -146,8 +177,12 @@ p {
     word-break: keep-all;
 }
 
-a:visited {
+a, a:visited {
     color: var(--grey-light);
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+    outline: none;
 }
 
 
@@ -156,7 +191,7 @@ a:visited {
 header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
 }
 
 header h1 {
@@ -180,10 +215,6 @@ header h1 {
     bottom: 6px;
 }
 
-/* #app-title {
-    width: min-content;
-} */
-
 /* MAIN */
 
 main {
@@ -195,13 +226,17 @@ main {
 }
 
 main h2 {
+    margin: auto;
     margin-bottom: 1rem;
     font-weight: bold;
     line-height: 1.3;
+    width: 80%;
+    
 }
 
 section {
     margin-bottom: 2em;
+    margin: auto;
 }
 
 button {
@@ -220,11 +255,29 @@ button {
     text-transform: uppercase;
 }
 
-button:hover {
+button:hover, #button-clicked {
     color: var(--grey-light);
     background: transparent;
     box-shadow: 8px 8px var(--grey-light);
     border: 3px solid var(--grey-light);
+}
+
+button.answer-button {
+    font-size: initial;
+    margin-bottom: 1em;
+    /* display: block; */
+}
+
+.next-question {
+    margin:.5rem auto 0 auto;
+    width: fit-content;
+    cursor: pointer;
+    padding: 1em;
+    letter-spacing: 1px;
+}
+
+span.forward {
+    letter-spacing: -4px;
 }
 
 #launch-game {
@@ -237,16 +290,27 @@ span.circle-button {
     bottom: 2px;
 }
 
+#answer-wrapper {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#slp {
+    margin-bottom: .5rem;
+}
+
 /* FOOTER */
 
 footer {
     font-size: 0.6rem;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+    flex-direction: column;
 }
 
-/* RESPONSIVE > 600PX && < 900PX */
+/* RESPONSIVE > 600PX */
 @media screen and (min-width:600px) {
     html {
         font-size: 20px;
@@ -260,6 +324,11 @@ footer {
         text-align: right;
     }
 
+    main h2 {
+        width: unset;
+        margin: 0 0 1rem 0;
+    }
+
     #launch-game {
         align-self: flex-end;
     }
@@ -271,6 +340,28 @@ footer {
     .typing-effect {
         margin: initial;
         margin-left: auto;
+    }
+
+    footer {
+        flex-direction: row;
+        align-items: baseline;
+    }
+
+    #slp {
+        margin-bottom: 0;
+    }
+
+    #answer-wrapper {
+        display:block;
+    }
+
+    .answer-button {
+        margin-left: 1em;
+    }
+
+    .next-question {
+        font-size: .5rem;
+        margin:1rem 0 0 auto;
     }
 }
 
@@ -314,12 +405,4 @@ footer {
     main h2 {
         margin-bottom: .5rem
     }
-
-    /* .play vhs, header h1 {
-        margin-right: auto;
-    }
-
-    header h1 {
-        margin-left: auto;
-    } */
 }
