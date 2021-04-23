@@ -153,6 +153,7 @@ Triadique : #2d3033, #332d30, #30332d
 body {
     font-family: 'VCR', sans-serif;
     color: var(--grey-light);
+    text-transform: uppercase;
 }
 
 #container {
@@ -237,7 +238,7 @@ main {
     display: flex;
     flex-direction: column;
     max-width: 600px;
-    align-self: flex-end;
+    align-self: center;
     text-align: center;
 }
 
@@ -268,7 +269,6 @@ button {
     transition: box-shadow 0.2s ease, color 0.1s ease, background 0.2s ease;
     box-sizing: border-box;
     opacity: .92;
-    text-transform: uppercase;
     font-weight: bold;
 }
 
@@ -296,7 +296,6 @@ button.discover-button {
     padding: 1em;
     letter-spacing: 1px;
     font-size: .8em;
-    text-transform: uppercase;
 }
 
 span.forward {
@@ -308,6 +307,7 @@ span.forward {
 #launch-game {
     align-self: center;
     font-weight: bold;
+    margin-top: 1em;
 }
 
 span.circle-button {
@@ -400,6 +400,10 @@ footer {
 @media screen and (min-width:900px) {
     html {
         font-size: 25px;
+    }
+
+    main {
+        align-self: flex-end;
     }
 
     button {
