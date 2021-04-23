@@ -283,7 +283,15 @@ button {
     font-weight: bold;
 }
 
-/* button:hover, */
+@media (hover: hover) and (pointer: fine) {
+    button:hover {
+        color: var(--grey-light);
+        background: transparent;
+        box-shadow: 8px 8px var(--grey-light);
+        border: 3px solid var(--grey-light);
+    }
+}
+
 #button-clicked {
     color: var(--grey-light);
     background: transparent;
@@ -428,13 +436,6 @@ footer {
 
     .play-vhs {
         font-size: 1.5rem;
-    }
-
-    button:hover {
-        color: var(--grey-light);
-        background: transparent;
-        box-shadow: 8px 8px var(--grey-light);
-        border: 3px solid var(--grey-light);
     }
 }
 
