@@ -76,7 +76,7 @@ const game = {
             [
                 'Niveau horreur, votre kink, c\'est plutôt...',
                 ['Les slashers', 'slasher'],
-                ['Le paranormal', 'supernatural'],
+                ['Le paranormal', 'paranormal'],
                 ['Les aliens', 'aliens']
             ],
             // Question 6
@@ -99,7 +99,7 @@ const game = {
             // 01 - C'EST ARRIVE PRES DE CHEZ VOUS
             {
                 id: 1,
-                movie_data: {
+                data: {
                     // tmdb_data: theMovieDb.movies.getById({"id":10086}, function() {return this.title}, function() {}),
                     flags: new Flags('mockumentary', 'hardcore', 'europe', '90s', 'slasher')
                 }
@@ -107,15 +107,15 @@ const game = {
             // 02 - V/H/S 2
             {
                 id: 2,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('sketch', 'normal', 'usa', '10s', 'supernatural')
+                    flags: new Flags('sketch', 'casual', 'usa', '10s', 'paranormal')
                 }
             },
             // 03 - The Poughkeepsie Tapes
             {
                 id: 3,
-                movie_data: {
+                data: {
                     tmdb_data: {},
                     flags: new Flags('mockumentary', 'hardcore', 'usa', '00s', 'slasher')
                 }
@@ -123,57 +123,57 @@ const game = {
             // 04 - The Blair Witch Project
             {
                 id: 4,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('ff', 'normal', 'usa', '90s', 'supernatural')
+                    flags: new Flags('ff', 'casual', 'usa', '90s', 'paranormal')
                 }
             },
             // 05 - Cannibal Holocaust
             {
                 id: 5,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('mockumentary', 'normal', 'europe', '80s', 'slasher')
+                    flags: new Flags('mockumentary', 'casual', 'europe', '70-80s', 'slasher')
                 }
             },
             // 06 - Marble Hornets
             {
                 id: 6,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('series', 'hardcore', 'usa', '10s', 'supernatural')
+                    flags: new Flags('series', 'hardcore', 'usa', '10s', 'paranormal')
                 }
             },
             // 07 - Trolljegeren 
             {
                 id: 7,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('mockumentary', 'normal', 'europe', '10s', 'supernatural')
+                    flags: new Flags('mockumentary', 'casual', 'europe', '10s', 'paranormal')
                 }
             },
             // 08 - Noroi: The Curse 
             {
                 id: 8,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('ff', 'normal', 'asia', '00s', 'supernatural')
+                    flags: new Flags('ff', 'casual', 'asia', '00s', 'paranormal')
                 }
             },
             // 09 - Les Documents Interdits
             {
                 id: 9,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('series', 'hardcore', 'europe', '80s', 'supernatural')
+                    flags: new Flags('series', 'hardcore', 'europe', '70-80s', 'paranormal')
                 }
             },
             // 10 - Murder Deeath Koreatown
             {
                 id: 10,
-                movie_data: {
+                data: {
                     tmdb_data: {},
-                    flags: new Flags('ff', 'hardcore', 'usa', '10s', 'supernatural')
+                    flags: new Flags('ff', 'hardcore', 'usa', '10s', 'paranormal')
                 }
             }
         ],
@@ -262,9 +262,11 @@ const game = {
             game.data.answers.push(userAnswer.value);
         } else {
             const allAnswers = [...document.getElementsByClassName('answer-button')];
+            const arrayValues = [];
             allAnswers.forEach(element => {
-                game.data.answers.push(element.value);
+                arrayValues.push(element.value);
             });
+            game.data.answers.push(arrayValues);
         }
        
         // Est-ce qu'on a fait le tour des questions à poser ?
@@ -298,9 +300,42 @@ const game = {
 
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
+        // Gestion de la logique
         console.log(game.data.answers);
-        
 
+        const matchingResults = [];
+        const movies = Object.values(game.data.movies);
+
+        movies.forEach(movie => {
+            // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd
+            let match = true;
+            let movieFlags = Object.values(movie.data.flags);
+
+            game.data.answers.forEach((element, index) => {
+                // Si la réponse est un array (qu'elle spécifie plusieurs valeurs possibles)...
+                if (typeof element === 'object') {
+                    // ...on check si une de leurs valeurs match avec chaque film
+                    if (element.indexOf(movieFlags[index]) === -1) {
+                        match = false;      
+                    } 
+                } 
+                // Si la réponse est simple, on check aussi
+                else {
+                    if (movieFlags.indexOf(element) === -1) {
+                        match = false;          
+                    } 
+                }
+            });
+            // S'il y a match(s), on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
+            if (match) {
+                matchingResults.push(movie.id);
+            } 
+        }); // Fin de la boucle de check des flags
+
+        // Gestion des éléments HTML
+        game.htmlElement.mainHeader.innerText = matchingResults[0];
+        console.log(matchingResults);
+        game.htmlElement.mainSection.innerText = '';
     },
 
     // --- EXECUTION GLOBALE DU JEU
@@ -333,27 +368,14 @@ function display_ct() {
             return digit;
         }
     }
-    let x1 = zeroDigits(date.getHours()) + ':' + zeroDigits(date.getMinutes()) + ':' + zeroDigits(date.getSeconds());
-    document.getElementById('current-time').innerHTML = x1;
+    let timeDisplay = zeroDigits(date.getHours()) + ':' + zeroDigits(date.getMinutes()) + ':' + zeroDigits(date.getSeconds());
+    document.getElementById('current-time').innerHTML = timeDisplay;
     display_c();
 }
 
-game.data.answers = ['mockumentary', 'hardcore', 'europe', '90s', 'slasher'];
+// ************** TEST SANDBOX *******************
 
-// let movieFlagsData = game.data.movies[0].movie_data.flags;
-// let movieFlags = Object.values(movieFlagsData);
-
-// // console.log('Flags de la Data', movieFlags);
-// // console.log('Réponse utilisateur', game.data.answers);
+// Logique à appliquer
 
 
-// // let matchingResults = [];
-
-
-// // ...check if element indexOf => movieFlags 
-// game.data.answers.forEach(element => {
-//     if (movieFlags.indexOf(element) === -1) {
-//         // moviesMatch.push(index);           
-//     } 
-// });
 

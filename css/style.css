@@ -281,18 +281,10 @@ button {
     box-sizing: border-box;
     opacity: .92;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
-@media (hover: hover) and (pointer: fine) {
-    button:hover {
-        color: var(--grey-light);
-        background: transparent;
-        box-shadow: 8px 8px var(--grey-light);
-        border: 3px solid var(--grey-light);
-    }
-}
-
-#button-clicked {
+button:hover, #button-clicked {
     color: var(--grey-light);
     background: transparent;
     box-shadow: 8px 8px var(--grey-light);
