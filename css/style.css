@@ -177,7 +177,7 @@ body {
 
 
 #flex-wrapper {
-    padding: 2rem 0 0 0;
+    padding: .5rem 0 0 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -289,7 +289,8 @@ button {
     text-transform: uppercase;
 }
 
-button:hover, #button-clicked {
+button:hover,
+#button-clicked {
     color: var(--grey-light);
     background: transparent;
     box-shadow: 8px 8px var(--grey-light);
@@ -348,19 +349,19 @@ p.divider:before {
 
 div#movie-holder p {
     font-size: .65em;
-    margin-left: 1rem;
+    margin-left: 1.4rem;
 }
 
 main h3 {
     font-size: .85rem;
     margin-bottom: 0.2em;
-    font-weight:bold
+    font-weight: bold
 }
 
 aside img {
-    border:3px solid var(--grey-light);
-    box-shadow: 3px 3px var(--grey-light);
-    cursor: pointer;
+    border: 3px solid var(--grey-light);
+    box-shadow: 5px 5px var(--grey-light);
+    /* cursor: pointer; */
     margin-bottom: 1rem;
 }
 
@@ -403,11 +404,6 @@ footer {
 
     main section.section-result {
         display: flex;
-        
-    }
-
-    main section h3 {
-        margin-left: 1rem;
     }
 
     #launch-game {
@@ -434,10 +430,14 @@ footer {
 
     #answer-wrapper {
         display: block;
+        max-width: 600px;
+        margin-left: auto;
     }
 
-    .answer-button {
-        margin-left: 1em;
+    .answer-button,
+    main section h3,
+    main section h2 {
+        margin-left: 1rem;
     }
 
     .next-question {
@@ -456,6 +456,7 @@ footer {
 
     main {
         align-self: flex-end;
+        max-width: 750px;
     }
 
     button {

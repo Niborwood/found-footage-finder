@@ -47,8 +47,8 @@ const game = {
             // Question 1 - Genre
             [
                 'Quel type de film souhaitez-vous voir ?',
-                ['Un found footage', 'ff'],
-                ['Un mockumentaire', 'mockumentary'],
+                ['Un found footage classique', 'ff'],
+                ['Un faux-documentaire', 'mockumentary'],
                 ['Un film à sketchs', 'sketch'],
                 ['Une série épisodique', 'series'],
             ],
@@ -64,8 +64,7 @@ const game = {
                 ['de France', 'france'],
                 ['d\'Europe', 'europe'],
                 ['des USA', 'usa'],
-                ['d\'Asie', 'asia'],
-                ['Rien de tout ça', 'other']
+                ['d\'Asie', 'asia']
             ],
             // Question 4 - date
             [
@@ -283,6 +282,7 @@ const game = {
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
         game.htmlElement.mainSection.classList.add('section-result');
+        game.htmlElement.mainHeader.remove();
         // Gestion de la logique
         console.log('Réponse utilisateur :', game.data.answers);
 
@@ -344,8 +344,9 @@ const game = {
             const asidePoster = document.createElement('aside');
             asidePoster.appendChild(poster);
             game.htmlElement.mainSection.prepend(asidePoster);
-
-            game.htmlElement.mainHeader.innerText = `${movie.original_title} - ${movie.release_date.substring(0,4)}`;
+            const titleMovie = document.createElement('h2');
+            titleMovie.innerText = `${movie.original_title} - ${movie.release_date.substring(0,4)}`;
+            movieHolder.appendChild(titleMovie);
             const overviewP = document.createElement('p');
             overviewP.innerText = movie.overview;
             movieHolder.appendChild(overviewP);
@@ -378,9 +379,9 @@ const game = {
                                 svodListing.innerText = movie.results.FR[provider][0].provider_name;
                             } else {
                                 movie.results.FR[provider].forEach((element, index) => {
-                                    svodListing.innerText += ` ${element.provider_name}`;
+                                    svodListing.innerText += `${element.provider_name}`;
                                     if (movie.results.FR[provider].length-1 !== index) {
-                                        svodListing.innerText += ','; 
+                                        svodListing.innerText += ', '; 
                                     }  
                                 });
                             }
