@@ -1,4 +1,6 @@
+/* global theMovieDb */
 // ************** CORE CODE *******************
+
 // PROTOTYPES
 const Flags = function (genre, difficulty, origin, date, theme) {
     this.genre = genre;
@@ -26,6 +28,7 @@ const game = {
 
     // --- ELEMENTS HTML
     htmlElement: {
+        main: document.querySelector('main'),
         mainHeader: document.querySelector('main h2'),
         mainSection: document.querySelector('main section'),
         mainButton: document.querySelector('main button'),
@@ -92,89 +95,68 @@ const game = {
             // Question 10
         ],
 
-
         // Data des films
         movies: [
             // Flags CheatSheet : genre, difficulty, origin, date, theme
             // 01 - C'EST ARRIVE PRES DE CHEZ VOUS
             {
                 id: 1,
-                data: {
-                    // tmdb_data: theMovieDb.movies.getById({"id":10086}, function() {return this.title}, function() {}),
-                    flags: new Flags('mockumentary', 'hardcore', 'europe', '90s', 'slasher')
-                }
+                tmdb_id: 10086,
+                flags: new Flags('mockumentary', 'hardcore', 'europe', '90s', 'slasher')
             },
             // 02 - V/H/S 2
             {
                 id: 2,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('sketch', 'casual', 'usa', '10s', 'paranormal')
-                }
+                tmdb_id: 159117,
+                flags: new Flags('sketch', 'casual', 'usa', '10s', 'paranormal')
             },
             // 03 - The Poughkeepsie Tapes
             {
                 id: 3,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('mockumentary', 'hardcore', 'usa', '00s', 'slasher')
-                }
+                tmdb_id: 38410,
+                flags: new Flags('mockumentary', 'hardcore', 'usa', '00s', 'slasher')
             },
             // 04 - The Blair Witch Project
             {
                 id: 4,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('ff', 'casual', 'usa', '90s', 'paranormal')
-                }
+                tmdb_id: 2667,
+                flags: new Flags('ff', 'casual', 'usa', '90s', 'paranormal')
             },
             // 05 - Cannibal Holocaust
             {
                 id: 5,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('mockumentary', 'casual', 'europe', '70-80s', 'slasher')
-                }
+                tmdb_id: 8689,
+                flags: new Flags('mockumentary', 'casual', 'europe', '70-80s', 'slasher')
             },
             // 06 - Marble Hornets
             {
                 id: 6,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('series', 'hardcore', 'usa', '10s', 'paranormal')
-                }
+                tmdb_id: 0,
+                flags: new Flags('series', 'hardcore', 'usa', '10s', 'paranormal')
             },
             // 07 - Trolljegeren 
             {
                 id: 7,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('mockumentary', 'casual', 'europe', '10s', 'paranormal')
-                }
+                tmdb_id: 46146,
+                flags: new Flags('mockumentary', 'casual', 'europe', '10s', 'paranormal')
             },
             // 08 - Noroi: The Curse 
             {
                 id: 8,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('ff', 'casual', 'asia', '00s', 'paranormal')
-                }
+                tmdb_id: 21506,
+                flags: new Flags('ff', 'casual', 'asia', '00s', 'paranormal')
             },
             // 09 - Les Documents Interdits
             {
                 id: 9,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('series', 'hardcore', 'europe', '70-80s', 'paranormal')
-                }
+                tmdb_id: 116684,
+                flags: new Flags('series', 'hardcore', 'europe', '70-80s', 'paranormal'),
             },
             // 10 - Murder Deeath Koreatown
             {
                 id: 10,
-                data: {
-                    tmdb_data: {},
-                    flags: new Flags('ff', 'hardcore', 'usa', '10s', 'paranormal')
-                }
+                tmdb_id: 675522,
+                flags: new Flags('ff', 'hardcore', 'usa', '10s', 'paranormal')
             }
         ],
 
@@ -301,15 +283,15 @@ const game = {
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
         // Gestion de la logique
-        console.log(game.data.answers);
+        console.log('Réponse utilisateur :', game.data.answers);
 
         const matchingResults = [];
         const movies = Object.values(game.data.movies);
 
         movies.forEach(movie => {
-            // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd
+            // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd            
             let match = true;
-            let movieFlags = Object.values(movie.data.flags);
+            let movieFlags = Object.values(movie.flags);
 
             game.data.answers.forEach((element, index) => {
                 // Si la réponse est un array (qu'elle spécifie plusieurs valeurs possibles)...
@@ -332,10 +314,90 @@ const game = {
             } 
         }); // Fin de la boucle de check des flags
 
-        // Gestion des éléments HTML
-        game.htmlElement.mainHeader.innerText = matchingResults[0];
-        console.log(matchingResults);
+        // Récupération des données TMDB et gestion des éléments HTML
+        const error = () => {
+            game.htmlElement.mainHeader.innerText = 'TMDB ERROR';
+        };
+
         game.htmlElement.mainSection.innerText = '';
+        const dividerP = document.createElement('p');
+        dividerP.classList.add('divider');
+        const movieHolder = document.createElement('div');
+        movieHolder.id = 'movie-holder';
+        game.htmlElement.mainSection.appendChild(movieHolder);
+
+        const tmdbCrawler = (id) => {
+            for (const movie of game.data.movies) {
+                if (movie.id === id) {
+                    return movie.tmdb_id;
+                }
+            }
+        }; 
+        const tmdbId = tmdbCrawler(matchingResults[0]);
+        
+        // Données générales (titre + date + description + image)
+        theMovieDb.movies.getById({'id': tmdbId}, (data) => {
+            let movie = JSON.parse(data);
+            const poster = document.createElement('img');
+            poster.src = `https://www.themoviedb.org/t/p/w300${movie.poster_path}`;
+            const asidePoster = document.createElement('aside');
+            asidePoster.appendChild(poster);
+            game.htmlElement.main.prepend(asidePoster);
+
+            game.htmlElement.mainHeader.innerText = `${movie.original_title} - ${movie.release_date.substring(0,4)}`;
+            const overviewP = document.createElement('p');
+            overviewP.innerText = movie.overview;
+            movieHolder.appendChild(overviewP);
+            movieHolder.appendChild(dividerP); //Divider
+        }, error); // Fin d'appel TMDB.id
+        
+        // Données providers (SVOD + Location)
+        theMovieDb.movies.getProviders({'id': tmdbId}, (data) => {
+            const movie = JSON.parse(data);
+            if (movie.results.FR === undefined) {
+                const targetH3 = document.createElement('h3');
+                targetH3.innerHTML = 'Indisponible en SVOD / location.';
+                movieHolder.appendChild(targetH3);
+            } else {
+                const displayProviders = (providers) => {
+                    providers.forEach(provider => {
+                        
+                        const targetH3 = document.createElement('h3');
+                        if (provider === 'flatrate') {
+                            targetH3.innerText = 'SVOD / Abonnement';
+                        } else if (provider === 'rent') {
+                            targetH3.innerText = 'Location';
+                        }
+                        movieHolder.appendChild(targetH3);
+                        const svodListing = document.createElement('p');
+                        svodListing.classList.add('provider-infos');
+                        if (movie.results.FR[provider] !== undefined) {
+                            if (movie.results.FR[provider].length === 1) {
+                                console.log(movie.results.FR[provider]);
+                                svodListing.innerText = movie.results.FR[provider][0].provider_name;
+                            } else {
+                                movie.results.FR[provider].forEach((element, index) => {
+                                    svodListing.innerText += ` ${element.provider_name}`;
+                                    if (movie.results.FR[provider].length-1 !== index) {
+                                        svodListing.innerText += ','; 
+                                    }  
+                                });
+                            }
+                        } else {
+                            svodListing.innerText = 'Non disponible.';
+                        }
+                        movieHolder.appendChild(svodListing);
+                    }); 
+                    
+                };
+                const providers = ['flatrate', 'rent'];
+                displayProviders(providers);
+            }
+
+            
+        }, error); // Fin d'appel TMDB.providers
+
+        
     },
 
     // --- EXECUTION GLOBALE DU JEU
@@ -374,8 +436,21 @@ function display_ct() {
 }
 
 // ************** TEST SANDBOX *******************
+console.log('**** sandbox ****');
+// Var tests
+
+// theMovieDb.movies.getById({'id': 694}, (data) => {
+//     let movie = JSON.parse(data);
+//     console.log(movie);
+  
+// }, () => {
+//     console.log('plop');
+// }); // Fin d'appel TMDB
 
 // Logique à appliquer
+
+
+
 
 
 

@@ -243,6 +243,10 @@ header h1 {
     bottom: 6px;
 }
 
+#slp {
+    margin-bottom: .5rem;
+}
+
 /* MAIN */
 
 main {
@@ -251,6 +255,7 @@ main {
     max-width: 600px;
     align-self: center;
     text-align: center;
+    margin-top: 1rem;
 }
 
 main h2 {
@@ -259,7 +264,7 @@ main h2 {
     font-weight: bold;
     line-height: 1.3;
     width: 80%;
-
+    margin-top: 1rem;
 }
 
 section {
@@ -291,6 +296,19 @@ button:hover, #button-clicked {
     border: 3px solid var(--grey-light);
 }
 
+/* ROUTINE DE QUESTIONS */
+
+#launch-game {
+    align-self: center;
+    font-weight: bold;
+    margin-top: 1em;
+}
+
+span.circle-button {
+    position: relative;
+    bottom: 2px;
+}
+
 button.answer-button {
     font-size: initial;
     margin-bottom: 1em;
@@ -316,25 +334,37 @@ span.forward {
     bottom: 1px;
 }
 
-#launch-game {
-    align-self: center;
-    font-weight: bold;
-    margin-top: 1em;
-}
-
-span.circle-button {
-    position: relative;
-    bottom: 2px;
-}
-
 #answer-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#slp {
-    margin-bottom: .5rem;
+/* AFFICHAGE DES RESULTATS */
+
+p.divider:before {
+    content: '---';
+}
+
+div#movie-holder p {
+    font-size: .65em;
+}
+
+main h3 {
+    font-size: .85rem;
+    margin-bottom: 0.2em;
+    font-weight:bold
+}
+
+aside img {
+    border:3px solid var(--grey-light);
+    box-shadow: 3px 3px var(--grey-light);
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.provider-infos {
+    white-space: break-spaces;
 }
 
 /* FOOTER */
