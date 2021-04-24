@@ -282,6 +282,7 @@ const game = {
 
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
+        game.htmlElement.mainSection.classList.add('section-result');
         // Gestion de la logique
         console.log('Réponse utilisateur :', game.data.answers);
 
@@ -342,7 +343,7 @@ const game = {
             poster.src = `https://www.themoviedb.org/t/p/w300${movie.poster_path}`;
             const asidePoster = document.createElement('aside');
             asidePoster.appendChild(poster);
-            game.htmlElement.main.prepend(asidePoster);
+            game.htmlElement.mainSection.prepend(asidePoster);
 
             game.htmlElement.mainHeader.innerText = `${movie.original_title} - ${movie.release_date.substring(0,4)}`;
             const overviewP = document.createElement('p');
@@ -356,7 +357,7 @@ const game = {
             const movie = JSON.parse(data);
             if (movie.results.FR === undefined) {
                 const targetH3 = document.createElement('h3');
-                targetH3.innerHTML = 'Indisponible en SVOD / location.';
+                targetH3.innerHTML = 'Indisponible en SVOD / location';
                 movieHolder.appendChild(targetH3);
             } else {
                 const displayProviders = (providers) => {
@@ -384,7 +385,7 @@ const game = {
                                 });
                             }
                         } else {
-                            svodListing.innerText = 'Non disponible.';
+                            svodListing.innerText = 'Non disponible';
                         }
                         movieHolder.appendChild(svodListing);
                     }); 

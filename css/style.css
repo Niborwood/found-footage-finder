@@ -348,6 +348,7 @@ p.divider:before {
 
 div#movie-holder p {
     font-size: .65em;
+    margin-left: 1rem;
 }
 
 main h3 {
@@ -396,8 +397,17 @@ footer {
         margin: 0 0 1rem 0;
     }
 
-    section {
+    main section {
         margin: initial;
+    }
+
+    main section.section-result {
+        display: flex;
+        
+    }
+
+    main section h3 {
+        margin-left: 1rem;
     }
 
     #launch-game {
@@ -458,6 +468,10 @@ footer {
 
     .play-vhs {
         font-size: 1.5rem;
+    }
+
+    #movie-holder {
+        text-align: left;
     }
 }
 
