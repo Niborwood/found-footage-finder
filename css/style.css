@@ -196,6 +196,7 @@ p {
 a,
 a:visited {
     color: var(--grey-light);
+    cursor: pointer;
 }
 
 input:focus,
@@ -345,7 +346,7 @@ div#movie-holder p {
 
 main h3 {
     font-size: .85rem;
-    margin-bottom: 0.2em;
+    margin-bottom: 0.4em;
     font-weight: bold
 }
 
@@ -425,14 +426,15 @@ footer {
         margin-left: auto;
     }
 
-    .answer-button,
-    main section h3,
-    main section h2 {
-        margin-left: 1rem;
-    }
-
     div#movie-holder p {
         margin-left: 1.4rem;
+    }
+
+    .answer-button,
+    main section h3,
+    main section h2, 
+    .divider {
+        margin-left: 1rem;
     }
 
     .next-question {

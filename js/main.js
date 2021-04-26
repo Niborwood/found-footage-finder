@@ -42,7 +42,6 @@ const game = {
 
     // --- DATA
     data: {
-        quizStep: 0,
         // Data des questions
         question: [
             // Question 1 - Genre
@@ -224,18 +223,34 @@ const game = {
         ],
 
         // Data des réponses
-        answers: []
+        quizStep: 0,
+        answers: [],
+        matchingResults: [],
+        reloads:0,
     },
 
     // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
     init: () => {
+        // Init HTML elements
         game.htmlElement.playVhsString.innerText = '▶ PLAY';
         game.htmlElement.playVhsString.classList.remove('animate-flicker');
         game.htmlElement.appTitle.remove();
         game.htmlElement.mainSection.innerText = '';
+        game.htmlElement.mainSection.classList.remove('section-result');
         game.htmlElement.mainButton.remove();
 
+        if (game.data.quizStep !== 0) {
+            game.htmlElement.main.prepend(game.htmlElement.mainHeader);
+        }
+
+        // Init game data
+        game.data.answers = [];
+        game.data.matchingResults = [];
         game.data.quizStep = 0;
+        game.data.reloads = 0;
+
+        // Begin
+        game.askQuestion();
     },
 
     // ---- ROUTINE D'AFFICHAGE DE CHAQUE QUESTION/REPONSES
@@ -259,8 +274,9 @@ const game = {
         // Génération de l'affichage des questions / réponses (avec flag values)
         const currentQuestion = game.data.question[game.data.quizStep];
         game.htmlElement.mainHeader.innerText = currentQuestion[0];
-        currentQuestion.shift();
-        currentQuestion.forEach(answer => {
+        
+        const currentAnswers = currentQuestion.slice(1);
+        currentAnswers.forEach(answer => {
             answerButton.innerText = answer[0];
             answerButton.value = answer[1];
             answersWrapper.appendChild(answerButton.cloneNode(true));
@@ -346,11 +362,9 @@ const game = {
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
         game.htmlElement.mainSection.classList.add('section-result');
-        game.htmlElement.mainHeader.remove();
         // Gestion de la logique
         console.log('Réponse utilisateur :', game.data.answers);
 
-        const matchingResults = [];
         const movies = Object.values(game.data.movies);
 
         movies.forEach(movie => {
@@ -373,15 +387,15 @@ const game = {
                     } 
                 }
             });
-            // S'il y a match(s), on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
-            if (match) {
-                matchingResults.push(movie.id);
+            // S'il y a match(s) ET que ce n'est pas un reload de résultat, on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
+            if (match && game.data.reloads === 0) {
+                game.data.matchingResults.push(movie.id);
             } 
         }); // Fin de la boucle de check des flags
 
         // Récupération des données TMDB et gestion des éléments HTML
         const error = () => {
-            game.htmlElement.mainHeader.innerText = 'TMDB ERROR';
+            game.htmlElement.mainHeader.innerText = 'Aucun film ne correspond à votre demande.';
         };
 
         game.htmlElement.mainSection.innerText = '';
@@ -389,6 +403,8 @@ const game = {
         dividerP.classList.add('divider');
         const movieHolder = document.createElement('div');
         movieHolder.id = 'movie-holder';
+        const tmdbHolder = document.createElement('div');
+        movieHolder.appendChild(tmdbHolder);
         game.htmlElement.mainSection.appendChild(movieHolder);
 
         const tmdbCrawler = (id) => {
@@ -398,11 +414,12 @@ const game = {
                 }
             }
         }; 
-        const tmdbId = tmdbCrawler(matchingResults[0]);
+        const tmdbId = tmdbCrawler(game.data.matchingResults[0]);
         
         // Données générales (titre + date + description + image)
         theMovieDb.movies.getById({'id': tmdbId}, (data) => {
 
+            game.htmlElement.mainHeader.remove();
             let movie = JSON.parse(data);
             const poster = document.createElement('img');
             poster.src = `https://www.themoviedb.org/t/p/w300${movie.poster_path}`;
@@ -411,21 +428,24 @@ const game = {
             game.htmlElement.mainSection.prepend(asidePoster);
             const titleMovie = document.createElement('h2');
             titleMovie.innerText = `${movie.original_title} - ${movie.release_date.substring(0,4)}`;
-            movieHolder.appendChild(titleMovie);
+            tmdbHolder.appendChild(titleMovie);
             const overviewP = document.createElement('p');
             overviewP.innerText = movie.overview;
-            movieHolder.appendChild(overviewP);
-            movieHolder.appendChild(dividerP); //Divider
+            tmdbHolder.appendChild(overviewP);
+            tmdbHolder.appendChild(dividerP); //Divider
         }, error); // Fin d'appel TMDB.id
         
         // Données providers (SVOD + Location)
         theMovieDb.movies.getProviders({'id': tmdbId}, (data) => {
             const movie = JSON.parse(data);
+            // Si aucune option légale
             if (movie.results.FR === undefined) {
                 const targetH3 = document.createElement('h3');
                 targetH3.innerHTML = 'Indisponible en SVOD / location';
-                movieHolder.appendChild(targetH3);
-            } else {
+                tmdbHolder.appendChild(targetH3);
+            } 
+            // Routine d'affichage des providers
+            else {
                 const displayProviders = (providers) => {
                     providers.forEach(provider => {
                         
@@ -435,12 +455,11 @@ const game = {
                         } else if (provider === 'rent') {
                             targetH3.innerText = 'Location';
                         }
-                        movieHolder.appendChild(targetH3);
+                        tmdbHolder.appendChild(targetH3);
                         const svodListing = document.createElement('p');
                         svodListing.classList.add('provider-infos');
                         if (movie.results.FR[provider] !== undefined) {
                             if (movie.results.FR[provider].length === 1) {
-                                console.log(movie.results.FR[provider]);
                                 svodListing.innerText = movie.results.FR[provider][0].provider_name;
                             } else {
                                 movie.results.FR[provider].forEach((element, index) => {
@@ -453,24 +472,77 @@ const game = {
                         } else {
                             svodListing.innerText = 'Non disponible';
                         }
-                        movieHolder.appendChild(svodListing);
+                        tmdbHolder.appendChild(svodListing);
                     }); 
                     
                 };
                 const providers = ['flatrate', 'rent'];
                 displayProviders(providers);
-                movieHolder.appendChild(dividerP.cloneNode(true));
+               
             }
+            tmdbHolder.appendChild(dividerP.cloneNode(true));
         }, error); // Fin d'appel TMDB.providers
-        //Divider
+
+
+        // Film déjà vu ou propositions d'autres résultats si possible
+        const moreResultsP = document.createElement('p');
+        const moreResultsA = document.createElement('a');
+        moreResultsA.classList.add('reload-data');
+        const moreResultsH3 = document.createElement('h3');
+        moreResultsH3.innerText = 'Autres résultats';
+        movieHolder.appendChild(moreResultsH3);
+
+        // Si 0 ou 1 résultat
+        if (game.data.matchingResults.length === 0) {
+            moreResultsA.classList.add('reload-movie');
+            moreResultsA.innerText = '▶ Relancer un test';
+        }
+        else if (game.data.matchingResults.length === 1) {
+            if (game.data.reloads === 0) {
+                moreResultsP.innerHTML = 'Un seul film a correspondu à votre requête.<br><br>';
+                moreResultsA.classList.add('reload-movie');
+                moreResultsA.innerText = '▶ Relancer un test';
+                
+            } else {
+                moreResultsP.innerHTML = 'Dernier film selon vos critères. <br><br>';
+                moreResultsA.innerText = '▶ Relancer un test';
+                moreResultsA.classList.add('reload-movie');
+            }
+            
+        } 
+        // Si 2+ autres résultats
+        else {
+            let resultPlural = 'autres résultats correspondent';
+            if (game.data.matchingResults.length === 2) {
+                resultPlural = 'autre résultat correspond';
+            }
+            moreResultsP.innerHTML = `Déjà vu ce film ? ${game.data.matchingResults.length-1} ${resultPlural} à vos réponses. <br><br>`;
+            moreResultsA.innerText = '▶ Voir un autre film';
+        }
+
+        // Affichage et traitement du résultat (via .reload-data)
+        movieHolder.appendChild(moreResultsP);
+        moreResultsP.appendChild(moreResultsA);
+
+        document.querySelector('a.reload-data').addEventListener('click', (event) => {
+            event.preventDefault();
+
+            if (event.target.classList.contains('reload-movie')) {
+                game.init();
+            } else {
+                game.data.matchingResults.shift();
+                game.data.reloads++;
+                game.displayResults();
+            }
+            
+            
+        });
         
     },
 
     // --- EXECUTION GLOBALE DU JEU
     play: () => {
-
         game.init();
-        game.askQuestion();
     },
 };
 
@@ -513,13 +585,9 @@ function display_ct() {
 // }); // Fin d'appel TMDB
 
 // NEW TEST
-const matchingResults = [1, 12, 20];
+// const matchingResults = [1, 12, 20];
 
-if (matchingResults.length === 1) {
-    console.log('Un seul film a correspondu à votre requête. Relancer avec d\'autres réponses ?');
-} else {
-    console.log(`Déjà vu ce film ? ${matchingResults.length-1} autres résultats correspondent à vos réponses.`);
-}
+
 
 
 
@@ -530,6 +598,7 @@ if (matchingResults.length === 1) {
 - afficher les noms latins de films asiatiques
 - pouvoir choisir plusieurs réponses par questions 
 - gérer plus de résultats
+- flexer les locations/SVOD sur mobile
 */
 
 
