@@ -11,7 +11,7 @@ const Flags = function (genre, difficulty, origin, date, theme, saga) {
     this.saga = saga;
 };
 
-// ----:::: GAME ::::----
+// ----:::: APP/GAME ::::----
 const app = {
     // --- GLITCH EFFECT
     glitch: () => {
@@ -362,11 +362,10 @@ const app = {
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
         app.htmlElement.mainSection.classList.add('section-result');
-        // Gestion de la logique
         console.log('Réponse utilisateur :', app.data.answers);
 
+        // Correspondance résultats user > bdd films/flags
         const movies = Object.values(app.data.movies);
-
         movies.forEach(movie => {
             // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd            
             let match = true;
@@ -410,14 +409,15 @@ const app = {
         const tmdbCrawler = (id) => {
             for (const movie of app.data.movies) {
                 if (movie.id === id) {
-                    return movie.tmdb_id;
+                    return { id: movie.tmdb_id, flags: movie.flags };
                 }
             }
         }; 
-        const tmdbId = tmdbCrawler(app.data.matchingResults[0]);
+        const tmdbData = tmdbCrawler(app.data.matchingResults[0]);
         
         // Données générales (titre + date + description + image)
-        theMovieDb.movies.getById({'id': tmdbId}, (data) => {
+        theMovieDb.movies.getById({'id': tmdbData.id}, (data) => {
+            
 
             app.htmlElement.mainHeader.remove();
             let movie = JSON.parse(data);
@@ -427,7 +427,14 @@ const app = {
             asidePoster.appendChild(poster);
             app.htmlElement.mainSection.prepend(asidePoster);
             const titleMovie = document.createElement('h2');
-            titleMovie.innerText = `${movie.original_title} - ${movie.release_date.substring(0,4)}`;
+            console.log(tmdbData.flags);
+            // Check film asiatique (affichage du nom latin)
+            if (tmdbData.flags.origin === 'asia') {
+                titleMovie.innerText = movie.title;
+            } else {
+                titleMovie.innerText = movie.original_title;
+            }
+            titleMovie.innerText += ` - ${movie.release_date.substring(0,4)}`;
             tmdbHolder.appendChild(titleMovie);
             const overviewP = document.createElement('p');
             overviewP.innerText = movie.overview;
@@ -436,7 +443,7 @@ const app = {
         }, error); // Fin d'appel TMDB.id
         
         // Données providers (SVOD + Location)
-        theMovieDb.movies.getProviders({'id': tmdbId}, (data) => {
+        theMovieDb.movies.getProviders({'id': [tmdbData.id]}, (data) => {
             const movie = JSON.parse(data);
             // Si aucune option légale
             if (movie.results.FR === undefined) {
@@ -591,10 +598,9 @@ function display_ct() {
 
 /* 
 - prendre en compte les séries
-- afficher les noms latins de films asiatiques
-- pouvoir choisir plusieurs réponses par questions 
-- gérer plus de résultats
+- pouvoir choisir plusieurs réponses par questions
 - flexer les locations/SVOD sur mobile
+- mettre les 100+ films dans la db
 */
 
 
