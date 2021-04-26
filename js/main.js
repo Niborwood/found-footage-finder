@@ -12,18 +12,18 @@ const Flags = function (genre, difficulty, origin, date, theme, saga) {
 };
 
 // ----:::: GAME ::::----
-const game = {
+const app = {
     // --- GLITCH EFFECT
     glitch: () => {
-        let bgIOriginal = game.htmlElement.container.style.backgroundImage;
-        game.htmlElement.container.style.backgroundImage = 'url(\'img/noise2.png\')';
-        game.htmlElement.container.style.backgroundSize = 'initial';
-        game.htmlElement.container.style.animation = `animatedBackground ${Math.random()/2}s ease-in infinite`;
+        let bgIOriginal = app.htmlElement.container.style.backgroundImage;
+        app.htmlElement.container.style.backgroundImage = 'url(\'img/noise2.png\')';
+        app.htmlElement.container.style.backgroundSize = 'initial';
+        app.htmlElement.container.style.animation = `animatedBackground ${Math.random()/2}s ease-in infinite`;
 
         setTimeout(() => {
-            game.htmlElement.container.style.backgroundImage = bgIOriginal;
-            game.htmlElement.container.style.animation = '0';
-            game.htmlElement.container.style.backgroundSize = 'cover';
+            app.htmlElement.container.style.backgroundImage = bgIOriginal;
+            app.htmlElement.container.style.animation = '0';
+            app.htmlElement.container.style.backgroundSize = 'cover';
         }, Math.random()*110);
     },
 
@@ -232,48 +232,48 @@ const game = {
     // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
     init: () => {
         // Init HTML elements
-        game.htmlElement.playVhsString.innerText = '▶ PLAY';
-        game.htmlElement.playVhsString.classList.remove('animate-flicker');
-        game.htmlElement.appTitle.remove();
-        game.htmlElement.mainSection.innerText = '';
-        game.htmlElement.mainSection.classList.remove('section-result');
-        game.htmlElement.mainButton.remove();
+        app.htmlElement.playVhsString.innerText = '▶ PLAY';
+        app.htmlElement.playVhsString.classList.remove('animate-flicker');
+        app.htmlElement.appTitle.remove();
+        app.htmlElement.mainSection.innerText = '';
+        app.htmlElement.mainSection.classList.remove('section-result');
+        app.htmlElement.mainButton.remove();
 
-        if (game.data.quizStep !== 0) {
-            game.htmlElement.main.prepend(game.htmlElement.mainHeader);
+        if (app.data.quizStep !== 0) {
+            app.htmlElement.main.prepend(app.htmlElement.mainHeader);
         }
 
-        // Init game data
-        game.data.answers = [];
-        game.data.matchingResults = [];
-        game.data.quizStep = 0;
-        game.data.reloads = 0;
+        // Init app data
+        app.data.answers = [];
+        app.data.matchingResults = [];
+        app.data.quizStep = 0;
+        app.data.reloads = 0;
 
         // Begin
-        game.askQuestion();
+        app.askQuestion();
     },
 
     // ---- ROUTINE D'AFFICHAGE DE CHAQUE QUESTION/REPONSES
     askQuestion: () => {
-        game.glitch();
+        app.glitch();
 
         // Elements HTML générés
         const answerButton = document.createElement('button');
         answerButton.setAttribute('class', 'answer-button');
         const answersWrapper = document.createElement('div');
         answersWrapper.setAttribute('id', 'answer-wrapper');
-        game.htmlElement.mainSection.appendChild(answersWrapper);
+        app.htmlElement.mainSection.appendChild(answersWrapper);
         const nextStepStr = document.createElement('p');
         nextStepStr.classList.add('next-question');
         const skipQuestionString = 'Passer cette question (tout me va) <span class="forward">▶</span>';
         const nextQuestionString = 'Question suivante <span class="forward">▶▶</span>';
         nextStepStr.innerHTML = skipQuestionString;
-        game.htmlElement.mainSection.appendChild(nextStepStr);
+        app.htmlElement.mainSection.appendChild(nextStepStr);
         
 
         // Génération de l'affichage des questions / réponses (avec flag values)
-        const currentQuestion = game.data.question[game.data.quizStep];
-        game.htmlElement.mainHeader.innerText = currentQuestion[0];
+        const currentQuestion = app.data.question[app.data.quizStep];
+        app.htmlElement.mainHeader.innerText = currentQuestion[0];
         
         const currentAnswers = currentQuestion.slice(1);
         currentAnswers.forEach(answer => {
@@ -312,7 +312,7 @@ const game = {
         }); // Fin de la boucle de boutons réponses
         
         // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
-        nextStepStr.addEventListener('click', game.nextQuestion);
+        nextStepStr.addEventListener('click', app.nextQuestion);
     },
 
     // ---- ROUTINE DE REPONSE A QUESTION / GENERATION DE NOUVELLE QUESTION / APPEL DE RESULTATS
@@ -320,59 +320,59 @@ const game = {
         // On enregistre la (les) réponse(s) dans le tableau des flags/réponses
         const userAnswer = document.getElementById('button-clicked');
         if (userAnswer !== null) {     
-            game.data.answers.push(userAnswer.value);
+            app.data.answers.push(userAnswer.value);
         } else {
             const allAnswers = [...document.getElementsByClassName('answer-button')];
             const arrayValues = [];
             allAnswers.forEach(element => {
                 arrayValues.push(element.value);
             });
-            game.data.answers.push(arrayValues);
+            app.data.answers.push(arrayValues);
         }
        
         // Est-ce qu'on a fait le tour des questions à poser ?
-        if (game.data.quizStep < game.data.question.length-1) {
-            game.htmlElement.mainSection.innerText = '';
-            game.data.quizStep++;
-            game.askQuestion();
+        if (app.data.quizStep < app.data.question.length-1) {
+            app.htmlElement.mainSection.innerText = '';
+            app.data.quizStep++;
+            app.askQuestion();
         } else {
-            game.displayEndQuiz();
+            app.displayEndQuiz();
         }
     },
 
     // ---- ECRAN TEMPORAIRE DE FIN DE QUIZ
     displayEndQuiz: () => {
-        game.glitch();
+        app.glitch();
 
         // Gestion des éléments HTML
-        game.htmlElement.appHeader.appendChild(game.htmlElement.appTitle);
-        game.htmlElement.mainHeader.innerText = 'Votre found footage est prêt.';
-        game.htmlElement.mainSection.innerText = '';
+        app.htmlElement.appHeader.appendChild(app.htmlElement.appTitle);
+        app.htmlElement.mainHeader.innerText = 'Votre found footage est prêt.';
+        app.htmlElement.mainSection.innerText = '';
         const displayButton = document.createElement('button');
         displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
         displayButton.classList.add('discover-button');
-        game.htmlElement.mainSection.appendChild(displayButton);
-        game.htmlElement.playVhsString.innerText = 'STOP';
-        game.htmlElement.playVhsString.classList.add('animate-flicker');
+        app.htmlElement.mainSection.appendChild(displayButton);
+        app.htmlElement.playVhsString.innerText = 'STOP';
+        app.htmlElement.playVhsString.classList.add('animate-flicker');
 
-        displayButton.addEventListener('click', game.displayResults);
+        displayButton.addEventListener('click', app.displayResults);
 
     },
 
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
-        game.htmlElement.mainSection.classList.add('section-result');
+        app.htmlElement.mainSection.classList.add('section-result');
         // Gestion de la logique
-        console.log('Réponse utilisateur :', game.data.answers);
+        console.log('Réponse utilisateur :', app.data.answers);
 
-        const movies = Object.values(game.data.movies);
+        const movies = Object.values(app.data.movies);
 
         movies.forEach(movie => {
             // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd            
             let match = true;
             let movieFlags = Object.values(movie.flags);
 
-            game.data.answers.forEach((element, index) => {
+            app.data.answers.forEach((element, index) => {
                 // Si la réponse est un array (qu'elle spécifie plusieurs valeurs possibles)...
                 if (typeof element === 'object') {
                     // ...on check si une de leurs valeurs match avec chaque film
@@ -388,44 +388,44 @@ const game = {
                 }
             });
             // S'il y a match(s) ET que ce n'est pas un reload de résultat, on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
-            if (match && game.data.reloads === 0) {
-                game.data.matchingResults.push(movie.id);
+            if (match && app.data.reloads === 0) {
+                app.data.matchingResults.push(movie.id);
             } 
         }); // Fin de la boucle de check des flags
 
         // Récupération des données TMDB et gestion des éléments HTML
         const error = () => {
-            game.htmlElement.mainHeader.innerText = 'Aucun film ne correspond à votre demande.';
+            app.htmlElement.mainHeader.innerText = 'Aucun film ne correspond à votre demande.';
         };
 
-        game.htmlElement.mainSection.innerText = '';
+        app.htmlElement.mainSection.innerText = '';
         const dividerP = document.createElement('p');
         dividerP.classList.add('divider');
         const movieHolder = document.createElement('div');
         movieHolder.id = 'movie-holder';
         const tmdbHolder = document.createElement('div');
         movieHolder.appendChild(tmdbHolder);
-        game.htmlElement.mainSection.appendChild(movieHolder);
+        app.htmlElement.mainSection.appendChild(movieHolder);
 
         const tmdbCrawler = (id) => {
-            for (const movie of game.data.movies) {
+            for (const movie of app.data.movies) {
                 if (movie.id === id) {
                     return movie.tmdb_id;
                 }
             }
         }; 
-        const tmdbId = tmdbCrawler(game.data.matchingResults[0]);
+        const tmdbId = tmdbCrawler(app.data.matchingResults[0]);
         
         // Données générales (titre + date + description + image)
         theMovieDb.movies.getById({'id': tmdbId}, (data) => {
 
-            game.htmlElement.mainHeader.remove();
+            app.htmlElement.mainHeader.remove();
             let movie = JSON.parse(data);
             const poster = document.createElement('img');
             poster.src = `https://www.themoviedb.org/t/p/w300${movie.poster_path}`;
             const asidePoster = document.createElement('aside');
             asidePoster.appendChild(poster);
-            game.htmlElement.mainSection.prepend(asidePoster);
+            app.htmlElement.mainSection.prepend(asidePoster);
             const titleMovie = document.createElement('h2');
             titleMovie.innerText = `${movie.original_title} - ${movie.release_date.substring(0,4)}`;
             tmdbHolder.appendChild(titleMovie);
@@ -493,12 +493,12 @@ const game = {
         movieHolder.appendChild(moreResultsH3);
 
         // Si 0 ou 1 résultat
-        if (game.data.matchingResults.length === 0) {
+        if (app.data.matchingResults.length === 0) {
             moreResultsA.classList.add('reload-movie');
             moreResultsA.innerText = '▶ Relancer un test';
         }
-        else if (game.data.matchingResults.length === 1) {
-            if (game.data.reloads === 0) {
+        else if (app.data.matchingResults.length === 1) {
+            if (app.data.reloads === 0) {
                 moreResultsP.innerHTML = 'Un seul film a correspondu à votre requête.<br><br>';
                 moreResultsA.classList.add('reload-movie');
                 moreResultsA.innerText = '▶ Relancer un test';
@@ -513,10 +513,10 @@ const game = {
         // Si 2+ autres résultats
         else {
             let resultPlural = 'autres résultats correspondent';
-            if (game.data.matchingResults.length === 2) {
+            if (app.data.matchingResults.length === 2) {
                 resultPlural = 'autre résultat correspond';
             }
-            moreResultsP.innerHTML = `Déjà vu ce film ? ${game.data.matchingResults.length-1} ${resultPlural} à vos réponses. <br><br>`;
+            moreResultsP.innerHTML = `Déjà vu ce film ? ${app.data.matchingResults.length-1} ${resultPlural} à vos réponses. <br><br>`;
             moreResultsA.innerText = '▶ Voir un autre film';
         }
 
@@ -528,25 +528,21 @@ const game = {
             event.preventDefault();
 
             if (event.target.classList.contains('reload-movie')) {
-                game.init();
+                app.init();
             } else {
-                game.data.matchingResults.shift();
-                game.data.reloads++;
-                game.displayResults();
+                app.data.matchingResults.shift();
+                app.data.reloads++;
+                app.displayResults();
             }
             
             
         });
         
     },
-
-    // --- EXECUTION GLOBALE DU JEU
-    play: () => {
-        game.init();
-    },
 };
 
-game.htmlElement.launchButton.addEventListener('click', game.play);
+// LAUNCH
+app.htmlElement.launchButton.addEventListener('click', app.init);
 
 
 // ************** ADDITIONAL CODE *******************
