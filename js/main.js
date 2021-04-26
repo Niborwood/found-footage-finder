@@ -2,12 +2,13 @@
 // ************** CORE CODE *******************
 
 // PROTOTYPES
-const Flags = function (genre, difficulty, origin, date, theme) {
+const Flags = function (genre, difficulty, origin, date, theme, saga) {
     this.genre = genre;
     this.difficulty = difficulty;
     this.origin = origin;
     this.date = date;
     this.theme = theme;
+    this.saga = saga;
 };
 
 // ----:::: GAME ::::----
@@ -51,20 +52,22 @@ const game = {
                 ['Un faux-documentaire', 'mockumentary'],
                 ['Un film à sketchs', 'sketch'],
                 ['Une série épisodique', 'series'],
+                ['Un film-écran', 'screen'],
             ],
             // Question 2 - Difficulty
             [
                 'Chaud pour un film de niche, ou on y va doucement ?',
-                ['Je connais déjà mes classiques, go !', 'hardcore'],
-                ['Sors-moi un truc regardable', 'casual']
+                ['Je connais déjà mes classiques, go !', 'rare'],
+                ['Sors-moi un truc regardable', 'common']
             ],
             // Question 3 - origin
             [
                 'Il doit venir d\'où, ce film ?',
                 ['de France', 'france'],
                 ['d\'Europe', 'europe'],
-                ['des USA', 'usa'],
-                ['d\'Asie', 'asia']
+                ['des USA / Canada', 'usa'],
+                ['d\'Asie', 'asia'],
+                ['ou d\'ailleurs encore', 'other']
             ],
             // Question 4 - date
             [
@@ -77,9 +80,10 @@ const game = {
             // Question 5 - theme
             [
                 'Niveau horreur, votre kink, c\'est plutôt...',
-                ['Les slashers', 'slasher'],
+                ['Les thrillers', 'thriller'],
                 ['Le paranormal', 'paranormal'],
-                ['Les aliens', 'aliens']
+                ['Les aliens', 'aliens'],
+                ['Les monstres', 'monsters']
             ],
             // Question 6
             // [
@@ -101,61 +105,121 @@ const game = {
             {
                 id: 1,
                 tmdb_id: 10086,
-                flags: new Flags('mockumentary', 'hardcore', 'europe', '90s', 'slasher')
+                flags: new Flags('mockumentary', 'common', 'europe', '90s', 'thriller', false)
             },
             // 02 - V/H/S 2
             {
                 id: 2,
                 tmdb_id: 159117,
-                flags: new Flags('sketch', 'casual', 'usa', '10s', 'paranormal')
+                flags: new Flags('sketch', 'common', 'usa', '10s', 'paranormal', false)
             },
             // 03 - The Poughkeepsie Tapes
             {
                 id: 3,
                 tmdb_id: 38410,
-                flags: new Flags('mockumentary', 'hardcore', 'usa', '00s', 'slasher')
+                flags: new Flags('mockumentary', 'rare', 'usa', '00s', 'thriller', false)
             },
             // 04 - The Blair Witch Project
             {
                 id: 4,
                 tmdb_id: 2667,
-                flags: new Flags('ff', 'casual', 'usa', '90s', 'paranormal')
+                flags: new Flags('ff', 'common', 'usa', '90s', 'paranormal', false)
             },
             // 05 - Cannibal Holocaust
             {
                 id: 5,
                 tmdb_id: 8689,
-                flags: new Flags('mockumentary', 'casual', 'europe', '70-80s', 'slasher')
+                flags: new Flags('mockumentary', 'common', 'europe', '70-80s', 'thriller', false)
             },
             // 06 - Marble Hornets
             {
                 id: 6,
                 tmdb_id: 0,
-                flags: new Flags('series', 'hardcore', 'usa', '10s', 'paranormal')
+                flags: new Flags('series', 'rare', 'usa', '10s', 'paranormal', false)
             },
             // 07 - Trolljegeren 
             {
                 id: 7,
                 tmdb_id: 46146,
-                flags: new Flags('mockumentary', 'casual', 'europe', '10s', 'paranormal')
+                flags: new Flags('mockumentary', 'common', 'europe', '10s', 'monsters', false)
             },
             // 08 - Noroi: The Curse 
             {
                 id: 8,
                 tmdb_id: 21506,
-                flags: new Flags('ff', 'casual', 'asia', '00s', 'paranormal')
+                flags: new Flags('ff', 'common', 'asia', '00s', 'paranormal', false)
             },
             // 09 - Les Documents Interdits
             {
                 id: 9,
                 tmdb_id: 116684,
-                flags: new Flags('series', 'hardcore', 'europe', '70-80s', 'paranormal'),
+                flags: new Flags('series', 'rare', 'europe', '70-80s', 'paranormal', false),
             },
-            // 10 - Murder Deeath Koreatown
+            // 10 - Murder Death Koreatown
             {
                 id: 10,
                 tmdb_id: 675522,
-                flags: new Flags('ff', 'hardcore', 'usa', '10s', 'paranormal')
+                flags: new Flags('ff', 'rare', 'usa', '10s', 'paranormal', false)
+            },
+            // 11 - Grave Encounters
+            {
+                id: 11,
+                tmdb_id: 50698,
+                flags: new Flags('mockumentary', 'common', 'usa', '00s', 'paranormal', 'graveEncounters')
+            },
+            // 12 - [REC]
+            {
+                id: 12,
+                tmdb_id: 8329,
+                flags: new Flags('mockumentary', 'common', 'europe', '00s', 'paranormal', 'rec')
+            },
+            // 13 - Host
+            {
+                id: 13,
+                tmdb_id: 723072,
+                flags: new Flags('ff', 'common', 'usa', '10s', 'paranormal', false)
+            },
+            // 14 - Butterfly Kisses
+            {
+                id: 14,
+                tmdb_id: 480733,
+                flags: new Flags('ff', 'rare', 'usa', '10s', 'paranormal', false)
+            },
+            // 15 - Resolution
+            {
+                id: 15,
+                tmdb_id: 121606,
+                flags: new Flags('ff', 'rare', 'usa', '10s', 'monsters', false)
+            },
+            // 16 - Home Movie
+            {
+                id: 16,
+                tmdb_id: 27258,
+                flags: new Flags('ff', 'rare', 'usa', '00s', 'paranormal', false)
+            },
+            // 17 - What We Do In The Shadows 
+            {
+                id: 17,
+                tmdb_id: 246741,
+                flags: new Flags('mockumentary', 'common', 'other', '10s', 'monsters', false)
+            },
+            // 18 - The Visit
+            {
+                id: 18,
+                tmdb_id: 298312,
+                flags: new Flags('ff', 'common', 'usa', '10s', 'thriller', false)
+            },
+            // 19 - The Good Neighbor
+            {
+                id: 19,
+                tmdb_id: 339994,
+                flags: new Flags('ff', 'common', 'usa', '10s', 'thriller', false),
+            },
+            // 20 - Open Windows
+            {
+                id: 20,
+                tmdb_id: 151368,
+                flags: new Flags('screen', 'rare', 'usa', '10s', 'thriller', false)
             }
         ],
 
@@ -338,6 +402,7 @@ const game = {
         
         // Données générales (titre + date + description + image)
         theMovieDb.movies.getById({'id': tmdbId}, (data) => {
+
             let movie = JSON.parse(data);
             const poster = document.createElement('img');
             poster.src = `https://www.themoviedb.org/t/p/w300${movie.poster_path}`;
@@ -394,11 +459,10 @@ const game = {
                 };
                 const providers = ['flatrate', 'rent'];
                 displayProviders(providers);
+                movieHolder.appendChild(dividerP.cloneNode(true));
             }
-
-            
         }, error); // Fin d'appel TMDB.providers
-
+        //Divider
         
     },
 
@@ -438,8 +502,7 @@ function display_ct() {
 }
 
 // ************** TEST SANDBOX *******************
-console.log('**** sandbox ****');
-// Var tests
+// TESTS TMDB
 
 // theMovieDb.movies.getById({'id': 694}, (data) => {
 //     let movie = JSON.parse(data);
@@ -449,9 +512,25 @@ console.log('**** sandbox ****');
 //     console.log('plop');
 // }); // Fin d'appel TMDB
 
-// Logique à appliquer
+// NEW TEST
+const matchingResults = [1, 12, 20];
+
+if (matchingResults.length === 1) {
+    console.log('Un seul film a correspondu à votre requête. Relancer avec d\'autres réponses ?');
+} else {
+    console.log(`Déjà vu ce film ? ${matchingResults.length-1} autres résultats correspondent à vos réponses.`);
+}
 
 
+
+// ***************** TODO ************************
+
+/* 
+- prendre en compte les séries
+- afficher les noms latins de films asiatiques
+- pouvoir choisir plusieurs réponses par questions 
+- gérer plus de résultats
+*/
 
 
 

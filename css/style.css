@@ -55,24 +55,16 @@ Triadique : #2d3033, #332d30, #30332d
 }
 
 @keyframes flickerAnimation {
-    0% {
+    65% {
         opacity: 1;
     }
 
-    49% {
-        opacity: 1;
-    }
-
-    50% {
+    66% {
         opacity: 0;
     }
 
     99% {
         opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
     }
 }
 
@@ -349,7 +341,6 @@ p.divider:before {
 
 div#movie-holder p {
     font-size: .65em;
-    margin-left: 1.4rem;
 }
 
 main h3 {
@@ -438,6 +429,10 @@ footer {
     main section h3,
     main section h2 {
         margin-left: 1rem;
+    }
+
+    div#movie-holder p {
+        margin-left: 1.4rem;
     }
 
     .next-question {
