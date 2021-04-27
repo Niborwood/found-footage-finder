@@ -410,110 +410,121 @@ const app = {
     },
     // ---- AFFICHAGE DES INFOS TMDB
     displayTmdbData: (tmdbData, tmdbHolder, dividerP, format) => {
-        theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {
-            app.htmlElement.mainHeader.remove();
-            let data = JSON.parse(rawData);
 
-            // Image
-            const poster = document.createElement('img');
-            poster.src = `https://www.themoviedb.org/t/p/w300${data.poster_path}`;
-            const asidePoster = document.createElement('aside');
-            asidePoster.appendChild(poster);
-            app.htmlElement.mainSection.prepend(asidePoster);
-
-            // Titre, date, saisons
-            const titleData = document.createElement('h2');
-            if (format === 'movies') {
-                // Check film asiatique (affichage du nom latin)
-                if (tmdbData.flags.origin === 'asia') {
-                    titleData.innerText = data.title;
-                } else {
-                    titleData.innerText = data.original_title;
-                }
-                titleData.innerHTML += `&#8239;-&#8239;${data.release_date.substring(0,4)}`;
-            } else if (format === 'tv') {
-                titleData.innerText = data.original_name;
-                titleData.innerHTML += `&#8239;-&#8239;${data.first_air_date.substring(0,4)}`;
-            }            
-            tmdbHolder.appendChild(titleData);
-
-            if (format === 'tv') {
-                const nbSeasons = document.createElement('p');
-                nbSeasons.classList.add('tv-seasons');
-                let seasonPlural = 'saison';
-                if (data.number_of_seasons > 1) {
-                    seasonPlural += 's';
-                }
-                nbSeasons.innerText = `${data.number_of_seasons} ${seasonPlural}, ${data.number_of_episodes} épisodes`;
-                tmdbHolder.appendChild(nbSeasons);
-            }
-            
-            // Résumé
-            const overviewP = document.createElement('p');
-            overviewP.innerText = data.overview;
-            tmdbHolder.appendChild(overviewP);
-            // Divider
-            tmdbHolder.appendChild(dividerP);
-        }, app.tmdbError); // Fin d'appel TMDB.getById
+        const getTmdbGeneral = () => {
+            return new Promise((success, failure) => {
+                theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {
+                    app.htmlElement.mainHeader.remove();
+                    let data = JSON.parse(rawData);
         
-
-        // Données providers (SVOD + Location)
-        theMovieDb[format].getProviders({'id': [tmdbData.id]}, (rawData) => {
-            const data = JSON.parse(rawData);
-
-            // Si aucune option légale
-            if (data.results.FR === undefined) {
-                const targetH3 = document.createElement('h3');
-                targetH3.innerHTML = 'Indisponible en SVOD & VOD';
-                tmdbHolder.appendChild(targetH3);
-            } 
-            // Routine d'affichage des providers
-            else {
-                const displayProviders = (providers) => {
-                    const providersHolder = document.createElement('div');
+                    // Image
+                    const poster = document.createElement('img');
+                    poster.src = `https://www.themoviedb.org/t/p/w300${data.poster_path}`;
+                    const asidePoster = document.createElement('aside');
+                    asidePoster.appendChild(poster);
+                    app.htmlElement.mainSection.prepend(asidePoster);
+        
+                    // Titre, date, saisons
+                    const titleData = document.createElement('h2');
                     if (format === 'movies') {
-                        providersHolder.id = 'providers';
-                    } 
-                    tmdbHolder.appendChild(providersHolder);
-
-                    providers.forEach(provider => {
-                        let targetHolder = document.createElement('div');
-                        providersHolder.appendChild(targetHolder);
-                        
-                        const targetH3 = document.createElement('h3');
-                        if (provider === 'flatrate') {
-                            targetH3.innerText = 'SVOD & Abonnement';
-                        } else if (provider === 'rent' && format === 'movies') {
-                            targetH3.innerText = 'VOD & Location SD-HD';
-                        }
-                        targetHolder.appendChild(targetH3);
-                        const svodListing = document.createElement('p');
-                        svodListing.classList.add('provider-infos');
-                        if (data.results.FR[provider] !== undefined) {
-                            if (data.results.FR[provider].length === 1) {
-                                svodListing.innerText = data.results.FR[provider][0].provider_name;
-                            } else {
-                                data.results.FR[provider].forEach((element, index) => {
-                                    svodListing.innerText += `${element.provider_name}`;
-                                    if (data.results.FR[provider].length-1 !== index) {
-                                        svodListing.innerText += ', '; 
-                                    }  
-                                });
-                            }
+                        // Check film asiatique (affichage du nom latin)
+                        if (tmdbData.flags.origin === 'asia') {
+                            titleData.innerText = data.title;
                         } else {
-                            if (format === 'movies') {
-                                svodListing.innerText = 'Non disponible';
-                            }
-                            
+                            titleData.innerText = data.original_title;
                         }
-                        targetHolder.appendChild(svodListing);
-                    }); 
-                };
-                const providers = ['flatrate', 'rent'];
-                displayProviders(providers);
-            } // Divider
-            tmdbHolder.appendChild(dividerP.cloneNode(true));
-        }, app.tmdbError); // Fin d'appel TMDB.providers
+                        titleData.innerHTML += `&#8239;-&#8239;${data.release_date.substring(0,4)}`;
+                    } else if (format === 'tv') {
+                        titleData.innerText = data.original_name;
+                        titleData.innerHTML += `&#8239;-&#8239;${data.first_air_date.substring(0,4)}`;
+                    }            
+                    tmdbHolder.appendChild(titleData);
+        
+                    if (format === 'tv') {
+                        const nbSeasons = document.createElement('p');
+                        nbSeasons.classList.add('tv-seasons');
+                        let seasonPlural = 'saison';
+                        if (data.number_of_seasons > 1) {
+                            seasonPlural += 's';
+                        }
+                        nbSeasons.innerText = `${data.number_of_seasons} ${seasonPlural}, ${data.number_of_episodes} épisodes`;
+                        tmdbHolder.appendChild(nbSeasons);
+                    }
+                    
+                    // Résumé
+                    const overviewP = document.createElement('p');
+                    overviewP.innerText = data.overview;
+                    tmdbHolder.appendChild(overviewP);
+                    // Divider
+                    tmdbHolder.appendChild(dividerP);
+                    success();
+                }, 
+                failure); // Fin d'appel TMDB.getById
+            });
+        };
+        
+        const getTmdbProviders = () => {
+            // Données providers (SVOD + Location)
+            theMovieDb[format].getProviders({'id': [tmdbData.id]}, (rawData) => {
+                const data = JSON.parse(rawData);
+
+                // Si aucune option légale
+                if (data.results.FR === undefined) {
+                    const targetH3 = document.createElement('h3');
+                    targetH3.innerHTML = 'Indisponible en SVOD & VOD';
+                    tmdbHolder.appendChild(targetH3);
+                } 
+                // Routine d'affichage des providers
+                else {
+                    const displayProviders = (providers) => {
+                        const providersHolder = document.createElement('div');
+                        if (format === 'movies') {
+                            providersHolder.id = 'providers';
+                        } 
+                        tmdbHolder.appendChild(providersHolder);
+
+                        providers.forEach(provider => {
+                            let targetHolder = document.createElement('div');
+                            providersHolder.appendChild(targetHolder);
+                        
+                            const targetH3 = document.createElement('h3');
+                            if (provider === 'flatrate') {
+                                targetH3.innerText = 'SVOD & Abonnement';
+                            } else if (provider === 'rent' && format === 'movies') {
+                                targetH3.innerText = 'VOD & Location SD-HD';
+                            }
+                            targetHolder.appendChild(targetH3);
+                            const svodListing = document.createElement('p');
+                            svodListing.classList.add('provider-infos');
+                            if (data.results.FR[provider] !== undefined) {
+                                if (data.results.FR[provider].length === 1) {
+                                    svodListing.innerText = data.results.FR[provider][0].provider_name;
+                                } else {
+                                    data.results.FR[provider].forEach((element, index) => {
+                                        svodListing.innerText += `${element.provider_name}`;
+                                        if (data.results.FR[provider].length-1 !== index) {
+                                            svodListing.innerText += ', '; 
+                                        }  
+                                    });
+                                }
+                            } else {
+                                if (format === 'movies') {
+                                    svodListing.innerText = 'Non disponible';
+                                }
+                            
+                            }
+                            targetHolder.appendChild(svodListing);
+                        }); 
+                    };
+                    const providers = ['flatrate', 'rent'];
+                    displayProviders(providers);
+                } // Divider
+                tmdbHolder.appendChild(dividerP.cloneNode(true));
+            }, app.tmdbError); // Fin d'appel TMDB.providers
+        };
+
+        getTmdbGeneral().then(getTmdbProviders, app.tmdbError);
+
     },
     // ---- AFFICHAGE DU RESULTAT
     displayMore: (moreHolder) => {
