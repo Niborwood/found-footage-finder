@@ -36,10 +36,12 @@ Triadique : #2d3033, #332d30, #30332d
 
 @keyframes transitionDisplayFade {
     from {
+        visibility: hidden;
         opacity: 0;
     }
 
     to {
+        visibility:visible;
         opacity: 1;
     }
 }
@@ -138,6 +140,7 @@ Triadique : #2d3033, #332d30, #30332d
 
 /* .delayed-display-fade {
     opacity: 0;
+    visibility: hidden;
     animation: transitionDisplayFade 2s ease-in 5s forwards;
 } */
 
@@ -341,7 +344,7 @@ p.divider:before {
 }
 
 div#movie-holder p {
-    font-size: .65em;
+    font-size: .75em;
 }
 
 main h3 {
@@ -440,6 +443,10 @@ footer {
     .next-question {
         font-size: .5rem;
         margin: 0 0 0 auto;
+    }
+
+    div#movie-holder p {
+        font-size: .65em;
     }
 }
 

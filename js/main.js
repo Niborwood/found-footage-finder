@@ -335,6 +335,7 @@ const app = {
 
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
+        app.glitch();
         app.htmlElement.mainSection.classList.add('section-result');
         console.log('Réponse utilisateur :', app.data.answers);
 
@@ -424,10 +425,10 @@ const app = {
                 } else {
                     titleData.innerText = data.original_title;
                 }
-                titleData.innerText += ` - ${data.release_date.substring(0,4)}`;
+                titleData.innerHTML += `&#8239;-&#8239;${data.release_date.substring(0,4)}`;
             } else if (format === 'tv') {
                 titleData.innerText = data.original_name;
-                titleData.innerText += ` - ${data.first_air_date.substring(0,4)}`;
+                titleData.innerHTML += `&#8239;-&#8239;${data.first_air_date.substring(0,4)}`;
             }            
             tmdbHolder.appendChild(titleData);
 
@@ -641,8 +642,10 @@ function display_ct() {
 /* 
 - pouvoir choisir plusieurs réponses par questions
 - flexer les locations/SVOD sur mobile
-- ajouter un favicon
+- gestion d'un non-résultat (tmdb error)
 - mettre les 100+ films dans la db
+- gérer les animations par question
+- créer un splash (avec no-anim)
 */
 
 
