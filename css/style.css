@@ -285,13 +285,24 @@ button {
     text-transform: uppercase;
 }
 
-button:hover,
+
+@media (hover:hover) {
+    /* Hover effect only on devices that fully support them */
+    button:hover {
+        color: var(--grey-light);
+        background: transparent;
+        box-shadow: 8px 8px var(--grey-light);
+        border: 3px solid var(--grey-light);
+    }
+}
+
 .button-clicked {
     color: var(--grey-light);
     background: transparent;
     box-shadow: 8px 8px var(--grey-light);
     border: 3px solid var(--grey-light);
 }
+
 
 /* ROUTINE DE QUESTIONS */
 
@@ -383,6 +394,10 @@ div#providers {
 
 #providers div {
     width: 50%;
+}
+
+a.reload-data:hover {
+    animation: flickerAnimationEase .8s infinite .2s;
 }
 
 /* FOOTER */

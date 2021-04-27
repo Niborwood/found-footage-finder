@@ -318,7 +318,6 @@ const app = {
 
         // Matching Engine between user answers and movie flags
         app.matchEngine();
-        console.log(app.data.matchingResults);
 
         // S'il n'y a aucun match
         if (app.data.matchingResults.length === 0) {
@@ -353,7 +352,6 @@ const app = {
     displayResults: () => {
         app.glitch();
         app.htmlElement.mainSection.classList.add('section-result');
-        console.log('Réponse utilisateur :', app.data.answers);
 
         // Gestion des éléments HTML
         app.htmlElement.mainSection.innerText = '';
@@ -542,17 +540,17 @@ const app = {
         // Si 0 ou 1 résultat
         if (app.data.matchingResults.length === 0) {
             moreResultsA.classList.add('reload-movie');
-            moreResultsA.innerText = '▶ Relancer un test';
+            moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
         }
         else if (app.data.matchingResults.length === 1) {
             if (app.data.reloads === 0) {
                 moreResultsP.innerHTML = 'Un seul résultat a correspondu à votre requête.<br><br>';
                 moreResultsA.classList.add('reload-movie');
-                moreResultsA.innerText = '▶ Relancer un test';
+                moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
                 
             } else {
                 moreResultsP.innerHTML = 'Dernier résultat selon vos critères. <br><br>';
-                moreResultsA.innerText = '▶ Relancer un test';
+                moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
                 moreResultsA.classList.add('reload-movie');
             }
             
@@ -564,7 +562,7 @@ const app = {
                 resultPlural = 'autre résultat correspond';
             }
             moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.matchingResults.length-1} ${resultPlural} à vos réponses. <br><br>`;
-            moreResultsA.innerText = '▶ Me proposer autre chose';
+            moreResultsA.innerHTML = '<span class="forward">▶</span> Me proposer autre chose';
         }
 
         // Affichage et traitement du résultat (via .reload-data)
@@ -661,8 +659,6 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
-- gestion de l'ordre de movieHolder
-- gérer le touch/hover sur mobile
 - mettre les 100+ films dans la db
 - gérer les animations par question
 - créer un splash (avec no-anim)
