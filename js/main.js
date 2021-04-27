@@ -42,6 +42,13 @@ const app = {
 
     // --- DATA
     data: {
+        // Data des réponses
+        quizStep: 0,
+        quizSkips: 0,
+        answers: [],
+        matchingResults: [],
+        reloads:0,
+
         // Data des questions
         question: [
             // Question 1 - format
@@ -220,14 +227,7 @@ const app = {
                 tmdb_id: 151368,
                 flags: new Flags('screen', 'rare', 'usa', '10s', 'thriller', false)
             }
-        ],
-
-        // Data des réponses
-        quizStep: 0,
-        quizSkips: 0,
-        answers: [],
-        matchingResults: [],
-        reloads:0,
+        ]
     },
 
     // ---- ROUTINE D'AFFICHAGE DE CHAQUE QUESTION/REPONSES
@@ -314,28 +314,38 @@ const app = {
     // ---- ECRAN TEMPORAIRE DE FIN DE QUIZ
     displayEndQuiz: () => {
         app.glitch();
-
-        // Gestion des éléments HTML
         app.htmlElement.appHeader.appendChild(app.htmlElement.appTitle);
-        app.htmlElement.mainHeader.innerText = 'Votre found footage est prêt.';
-        app.htmlElement.mainSection.innerText = '';
 
-        // Si toutes les questions ont été passées, petit message personnalisé
-        if (app.data.quizSkips === app.data.question.length) {
-            const showEverythingP = document.createElement('p');
-            showEverythingP.classList.add('show-everything');
-            showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
-            app.htmlElement.mainSection.appendChild(showEverythingP);
+        // Matching Engine between user answers and movie flags
+        app.matchEngine();
+        console.log(app.data.matchingResults);
+
+        // S'il n'y a aucun match
+        if (app.data.matchingResults.length === 0) {
+            app.htmlElement.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :('; 
+            app.htmlElement.mainSection.innerText = '';
+            app.displayMore(app.htmlElement.mainSection);
+        } else {
+            app.htmlElement.mainHeader.innerText = 'Votre found footage est prêt.';
+            app.htmlElement.mainSection.innerText = '';
+    
+            // Si toutes les questions ont été passées, petit message personnalisé
+            if (app.data.quizSkips === app.data.question.length) {
+                const showEverythingP = document.createElement('p');
+                showEverythingP.classList.add('show-everything');
+                showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
+                app.htmlElement.mainSection.appendChild(showEverythingP);
+            }
+            
+            const displayButton = document.createElement('button');
+            displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
+            displayButton.classList.add('discover-button');
+            app.htmlElement.mainSection.appendChild(displayButton);
+            app.htmlElement.playVhsString.innerText = 'STOP';
+            app.htmlElement.playVhsString.classList.add('animate-flicker');
+    
+            displayButton.addEventListener('click', app.displayResults);
         }
-        
-        const displayButton = document.createElement('button');
-        displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
-        displayButton.classList.add('discover-button');
-        app.htmlElement.mainSection.appendChild(displayButton);
-        app.htmlElement.playVhsString.innerText = 'STOP';
-        app.htmlElement.playVhsString.classList.add('animate-flicker');
-
-        displayButton.addEventListener('click', app.displayResults);
 
     },
 
@@ -344,9 +354,6 @@ const app = {
         app.glitch();
         app.htmlElement.mainSection.classList.add('section-result');
         console.log('Réponse utilisateur :', app.data.answers);
-
-        // Matching Engine between user answers and movie flags
-        app.matchEngine();
 
         // Gestion des éléments HTML
         app.htmlElement.mainSection.innerText = '';
@@ -509,15 +516,18 @@ const app = {
         }, app.tmdbError); // Fin d'appel TMDB.providers
     },
     // ---- AFFICHAGE DU RESULTAT
-    displayMore: (movieHolder) => {
+    displayMore: (moreHolder) => {
         // Film déjà vu ou propositions d'autres résultats si possible
         const moreResultsP = document.createElement('p');
         const moreResultsA = document.createElement('a');
         moreResultsA.classList.add('reload-data');
-        const moreResultsH3 = document.createElement('h3');
-        moreResultsH3.innerText = 'Autres résultats';
-        movieHolder.appendChild(moreResultsH3);
-
+        // Affichage de l'intertitre seulement s'il y a eu match
+        if (app.data.matchingResults.length !== 0) {
+            const moreResultsH3 = document.createElement('h3');
+            moreResultsH3.innerText = 'Autres résultats';
+            moreHolder.appendChild(moreResultsH3);
+        }
+        
         // Si 0 ou 1 résultat
         if (app.data.matchingResults.length === 0) {
             moreResultsA.classList.add('reload-movie');
@@ -547,7 +557,7 @@ const app = {
         }
 
         // Affichage et traitement du résultat (via .reload-data)
-        movieHolder.appendChild(moreResultsP);
+        moreHolder.appendChild(moreResultsP);
         moreResultsP.appendChild(moreResultsA);
 
         // EL click (voir un autre film / reload)
@@ -561,13 +571,11 @@ const app = {
                 app.data.reloads++;
                 app.displayResults();
             }
-            
-            
         });
     },
     // ---- CALLBACK ERROR TMDB
     tmdbError: () => {
-        app.htmlElement.mainHeader.innerText = 'Aucune réponse ne correspond à votre demande.';
+        app.htmlElement.mainHeader.innerText = 'Une erreur est survenue auprès de TMDB.';
     },
 
     // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
@@ -642,8 +650,8 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
-- gestion d'un non-résultat (tmdb error)
 - gestion de l'ordre de movieHolder
+- gérer le touch/hover sur mobile
 - mettre les 100+ films dans la db
 - gérer les animations par question
 - créer un splash (avec no-anim)
