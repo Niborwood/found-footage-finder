@@ -110,7 +110,7 @@ const app = {
             {
                 id: 2,
                 tmdb_id: 159117,
-                flags: new Flags('sketch', 'common', 'usa', '10s', 'paranormal', false)
+                flags: new Flags('sketch', 'common', 'usa', '10s', 'paranormal', 'vhs')
             },
             // 03 - The Poughkeepsie Tapes
             {
@@ -224,6 +224,7 @@ const app = {
 
         // Data des réponses
         quizStep: 0,
+        quizSkips: 0,
         answers: [],
         matchingResults: [],
         reloads:0,
@@ -263,24 +264,14 @@ const app = {
         
         answerButtons.forEach(button => {
             button.addEventListener('click', function (event) {
-                const buttonClicked = document.getElementById('button-clicked');
-
-                if (buttonClicked === null) {
-                    event.target.setAttribute('id', 'button-clicked');
-                    
-                } else if (event.target.id === 'button-clicked') {
-                    buttonClicked.removeAttribute('id');
-                }
-                else {
-                    buttonClicked.removeAttribute('id');
-                    event.target.setAttribute('id', 'button-clicked');
-                }
-
-                if (nextStepStr.innerHTML === skipQuestionString && event.target.id === 'button-clicked') {
+                event.target.classList.toggle('button-clicked');
+                
+                const buttonsClicked = document.getElementsByClassName('button-clicked');
+                if ( nextStepStr.innerHTML === skipQuestionString && buttonsClicked.length !== 0 ) {
                     nextStepStr.classList.add('animate-flicker', 'flicker__fast');
                     nextStepStr.innerHTML = nextQuestionString;
                 } 
-                else if (nextStepStr.innerHTML === nextQuestionString && event.target.id !== 'button-clicked') {
+                else if (nextStepStr.innerHTML === nextQuestionString && buttonsClicked.length === 0 ) {
                     nextStepStr.innerHTML = skipQuestionString;
                     nextStepStr.classList.remove('animate-flicker', 'flicker__fast');
                 }        
@@ -290,19 +281,25 @@ const app = {
         // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
         nextStepStr.addEventListener('click', app.nextQuestion);
     },
-    // ---- ROUTINE DE REPONSE A QUESTION / GENERATION DE NOUVELLE QUESTION / APPEL DE RESULTATS
+    // ---- ROUTINE DE STOCKAGE DE REPONSE / GENERATION DE NOUVELLE QUESTION / APPEL DE RESULTATS
     nextQuestion: () => {
         // On enregistre la (les) réponse(s) dans le tableau des flags/réponses
-        const userAnswer = document.getElementById('button-clicked');
-        if (userAnswer !== null) {     
-            app.data.answers.push(userAnswer.value);
-        } else {
-            const allAnswers = [...document.getElementsByClassName('answer-button')];
-            const arrayValues = [];
-            allAnswers.forEach(element => {
-                arrayValues.push(element.value);
-            });
+        const userAnswers = [...document.getElementsByClassName('button-clicked')];
+        const multiAnswers = (answers) => {
+            let arrayValues = []; 
+            for (const answer of answers) {
+                arrayValues.push(answer.value);
+            }
             app.data.answers.push(arrayValues);
+        };
+
+        if (userAnswers.length === 0) {
+            const allAnswers = [...document.getElementsByClassName('answer-button')];
+            multiAnswers(allAnswers);
+            app.data.quizSkips++;
+        }
+        else {
+            multiAnswers(userAnswers);
         }
        
         // Est-ce qu'on a fait le tour des questions à poser ?
@@ -324,18 +321,7 @@ const app = {
         app.htmlElement.mainSection.innerText = '';
 
         // Si toutes les questions ont été passées, petit message personnalisé
-        let showEverything = true;
-        for (const answer of app.data.answers) {
-            switch (typeof answer) {
-            case 'string':
-                showEverything = false;    
-                break;
-            
-            default:
-                break;
-            }
-        }
-        if (showEverything) {
+        if (app.data.quizSkips === app.data.question.length) {
             const showEverythingP = document.createElement('p');
             showEverythingP.classList.add('show-everything');
             showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
@@ -394,27 +380,20 @@ const app = {
     },
     // ---- MATCHING ENGINE RESULTS-DB
     matchEngine: () => {
-        // Correspondance résultats user > bdd films/flags
         const movies = Object.values(app.data.movies);
         movies.forEach(movie => {
             // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd            
             let match = true;
-            let movieFlags = Object.values(movie.flags);
+            const movieFlags = Object.values(movie.flags);
 
-            app.data.answers.forEach((element, index) => {
-                // Si la réponse est un array (qu'elle spécifie plusieurs valeurs possibles)...
-                if (typeof element === 'object') {
-                    // ...on check si une de leurs valeurs match avec chaque film
-                    if (element.indexOf(movieFlags[index]) === -1) {
-                        match = false;      
-                    } 
-                } 
-                // Si la réponse est simple, on check aussi
-                else {
-                    if (movieFlags.indexOf(element) === -1) {
-                        match = false;          
-                    } 
-                }
+            app.data.answers.forEach((answer, index) => { 
+                switch (answer.indexOf(movieFlags[index])) {
+                case -1:
+                    match = false; 
+                    break;
+                default:
+                    break;
+                }  
             });
             // S'il y a match(s) ET que ce n'est pas un reload de résultat, on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
             if (match && app.data.reloads === 0) {
@@ -610,6 +589,7 @@ const app = {
         app.data.matchingResults = [];
         app.data.quizStep = 0;
         app.data.reloads = 0;
+        app.data.quizSkips = 0;
 
         // Begin
         app.askQuestion();
@@ -656,19 +636,12 @@ function display_ct() {
 //     console.log('plop');
 // }); // Fin d'appel TMDB
 
-// NEW TEST
-// const matchingResults = [1, 12, 20];
-
-
-
+// VAR TESTS
 
 
 // ***************** TODO ************************
 
 /* 
-- ajouter un petit texte s'il n'y a aucun choix de l'utilisateur
-- ajouter sur TMDB les overview de : Home Movie, Butterfly Kisses 
-- pouvoir choisir plusieurs réponses par questions
 - gestion d'un non-résultat (tmdb error)
 - gestion de l'ordre de movieHolder
 - mettre les 100+ films dans la db

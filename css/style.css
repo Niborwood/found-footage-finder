@@ -286,7 +286,7 @@ button {
 }
 
 button:hover,
-#button-clicked {
+.button-clicked {
     color: var(--grey-light);
     background: transparent;
     box-shadow: 8px 8px var(--grey-light);
