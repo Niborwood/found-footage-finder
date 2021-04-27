@@ -337,6 +337,10 @@ span.forward {
     align-items: center;
 }
 
+p.show-everything {
+    font-size: .6rem;
+}
+
 /* AFFICHAGE DES RESULTATS */
 
 main section.section-result {

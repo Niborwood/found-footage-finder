@@ -322,6 +322,26 @@ const app = {
         app.htmlElement.appHeader.appendChild(app.htmlElement.appTitle);
         app.htmlElement.mainHeader.innerText = 'Votre found footage est prêt.';
         app.htmlElement.mainSection.innerText = '';
+
+        // Si toutes les questions ont été passées, petit message personnalisé
+        let showEverything = true;
+        for (const answer of app.data.answers) {
+            switch (typeof answer) {
+            case 'string':
+                showEverything = false;    
+                break;
+            
+            default:
+                break;
+            }
+        }
+        if (showEverything) {
+            const showEverythingP = document.createElement('p');
+            showEverythingP.classList.add('show-everything');
+            showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
+            app.htmlElement.mainSection.appendChild(showEverythingP);
+        }
+        
         const displayButton = document.createElement('button');
         displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
         displayButton.classList.add('discover-button');
