@@ -646,13 +646,16 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
+- ajouter un petit texte s'il n'y a aucun choix de l'utilisateur
+- ajouter sur TMDB les overview de : Home Movie, Butterfly Kisses 
 - pouvoir choisir plusieurs réponses par questions
 - gestion d'un non-résultat (tmdb error)
+- gestion de l'ordre de movieHolder
 - mettre les 100+ films dans la db
 - gérer les animations par question
 - créer un splash (avec no-anim)
-- ajouter un petit texte s'il n'y a aucun choix de l'utilisateur
-- ajouter sur TMDB les overview de : Home Movie, Butterfly Kisses 
+
+GO BETA !
 */
 
 

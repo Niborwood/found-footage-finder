@@ -219,7 +219,7 @@ header {
 }
 
 header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
@@ -339,8 +339,16 @@ span.forward {
 
 /* AFFICHAGE DES RESULTATS */
 
+main section.section-result {
+    margin-bottom: 2rem;
+}
+
 p.divider:before {
     content: '---';
+}
+
+p.divider {
+    margin-bottom: 1rem;
 }
 
 div#movie-holder p {
@@ -383,6 +391,8 @@ footer {
     flex-direction: column;
 }
 
+/* *************** RESPONSIVE ************ */
+
 /* RESPONSIVE > 600PX */
 @media screen and (min-width:600px) {
     html {
@@ -408,6 +418,7 @@ footer {
 
     main section.section-result {
         display: flex;
+        margin-bottom: .5rem;
     }
 
     #launch-game {
@@ -457,6 +468,19 @@ footer {
     div#movie-holder p {
         font-size: .65em;
     }
+
+    div#providers {
+        display: block;
+    }
+    
+    #providers div {
+        width: auto;
+    }
+
+    p.divider {
+        margin-bottom: .5rem;
+    }
+    
 }
 
 
@@ -486,6 +510,15 @@ footer {
 
     #movie-holder {
         text-align: left;
+    }
+
+    div#providers {
+        display: flex;
+        justify-content: space-evenly;
+    }
+    
+    #providers div {
+        width: 50%;
     }
 }
 
