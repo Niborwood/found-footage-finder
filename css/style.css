@@ -364,6 +364,15 @@ aside img {
     white-space: break-spaces;
 }
 
+div#providers {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#providers div {
+    width: 50%;
+}
+
 /* FOOTER */
 
 footer {

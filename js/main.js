@@ -404,7 +404,6 @@ const app = {
     },
     // ---- AFFICHAGE DES INFOS TMDB
     displayTmdbData: (tmdbData, tmdbHolder, dividerP, format) => {
-        console.log(format);
         theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {
             app.htmlElement.mainHeader.remove();
             let data = JSON.parse(rawData);
@@ -443,36 +442,45 @@ const app = {
                 tmdbHolder.appendChild(nbSeasons);
             }
             
-
             // Résumé
             const overviewP = document.createElement('p');
             overviewP.innerText = data.overview;
             tmdbHolder.appendChild(overviewP);
+            // Divider
             tmdbHolder.appendChild(dividerP);
         }, app.tmdbError); // Fin d'appel TMDB.getById
         
+
         // Données providers (SVOD + Location)
         theMovieDb[format].getProviders({'id': [tmdbData.id]}, (rawData) => {
             const data = JSON.parse(rawData);
-            console.log(data);
+
             // Si aucune option légale
             if (data.results.FR === undefined) {
                 const targetH3 = document.createElement('h3');
-                targetH3.innerHTML = 'Indisponible en SVOD / location';
+                targetH3.innerHTML = 'Indisponible en SVOD & VOD';
                 tmdbHolder.appendChild(targetH3);
             } 
             // Routine d'affichage des providers
             else {
                 const displayProviders = (providers) => {
+                    const providersHolder = document.createElement('div');
+                    if (format === 'movies') {
+                        providersHolder.id = 'providers';
+                    } 
+                    tmdbHolder.appendChild(providersHolder);
+
                     providers.forEach(provider => {
+                        let targetHolder = document.createElement('div');
+                        providersHolder.appendChild(targetHolder);
                         
                         const targetH3 = document.createElement('h3');
                         if (provider === 'flatrate') {
-                            targetH3.innerText = 'SVOD / Abonnement';
+                            targetH3.innerText = 'SVOD & Abonnement';
                         } else if (provider === 'rent' && format === 'movies') {
-                            targetH3.innerText = 'Location';
+                            targetH3.innerText = 'VOD & Location SD-HD';
                         }
-                        tmdbHolder.appendChild(targetH3);
+                        targetHolder.appendChild(targetH3);
                         const svodListing = document.createElement('p');
                         svodListing.classList.add('provider-infos');
                         if (data.results.FR[provider] !== undefined) {
@@ -492,14 +500,12 @@ const app = {
                             }
                             
                         }
-                        tmdbHolder.appendChild(svodListing);
+                        targetHolder.appendChild(svodListing);
                     }); 
-                    
                 };
                 const providers = ['flatrate', 'rent'];
                 displayProviders(providers);
-               
-            }
+            } // Divider
             tmdbHolder.appendChild(dividerP.cloneNode(true));
         }, app.tmdbError); // Fin d'appel TMDB.providers
     },
@@ -641,11 +647,12 @@ function display_ct() {
 
 /* 
 - pouvoir choisir plusieurs réponses par questions
-- flexer les locations/SVOD sur mobile
 - gestion d'un non-résultat (tmdb error)
 - mettre les 100+ films dans la db
 - gérer les animations par question
 - créer un splash (avec no-anim)
+- ajouter un petit texte s'il n'y a aucun choix de l'utilisateur
+- ajouter sur TMDB les overview de : Home Movie, Butterfly Kisses 
 */
 
 
