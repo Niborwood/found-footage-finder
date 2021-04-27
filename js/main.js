@@ -2,8 +2,8 @@
 // ************** CORE CODE *******************
 
 // PROTOTYPES
-const Flags = function (genre, difficulty, origin, date, theme, saga) {
-    this.genre = genre;
+const Flags = function (format, difficulty, origin, date, theme, saga) {
+    this.format = format;
     this.difficulty = difficulty;
     this.origin = origin;
     this.date = date;
@@ -44,7 +44,7 @@ const app = {
     data: {
         // Data des questions
         question: [
-            // Question 1 - Genre
+            // Question 1 - format
             [
                 'Quel type de film souhaitez-vous voir ?',
                 ['Un found footage classique', 'ff'],
@@ -99,7 +99,7 @@ const app = {
 
         // Data des films
         movies: [
-            // Flags CheatSheet : genre, difficulty, origin, date, theme
+            // Flags CheatSheet : format, difficulty, origin, date, theme
             // 01 - C'EST ARRIVE PRES DE CHEZ VOUS
             {
                 id: 1,
@@ -133,7 +133,7 @@ const app = {
             // 06 - Marble Hornets
             {
                 id: 6,
-                tmdb_id: 0,
+                tmdb_id: 1396,
                 flags: new Flags('series', 'rare', 'usa', '10s', 'paranormal', false)
             },
             // 07 - Trolljegeren 
@@ -229,30 +229,6 @@ const app = {
         reloads:0,
     },
 
-    // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
-    init: () => {
-        // Init HTML elements
-        app.htmlElement.playVhsString.innerText = '▶ PLAY';
-        app.htmlElement.playVhsString.classList.remove('animate-flicker');
-        app.htmlElement.appTitle.remove();
-        app.htmlElement.mainSection.innerText = '';
-        app.htmlElement.mainSection.classList.remove('section-result');
-        app.htmlElement.mainButton.remove();
-
-        if (app.data.quizStep !== 0) {
-            app.htmlElement.main.prepend(app.htmlElement.mainHeader);
-        }
-
-        // Init app data
-        app.data.answers = [];
-        app.data.matchingResults = [];
-        app.data.quizStep = 0;
-        app.data.reloads = 0;
-
-        // Begin
-        app.askQuestion();
-    },
-
     // ---- ROUTINE D'AFFICHAGE DE CHAQUE QUESTION/REPONSES
     askQuestion: () => {
         app.glitch();
@@ -314,7 +290,6 @@ const app = {
         // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
         nextStepStr.addEventListener('click', app.nextQuestion);
     },
-
     // ---- ROUTINE DE REPONSE A QUESTION / GENERATION DE NOUVELLE QUESTION / APPEL DE RESULTATS
     nextQuestion: () => {
         // On enregistre la (les) réponse(s) dans le tableau des flags/réponses
@@ -339,7 +314,6 @@ const app = {
             app.displayEndQuiz();
         }
     },
-
     // ---- ECRAN TEMPORAIRE DE FIN DE QUIZ
     displayEndQuiz: () => {
         app.glitch();
@@ -364,6 +338,41 @@ const app = {
         app.htmlElement.mainSection.classList.add('section-result');
         console.log('Réponse utilisateur :', app.data.answers);
 
+        // Matching Engine between user answers and movie flags
+        app.matchEngine();
+
+        // Gestion des éléments HTML
+        app.htmlElement.mainSection.innerText = '';
+        const dividerP = document.createElement('p');
+        dividerP.classList.add('divider');
+        const movieHolder = document.createElement('div');
+        movieHolder.id = 'movie-holder';
+        const tmdbHolder = document.createElement('div');
+        movieHolder.appendChild(tmdbHolder);
+        app.htmlElement.mainSection.appendChild(movieHolder);
+
+        // Lien matchingResult unique > TMDB
+        const tmdbCrawler = (id) => {
+            for (const movie of app.data.movies) {
+                if (movie.id === id) {
+                    return { id: movie.tmdb_id, flags: movie.flags };
+                }
+            }
+        }; 
+        const tmdbData = tmdbCrawler(app.data.matchingResults[0]);
+        
+        // TMDB display
+        if (tmdbData.flags.format === 'series') {
+            app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv');
+        } else {
+            app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'movies');
+        }
+
+        // More (reload data/quiz) display
+        app.displayMore(movieHolder);
+    },
+    // ---- MATCHING ENGINE RESULTS-DB
+    matchEngine: () => {
         // Correspondance résultats user > bdd films/flags
         const movies = Object.values(app.data.movies);
         movies.forEach(movie => {
@@ -391,62 +400,62 @@ const app = {
                 app.data.matchingResults.push(movie.id);
             } 
         }); // Fin de la boucle de check des flags
-
-        // Récupération des données TMDB et gestion des éléments HTML
-        const error = () => {
-            app.htmlElement.mainHeader.innerText = 'Aucun film ne correspond à votre demande.';
-        };
-
-        app.htmlElement.mainSection.innerText = '';
-        const dividerP = document.createElement('p');
-        dividerP.classList.add('divider');
-        const movieHolder = document.createElement('div');
-        movieHolder.id = 'movie-holder';
-        const tmdbHolder = document.createElement('div');
-        movieHolder.appendChild(tmdbHolder);
-        app.htmlElement.mainSection.appendChild(movieHolder);
-
-        const tmdbCrawler = (id) => {
-            for (const movie of app.data.movies) {
-                if (movie.id === id) {
-                    return { id: movie.tmdb_id, flags: movie.flags };
-                }
-            }
-        }; 
-        const tmdbData = tmdbCrawler(app.data.matchingResults[0]);
-        
-        // Données générales (titre + date + description + image)
-        theMovieDb.movies.getById({'id': tmdbData.id}, (data) => {
-            
-
+    },
+    // ---- AFFICHAGE DES INFOS TMDB
+    displayTmdbData: (tmdbData, tmdbHolder, dividerP, format) => {
+        console.log(format);
+        theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {
             app.htmlElement.mainHeader.remove();
-            let movie = JSON.parse(data);
+            let data = JSON.parse(rawData);
+
+            // Image
             const poster = document.createElement('img');
-            poster.src = `https://www.themoviedb.org/t/p/w300${movie.poster_path}`;
+            poster.src = `https://www.themoviedb.org/t/p/w300${data.poster_path}`;
             const asidePoster = document.createElement('aside');
             asidePoster.appendChild(poster);
             app.htmlElement.mainSection.prepend(asidePoster);
-            const titleMovie = document.createElement('h2');
-            console.log(tmdbData.flags);
-            // Check film asiatique (affichage du nom latin)
-            if (tmdbData.flags.origin === 'asia') {
-                titleMovie.innerText = movie.title;
-            } else {
-                titleMovie.innerText = movie.original_title;
+
+            // Titre, date, saisons
+            const titleData = document.createElement('h2');
+            if (format === 'movies') {
+                // Check film asiatique (affichage du nom latin)
+                if (tmdbData.flags.origin === 'asia') {
+                    titleData.innerText = data.title;
+                } else {
+                    titleData.innerText = data.original_title;
+                }
+                titleData.innerText += ` - ${data.release_date.substring(0,4)}`;
+            } else if (format === 'tv') {
+                titleData.innerText = data.original_name;
+                titleData.innerText += ` - ${data.first_air_date.substring(0,4)}`;
+            }            
+            tmdbHolder.appendChild(titleData);
+
+            if (format === 'tv') {
+                const nbSeasons = document.createElement('p');
+                nbSeasons.classList.add('tv-seasons');
+                let seasonPlural = 'saison';
+                if (data.number_of_seasons > 1) {
+                    seasonPlural += 's';
+                }
+                nbSeasons.innerText = `${data.number_of_seasons} ${seasonPlural}, ${data.number_of_episodes} épisodes`;
+                tmdbHolder.appendChild(nbSeasons);
             }
-            titleMovie.innerText += ` - ${movie.release_date.substring(0,4)}`;
-            tmdbHolder.appendChild(titleMovie);
+            
+
+            // Résumé
             const overviewP = document.createElement('p');
-            overviewP.innerText = movie.overview;
+            overviewP.innerText = data.overview;
             tmdbHolder.appendChild(overviewP);
-            tmdbHolder.appendChild(dividerP); //Divider
-        }, error); // Fin d'appel TMDB.id
+            tmdbHolder.appendChild(dividerP);
+        }, app.tmdbError); // Fin d'appel TMDB.getById
         
         // Données providers (SVOD + Location)
-        theMovieDb.movies.getProviders({'id': [tmdbData.id]}, (data) => {
-            const movie = JSON.parse(data);
+        theMovieDb[format].getProviders({'id': [tmdbData.id]}, (rawData) => {
+            const data = JSON.parse(rawData);
+            console.log(data);
             // Si aucune option légale
-            if (movie.results.FR === undefined) {
+            if (data.results.FR === undefined) {
                 const targetH3 = document.createElement('h3');
                 targetH3.innerHTML = 'Indisponible en SVOD / location';
                 tmdbHolder.appendChild(targetH3);
@@ -459,25 +468,28 @@ const app = {
                         const targetH3 = document.createElement('h3');
                         if (provider === 'flatrate') {
                             targetH3.innerText = 'SVOD / Abonnement';
-                        } else if (provider === 'rent') {
+                        } else if (provider === 'rent' && format === 'movies') {
                             targetH3.innerText = 'Location';
                         }
                         tmdbHolder.appendChild(targetH3);
                         const svodListing = document.createElement('p');
                         svodListing.classList.add('provider-infos');
-                        if (movie.results.FR[provider] !== undefined) {
-                            if (movie.results.FR[provider].length === 1) {
-                                svodListing.innerText = movie.results.FR[provider][0].provider_name;
+                        if (data.results.FR[provider] !== undefined) {
+                            if (data.results.FR[provider].length === 1) {
+                                svodListing.innerText = data.results.FR[provider][0].provider_name;
                             } else {
-                                movie.results.FR[provider].forEach((element, index) => {
+                                data.results.FR[provider].forEach((element, index) => {
                                     svodListing.innerText += `${element.provider_name}`;
-                                    if (movie.results.FR[provider].length-1 !== index) {
+                                    if (data.results.FR[provider].length-1 !== index) {
                                         svodListing.innerText += ', '; 
                                     }  
                                 });
                             }
                         } else {
-                            svodListing.innerText = 'Non disponible';
+                            if (format === 'movies') {
+                                svodListing.innerText = 'Non disponible';
+                            }
+                            
                         }
                         tmdbHolder.appendChild(svodListing);
                     }); 
@@ -488,9 +500,10 @@ const app = {
                
             }
             tmdbHolder.appendChild(dividerP.cloneNode(true));
-        }, error); // Fin d'appel TMDB.providers
-
-
+        }, app.tmdbError); // Fin d'appel TMDB.providers
+    },
+    // ---- AFFICHAGE DU RESULTAT
+    displayMore: (movieHolder) => {
         // Film déjà vu ou propositions d'autres résultats si possible
         const moreResultsP = document.createElement('p');
         const moreResultsA = document.createElement('a');
@@ -506,12 +519,12 @@ const app = {
         }
         else if (app.data.matchingResults.length === 1) {
             if (app.data.reloads === 0) {
-                moreResultsP.innerHTML = 'Un seul film a correspondu à votre requête.<br><br>';
+                moreResultsP.innerHTML = 'Un seul résultat a correspondu à votre requête.<br><br>';
                 moreResultsA.classList.add('reload-movie');
                 moreResultsA.innerText = '▶ Relancer un test';
                 
             } else {
-                moreResultsP.innerHTML = 'Dernier film selon vos critères. <br><br>';
+                moreResultsP.innerHTML = 'Dernier résultat selon vos critères. <br><br>';
                 moreResultsA.innerText = '▶ Relancer un test';
                 moreResultsA.classList.add('reload-movie');
             }
@@ -523,14 +536,15 @@ const app = {
             if (app.data.matchingResults.length === 2) {
                 resultPlural = 'autre résultat correspond';
             }
-            moreResultsP.innerHTML = `Déjà vu ce film ? ${app.data.matchingResults.length-1} ${resultPlural} à vos réponses. <br><br>`;
-            moreResultsA.innerText = '▶ Voir un autre film';
+            moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.matchingResults.length-1} ${resultPlural} à vos réponses. <br><br>`;
+            moreResultsA.innerText = '▶ Me proposer autre chose';
         }
 
         // Affichage et traitement du résultat (via .reload-data)
         movieHolder.appendChild(moreResultsP);
         moreResultsP.appendChild(moreResultsA);
 
+        // EL click (voir un autre film / reload)
         document.querySelector('a.reload-data').addEventListener('click', (event) => {
             event.preventDefault();
 
@@ -544,8 +558,36 @@ const app = {
             
             
         });
-        
     },
+    // ---- CALLBACK ERROR TMDB
+    tmdbError: () => {
+        app.htmlElement.mainHeader.innerText = 'Aucune réponse ne correspond à votre demande.';
+    },
+
+    // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
+    init: () => {
+        // Init HTML elements
+        app.htmlElement.playVhsString.innerText = '▶ PLAY';
+        app.htmlElement.playVhsString.classList.remove('animate-flicker');
+        app.htmlElement.appTitle.remove();
+        app.htmlElement.mainSection.innerText = '';
+        app.htmlElement.mainSection.classList.remove('section-result');
+        app.htmlElement.mainButton.remove();
+
+        if (app.data.quizStep !== 0) {
+            app.htmlElement.main.prepend(app.htmlElement.mainHeader);
+        }
+
+        // Init app data
+        app.data.answers = [];
+        app.data.matchingResults = [];
+        app.data.quizStep = 0;
+        app.data.reloads = 0;
+
+        // Begin
+        app.askQuestion();
+    },
+
 };
 
 // LAUNCH
@@ -597,9 +639,9 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
-- prendre en compte les séries
 - pouvoir choisir plusieurs réponses par questions
 - flexer les locations/SVOD sur mobile
+- ajouter un favicon
 - mettre les 100+ films dans la db
 */
 

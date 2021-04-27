@@ -1312,6 +1312,20 @@ theMovieDb.tv = {
         error
         );
     },
+    getProviders: function(options, success, error) {
+        'use strict';
+
+        theMovieDb.common.validateRequired(arguments, 3, options, ['id']);
+
+        theMovieDb.common.validateCallbacks(success, error);
+
+        theMovieDb.common.client({
+            url: 'tv/' + options.id + '/watch/providers' + theMovieDb.common.generateQuery(options)
+        },
+        success,
+        error
+        );
+    },
     getAccountStates: function(options, success, error) {
         'use strict';
 
