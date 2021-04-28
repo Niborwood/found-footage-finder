@@ -470,7 +470,7 @@ const app = {
         }
 
         // Init app data
-        fetch('/data/movies.json')
+        fetch('data/movies.json')
             .then(response => {
                 return response.json();
             })
