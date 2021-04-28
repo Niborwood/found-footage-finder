@@ -232,7 +232,7 @@ const app = {
         const tmdbData = tmdbCrawler(app.data.matchingResults[0]);
         
         // TMDB display
-        if (tmdbData.flags.format === 'series') {
+        if (tmdbData.flags[0] === 'series') {
             app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv');
         } else {
             app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'movies');
@@ -534,7 +534,6 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
-- rajouter les overviews de : full Marble Hornets
 - gérer les animations par question
 - créer un splash (avec option no-anim)
 - faire la page Credits (https://www.themoviedb.org/about/logos-attribution)
