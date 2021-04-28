@@ -1,0 +1,643 @@
+[
+    {
+        "_title": "01 - C'EST ARRIVE PRES DE CHEZ VOUS",
+        "id": 1,
+        "tmdb_id": 10086,
+        "flags": ["mockumentary", "common", "europe", "90s", "thriller", ["serial-killer"]]
+    },
+    {
+        "_title": "02 - V/H/S 2",
+        "id": 2,
+        "tmdb_id": 159117,
+        "flags": ["sketch", "common", "usa", "10s", "paranormal", ["gore", "cult"]]
+    },
+    {
+        "_title": "03 - The Poughkeepsie Tapes",
+        "id": 3,
+        "tmdb_id": 38410,
+        "flags": ["mockumentary", "rare", "usa", "00s", "thriller", ["serial-killer"]]
+    },
+    {
+        "_title": "04 - The Blair Witch Project (witch)",
+        "id": 4,
+        "tmdb_id": 2667,
+        "flags": ["ff", "common", "usa", "90s", "paranormal", ["witch", "woods"]]
+    },
+    {
+        "_title": "05 - Cannibal Holocaust",
+        "id": 5,
+        "tmdb_id": 8689,
+        "flags": ["mockumentary", "common", "europe", "70-80s", "thriller", ["gore"]]
+    },
+    {
+        "_title": "06 - Marble Hornets",
+        "id": 6,
+        "tmdb_id": 124380,
+        "flags": ["series", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "07 - Trolljegeren",
+        "id": 7,
+        "tmdb_id": 46146,
+        "flags": ["mockumentary", "common", "europe", "10s", "monsters", ["mythology"]]
+    },
+    {
+        "_title": "08 - Noroi: The Curse",
+        "id": 8,
+        "tmdb_id": 21506,
+        "flags": ["ff", "common", "asia", "00s", "paranormal", ["demon", "possession"]]
+    },
+    {
+        "_title": "09 - Les Documents Interdits",
+        "id": 9,
+        "tmdb_id": 116684,
+        "flags": ["series", "rare", "france", "70-80s", "paranormal", ["alien"]]
+    },
+    {
+        "_title": "10 - Murder Death Koreatown",
+        "id": 10,
+        "tmdb_id": 675522,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["lonely", "true-story"]]
+    },
+    {
+        "_title": "11 - Grave Encounters",
+        "id": 11,
+        "tmdb_id": 50698,
+        "flags": ["mockumentary", "common", "usa", "00s", "paranormal", ["demon", "reality-show"]]
+    },
+    {
+        "_title": "12 - [REC]",
+        "id": 12,
+        "tmdb_id": 8329,
+        "flags": ["mockumentary", "common", "europe", "00s", "monsters", ["reality-show", "zombie"]]
+    },
+    {
+        "_title": "13 - Host",
+        "id": 13,
+        "tmdb_id": 723072,
+        "flags": ["screen", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "14 - Butterfly Kisses",
+        "id": 14,
+        "tmdb_id": 480733,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "15 - Resolution",
+        "id": 15,
+        "tmdb_id": 121606,
+        "flags": ["ff", "rare", "usa", "10s", "monsters", ["woods"]]
+    },
+    {
+        "_title": "16 - Home Movie",
+        "id": 16,
+        "tmdb_id": 27258,
+        "flags": ["ff", "rare", "usa", "00s", "paranormal", ["demon, drama"]]
+    },
+    {
+        "_title": "17 - What We Do In The Shadows",
+        "id": 17,
+        "tmdb_id": 246741,
+        "flags": ["mockumentary", "common", "other", "10s", "monsters", ["comedy", "vampires"]]
+    },
+    {
+        "_title": "18 - The Visit",
+        "id": 18,
+        "tmdb_id": 298312,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["old", "comedy"]]
+    },
+    {
+        "_title": "19 - The Good Neighbor",
+        "id": 19,
+        "tmdb_id": 339994,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["old", "drama"]]
+    },
+    {
+        "_title": "20 - Open Windows",
+        "id": 20,
+        "tmdb_id": 151368,
+        "flags": ["screen", "rare", "usa", "10s", "thriller", [""]]
+    },
+    {
+        "_title": "21 - V/H/S",
+        "id": 21,
+        "tmdb_id": 84348,
+        "flags": ["sketch", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "22 - Chronicle (drama, blockbuster)",
+        "tmdb_id": 76726,
+        "flags": ["ff", "common", "usa", "10s", "sf", ["drama", "blockbuster"]]
+    },
+    {
+        "_title": "23 - Hell House LLC (clown)",
+        "id": 23,
+        "tmdb_id": 359246,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["clown", "demon"]]
+    },
+    {
+        "_title": "24 - The Bay (water)",
+        "id": 24,
+        "tmdb_id": 123105,
+        "flags": ["mockumentary", "common", "usa", "10s", "thriller", ["water"]]
+    },
+    {
+        "_title": "25 - The Dark Tapes",
+        "id": 25,
+        "tmdb_id": 390883,
+        "flags": ["sketch", "rare", "usa", "10s", "paranormal", ["gore"]]
+    },
+    {
+        "_title": "26 - Phoenix Forgotten (aliens)",
+        "id": 26,
+        "tmdb_id": 443319,
+        "flags": ["ff", "rare", "usa", "10s", "sf", ["alien"]]
+    },
+    {
+        "_title": "27 - As Above, So Below",
+        "id": 27,
+        "tmdb_id": 256274,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "28 - The Sacrament (drama, cult, true-story)",
+        "id": 28,
+        "tmdb_id": 211067,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["drama", "cult", "true-story"]]
+    },
+    {
+        "_title": "29 - Paranormal Activity : The Marked Ones",
+        "id": 29,
+        "tmdb_id": 227348,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession", "blockbuster"]]
+    },
+    {
+        "_title": "30 - Grave Encounters 2",
+        "id": 30,
+        "tmdb_id": 50698,
+        "flags": ["mockumentary", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "31 - Searching (drama)",
+        "id": 31,
+        "tmdb_id": 489999,
+        "flags": ["screen", "common", "usa", "10s", "thriller", ["drama"]]
+    },
+    {
+        "_title": "32 - The Possession Of Michael King",
+        "id": 32,
+        "tmdb_id": 272692,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["drama", "possession"]]
+    },
+    {
+        "_title": "33 - Paranormal Activity 3",
+        "id": 33,
+        "tmdb_id": 72571,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession", "blockbuster"]]
+    },
+    {
+        "_title": "34 - The Taking Of Deborah Logan (drama, demon, possession)",
+        "id": 34,
+        "tmdb_id": 297608,
+        "flags": ["mockumentary", "common", "usa", "10s", "paranormal", ["drama", "demon", "possession"]]
+    },
+    {
+        "_title": "35 - Cloverfield (drama, blockbuster, apocalypse)",
+        "id": 35,
+        "tmdb_id": 7191,
+        "flags": ["ff", "common", "usa", "00s", "monsters", ["drama", "blockbuster", "apocalypse"]]
+    },
+    {
+        "_title": "36 - Gonjiam: Haunted Asylum",
+        "id": 36,
+        "tmdb_id": 508642,
+        "flags": ["mockumentary", "rare", "asia", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "37 - Apollo 18 (aliens)",
+        "id": 37,
+        "tmdb_id": 50357,
+        "flags": ["ff", "rare", "usa", "10s", "sf", ["alien"]]
+    },
+    {
+        "_title": "38 - Ghostwatch",
+        "id": 38,
+        "tmdb_id": 46633,
+        "flags": ["mockumentary", "rare", "europe", "90s", "paranormal", ["reality-show", "demon", "possession"]]
+    },
+    {
+        "_title": "39 - Hell House 2",
+        "id": 39,
+        "tmdb_id": 532973,
+        "flags": ["mockumentary", "common", "usa", "10s", "paranormal", ["clown", "demon"]]
+    },
+    {
+        "_title": "40 - Hell House 3",
+        "id": 40,
+        "tmdb_id": 614722,
+        "flags": ["mockumentary", "common", "usa", "10s", "paranormal", ["clown", "demon"]]
+    },
+    {
+        "_title": "41 - Behind The Mask",
+        "id": 41,
+        "tmdb_id": 10961,
+        "flags": ["mockumentary", "common", "usa", "00s", "thriller", ["serial-killer", "comedy"]]
+    },
+    {
+        "_title": "42 - Creep",
+        "id": 42,
+        "tmdb_id": 250574,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["woods", "serial-killer"]]
+    },
+    {
+        "_title": "43 - Creep 2",
+        "id": 43,
+        "tmdb_id": 396493,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["woods", "serial-killer"]]
+    },
+    {
+        "_title": "44 - Digging Up The Marrow",
+        "id": 44,
+        "tmdb_id": 279972,
+        "flags": ["mockumentary", "common", "usa", "10s", "monsters", ["???"]]
+    },
+    {
+        "_title": "45 - Savageland",
+        "id": 45,
+        "tmdb_id": 326446,
+        "flags": ["mockumentary", "rare", "usa", "10s", "monsters", ["zombie"]]
+    },
+    {
+        "_title": "46 - The Houses October Built",
+        "id": 46,
+        "tmdb_id": 293572,
+        "flags": ["mockumentary", "common", "usa", "10s", "paranormal", ["serial-killer", "clown", "halloween"]]
+    },
+    {
+        "_title": "47 - The Den",
+        "id": 47,
+        "tmdb_id": 244610,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["serial-killer"]]
+    },
+    {
+        "_title": "48 - There Are Monsters",
+        "id": 48,
+        "tmdb_id": 320508,
+        "flags": ["ff", "rare", "usa", "10s", "monsters", ["wtf", "alien"]]
+    },
+    {
+        "_title": "49 - Paranormal Activity 4",
+        "id": 49,
+        "tmdb_id": 82990,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession", "paranormal"]]
+    },
+    {
+        "_title": "50 - Be My Cat",
+        "id": 50,
+        "tmdb_id": 328216,
+        "flags": ["ff", "rare", "europe", "10s", "thriller", ["wtf", "serial-killer"]]
+    },
+    {
+        "_title": "51 - Preservation",
+        "id": 51,
+        "tmdb_id": 265019,
+        "flags": ["ff", "common", "usa", "00s", "paranormal", ["serial-killer", "woods"]]
+    },
+    {
+        "_title": "52 - Lake Mungo",
+        "id": 52,
+        "tmdb_id": 27374,
+        "flags": ["mockumentary", "common", "other", "00s", "paranormal", ["demon", "drama"]]
+    },
+    {
+        "_title": "53 - Diary Of The Dead",
+        "id": 53,
+        "tmdb_id": 13025,
+        "flags": ["ff", "common", "usa", "00s", "monsters", ["blockbuster", "zombie", "apocalypse"]]
+    },
+    {
+        "_title": "54 - Afflicted",
+        "id": 54,
+        "tmdb_id": 210947,
+        "flags": ["ff", "common", "usa", "10s", "monsters", ["zombie"]]
+    },
+    {
+        "_title": "55 - A Haunted House",
+        "id": 55,
+        "tmdb_id": 139038,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["comedy"]]
+    },
+    {
+        "_title": "56 - Megan Is Missing",
+        "id": 56,
+        "tmdb_id": 63197,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["serial-killer"]]
+    },
+    {
+        "_title": "57 - Leaving D.C ",
+        "id": 57,
+        "tmdb_id": 46146,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["woods", "lonely"]]
+    },
+    {
+        "_title": "58 - Man vs",
+        "id": 58,
+        "tmdb_id": 343112,
+        "flags": ["mockumentary", "rare", "usa", "10s", "monsters", ["woods", "reality-show"]]
+    },
+    {
+        "_title": "59 - Shooting The Warwicks",
+        "id": 59,
+        "tmdb_id": 176074,
+        "flags": ["mockumentary", "rare", "usa", "10s", "thriller", ["reality-show", "comedy"]]
+    },
+    {
+        "_title": "60 - Paranormal Activity",
+        "id": 60,
+        "tmdb_id": 23827,
+        "flags": ["ff", "common", "usa", "00s", "paranormal", ["blockbuster", "demon", "possession"]]
+    },
+    {
+        "_title": "61 - Death Of A Vlogger",
+        "id": 61,
+        "tmdb_id": 614196,
+        "flags": ["mockumentary", "rare", "europe", "10s", "paranormal", ["comedy", "demon", "reality-show"]]
+    },
+    {
+        "_title": "62 - Mockingbird",
+        "id": 62,
+        "tmdb_id": 289712,
+        "flags": ["ff", "common", "usa", "10s", "thriller", ["serial-killer", "clown"]]
+    },
+    {
+        "_title": "63 - Occult",
+        "id": 63,
+        "tmdb_id": 118315,
+        "flags": ["mockumentary", "rare", "asia", "00s", "paranormal", ["serial-killer", "demon", "possession", "cult"]]
+    },
+    {
+        "_title": "64 - Bad Ben",
+        "id": 64,
+        "tmdb_id": 821660,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "65 - Quarantine",
+        "id": 65,
+        "tmdb_id": 13812,
+        "flags": ["mockumentary", "common", "usa", "00s", "monsters", ["reality-show", "zombie"]]
+    },
+    {
+        "_title": "66 - Unfriended",
+        "id": 66,
+        "tmdb_id": 277685,
+        "flags": ["screen", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "67 - Jeruzalem",
+        "id": 67,
+        "tmdb_id": 339547,
+        "flags": ["ff", "common", "other", "10s", "monsters", ["mythology", "zombie"]]
+    },
+    {
+        "_title": "68 - Sorgoï Prakov",
+        "id": 68,
+        "tmdb_id": 359642,
+        "flags": ["ff", "rare", "france", "10s", "thriller", ["serial-killer", "wtf", "comedy"]]
+    },
+    {
+        "_title": "69 - Frazier Park Recut",
+        "id": 69,
+        "tmdb_id": 480635,
+        "flags": ["ff", "rare", "usa", "10s", "thriller", ["woods", "serial-killer"]]
+    },
+    {
+        "_title": "70 - The Lost Footage of Leah Sullivan",
+        "id": 70,
+        "tmdb_id": 555559,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "71 - Exhibit A",
+        "id": 71,
+        "tmdb_id": 49341,
+        "flags": ["ff", "rare", "europe", "00s", "thriller", ["serial-killer", "drama"]]
+    },
+    {
+        "_title": "72 - Alien Abduction",
+        "id": 72,
+        "tmdb_id": 258193,
+        "flags": ["ff", "common", "usa", "10s", "sf", ["alien"]]
+    },
+    {
+        "_title": "73 - The Tunnel",
+        "id": 73,
+        "tmdb_id": 46221,
+        "flags": ["mockumentary", "rare", "other", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "74 - Paranormal Activity 5",
+        "id": 74,
+        "tmdb_id": 146301,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession", "blockbuster"]]
+    },
+    {
+        "_title": "75 - The Dyatlov Pass Incident",
+        "id": 75,
+        "tmdb_id": 169219,
+        "flags": ["mockumentary", "rare", "europe", "10s", "monsters", ["mythology", "true-story"]]
+    },
+    {
+        "_title": "76 - Amber Alert",
+        "id": 76,
+        "tmdb_id": 135670,
+        "flags": ["ff", "rare", "usa", "10s", "thriller", ["serial-killer"]]
+    },
+    {
+        "_title": "77 - Exists",
+        "id": 77,
+        "tmdb_id": 124470,
+        "flags": ["ff", "common", "usa", "10s", "monsters", ["mythology", "bigfoot", "woods"]]
+    },
+    {
+        "_title": "78 - Unfriended : Dark Web",
+        "id": 78,
+        "tmdb_id": 505058,
+        "flags": ["screen", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "79 - The River",
+        "id": 79,
+        "tmdb_id": 39336,
+        "flags": ["series", "rare", "usa", "10s", "paranormal", ["reality-show", "demon", "drama"]]
+    },
+    {
+        "_title": "80 - The McPherson Tape",
+        "id": 80,
+        "tmdb_id": 204611,
+        "flags": ["ff", "rare", "usa", "70-80s", "sf", ["alien"]]
+    },
+    {
+        "_title": "81 - The Borderlands",
+        "id": 81,
+        "tmdb_id": 207774,
+        "flags": ["ff", "rare", "europe", "10s", "paranormal", ["demon", "possession"]]
+    },
+    {
+        "_title": "82 - Die Präsenz",
+        "id": 82,
+        "tmdb_id": 303856,
+        "flags": ["ff", "rare", "europe", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "83 - Night Shot",
+        "id": 83,
+        "tmdb_id": 574466,
+        "flags": ["mockumentary", "rare", "france", "10s", "paranormal", ["demon", "reality-show"]]
+    },
+    {
+        "_title": "84 - Followed",
+        "id": 84,
+        "tmdb_id": 521531,
+        "flags": ["mockumentary", "common", "usa", "10s", "paranormal", ["demon", "reality-show"]]
+    },
+    {
+        "_title": "85 - Pyramide",
+        "id": 85,
+        "tmdb_id": 282813,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["mythology"]]
+    },
+    {
+        "_title": "86 - The Monster project",
+        "id": 86,
+        "tmdb_id": 462036,
+        "flags": ["series", "rare", "usa", "10s", "monsters", ["demon", "vampire"]]
+    },
+    {
+        "_title": "87 - The Fear Footage",
+        "id": 87,
+        "tmdb_id": 551412,
+        "flags": ["sketch", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "88 - The Fear Footage 2",
+        "id": 88,
+        "tmdb_id": 658829,
+        "flags": ["sketch", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "89 - The Fear Footage 3",
+        "id": 89,
+        "tmdb_id": 790509,
+        "flags": ["sketch", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "90 - Survive The Hollow Shoals",
+        "id": 90,
+        "tmdb_id": 506986,
+        "flags": ["mockumentary", "rare", "usa", "10s", "paranormal", ["woods", "reality-show", "demon"]]
+    },
+    {
+        "_title": "91 - Willow Creek",
+        "id": 91,
+        "tmdb_id": 185460,
+        "flags": ["ff", "common", "usa", "10s", "monsters", ["woods", "bigfoot"]]
+    },
+    {
+        "_title": "92 - The Conspiracy",
+        "id": 92,
+        "tmdb_id": 133369,
+        "flags": ["ff", "rare", "usa", "10s", "thriller", ["cult"]]
+    },
+    {
+        "_title": "93 - Steelmanville Road",
+        "id": 93,
+        "tmdb_id": 810263,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "94 - Paranormal Activity 2",
+        "id": 94,
+        "tmdb_id": 41436,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession", "blockbuster"]]
+    },
+    {
+        "_title": "95 - Cold Ground",
+        "id": 95,
+        "tmdb_id": 472591,
+        "flags": ["ff", "rare", "france", "10s", "monsters", ["woods"]]
+    },
+    {
+        "_title": "96 - A Haunted House 2",
+        "id": 96,
+        "tmdb_id": 184345,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["comedy"]]
+    },
+    {
+        "_title": "97 - Rorschach ",
+        "id": 97,
+        "tmdb_id": 419464,
+        "flags": ["ff", "rare", "usa", "10s", "paranormal", ["demon", "possession"]]
+    },
+    {
+        "_title": "98 - The Devil’s Doorway",
+        "id": 98,
+        "tmdb_id": 524789,
+        "flags": ["ff", "rare", "europe", "10s", "paranormal", ["demon", "possession"]]
+    },
+    {
+        "_title": "99 - V/H/S/ Viral",
+        "id": 99,
+        "tmdb_id": 267806,
+        "flags": ["sketch", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "100 - A Record Of Sweet Murder",
+        "id": 100,
+        "tmdb_id": 291492,
+        "flags": ["ff", "rare", "asia", "10s", "monsters", ["serial-killer", "alien"]]
+    },
+    {
+        "_title": "101 - The Houses October Built 2",
+        "id": 101,
+        "tmdb_id": 466344,
+        "flags": ["mockumentary", "common", "usa", "10s", "paranormal", ["serial-killer", "clown", "halloween"]]
+    },
+    {
+        "_title": "102 - The Gallows",
+        "id": 102,
+        "tmdb_id": 299245,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon"]]
+    },
+    {
+        "_title": "103 - Area 51",
+        "id": 103,
+        "tmdb_id": 57876,
+        "flags": ["ff", "common", "usa", "10s", "sf", ["alien"]]
+    },
+    {
+        "_title": "104 - The Darkest Dawn",
+        "id": 104,
+        "tmdb_id": 423733,
+        "flags": ["ff", "rare", "europe", "10s", "sf", ["alien", "apocalypse"]]
+    },
+    {
+        "_title": "105 - Blair Witch",
+        "id": 105,
+        "tmdb_id": 351211,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["blockbuster", "witch", "woods"]]
+    },
+    {
+        "_title": "106 - The Last Exorcism",
+        "id": 106,
+        "tmdb_id": 38358,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession"]]
+    },
+    {
+        "_title": "107 - The Last Exorcism 2",
+        "id": 107,
+        "tmdb_id": 146203,
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession"]]
+    }
+]

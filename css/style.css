@@ -100,7 +100,6 @@ Triadique : #2d3033, #332d30, #30332d
     background-color: transparent;
     color: #898989;
 }
-
 /* POLICE */
 
 @font-face {
@@ -280,7 +279,6 @@ button {
     cursor: pointer;
     transition: box-shadow 0.2s ease, color 0.1s ease, background 0.2s ease;
     box-sizing: border-box;
-    opacity: .92;
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -383,6 +381,10 @@ aside img {
     margin-bottom: 1rem;
 }
 
+.data-subinfo {
+    font-style: italic;
+}
+
 .provider-infos {
     white-space: break-spaces;
 }
@@ -396,7 +398,7 @@ div#providers {
     width: 50%;
 }
 
-a.reload-data:hover {
+a.reload-data:hover, .next-question:hover {
     animation: flickerAnimationEase .8s infinite .2s;
 }
 

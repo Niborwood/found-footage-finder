@@ -1,18 +1,9 @@
 /* global theMovieDb */
 // ************** CORE CODE *******************
 
-// PROTOTYPES
-const Flags = function (format, difficulty, origin, date, theme, saga) {
-    this.format = format;
-    this.difficulty = difficulty;
-    this.origin = origin;
-    this.date = date;
-    this.theme = theme;
-    this.saga = saga;
-};
-
 // ----:::: APP/GAME ::::----
 const app = {
+
     // --- GLITCH EFFECT
     glitch: () => {
         let bgIOriginal = app.htmlElement.container.style.backgroundImage;
@@ -88,146 +79,13 @@ const app = {
                 'Niveau horreur, votre kink, c\'est plutôt...',
                 ['Les thrillers', 'thriller'],
                 ['Le paranormal', 'paranormal'],
-                ['Les aliens', 'aliens'],
+                ['La science-fiction', 'sf'],
                 ['Les monstres', 'monsters']
-            ],
-            // Question 6
-            // [
-            //     'Si je rajoute une question...',
-            //     ['Oui', ''],
-            //     ['Non', '']
-            // ]
-            
-            // Question 7
-            // Question 8
-            // Question 9
-            // Question 10
+            ]
         ],
 
-        // Data des films
-        movies: [
-            // Flags CheatSheet : format, difficulty, origin, date, theme
-            // 01 - C'EST ARRIVE PRES DE CHEZ VOUS
-            {
-                id: 1,
-                tmdb_id: 10086,
-                flags: new Flags('mockumentary', 'common', 'europe', '90s', 'thriller', false)
-            },
-            // 02 - V/H/S 2
-            {
-                id: 2,
-                tmdb_id: 159117,
-                flags: new Flags('sketch', 'common', 'usa', '10s', 'paranormal', 'vhs')
-            },
-            // 03 - The Poughkeepsie Tapes
-            {
-                id: 3,
-                tmdb_id: 38410,
-                flags: new Flags('mockumentary', 'rare', 'usa', '00s', 'thriller', false)
-            },
-            // 04 - The Blair Witch Project
-            {
-                id: 4,
-                tmdb_id: 2667,
-                flags: new Flags('ff', 'common', 'usa', '90s', 'paranormal', false)
-            },
-            // 05 - Cannibal Holocaust
-            {
-                id: 5,
-                tmdb_id: 8689,
-                flags: new Flags('mockumentary', 'common', 'europe', '70-80s', 'thriller', false)
-            },
-            // 06 - Marble Hornets
-            {
-                id: 6,
-                tmdb_id: 1396,
-                flags: new Flags('series', 'rare', 'usa', '10s', 'paranormal', false)
-            },
-            // 07 - Trolljegeren 
-            {
-                id: 7,
-                tmdb_id: 46146,
-                flags: new Flags('mockumentary', 'common', 'europe', '10s', 'monsters', false)
-            },
-            // 08 - Noroi: The Curse 
-            {
-                id: 8,
-                tmdb_id: 21506,
-                flags: new Flags('ff', 'common', 'asia', '00s', 'paranormal', false)
-            },
-            // 09 - Les Documents Interdits
-            {
-                id: 9,
-                tmdb_id: 116684,
-                flags: new Flags('series', 'rare', 'europe', '70-80s', 'paranormal', false),
-            },
-            // 10 - Murder Death Koreatown
-            {
-                id: 10,
-                tmdb_id: 675522,
-                flags: new Flags('ff', 'rare', 'usa', '10s', 'paranormal', false)
-            },
-            // 11 - Grave Encounters
-            {
-                id: 11,
-                tmdb_id: 50698,
-                flags: new Flags('mockumentary', 'common', 'usa', '00s', 'paranormal', 'graveEncounters')
-            },
-            // 12 - [REC]
-            {
-                id: 12,
-                tmdb_id: 8329,
-                flags: new Flags('mockumentary', 'common', 'europe', '00s', 'paranormal', 'rec')
-            },
-            // 13 - Host
-            {
-                id: 13,
-                tmdb_id: 723072,
-                flags: new Flags('ff', 'common', 'usa', '10s', 'paranormal', false)
-            },
-            // 14 - Butterfly Kisses
-            {
-                id: 14,
-                tmdb_id: 480733,
-                flags: new Flags('ff', 'rare', 'usa', '10s', 'paranormal', false)
-            },
-            // 15 - Resolution
-            {
-                id: 15,
-                tmdb_id: 121606,
-                flags: new Flags('ff', 'rare', 'usa', '10s', 'monsters', false)
-            },
-            // 16 - Home Movie
-            {
-                id: 16,
-                tmdb_id: 27258,
-                flags: new Flags('ff', 'rare', 'usa', '00s', 'paranormal', false)
-            },
-            // 17 - What We Do In The Shadows 
-            {
-                id: 17,
-                tmdb_id: 246741,
-                flags: new Flags('mockumentary', 'common', 'other', '10s', 'monsters', false)
-            },
-            // 18 - The Visit
-            {
-                id: 18,
-                tmdb_id: 298312,
-                flags: new Flags('ff', 'common', 'usa', '10s', 'thriller', false)
-            },
-            // 19 - The Good Neighbor
-            {
-                id: 19,
-                tmdb_id: 339994,
-                flags: new Flags('ff', 'common', 'usa', '10s', 'thriller', false),
-            },
-            // 20 - Open Windows
-            {
-                id: 20,
-                tmdb_id: 151368,
-                flags: new Flags('screen', 'rare', 'usa', '10s', 'thriller', false)
-            }
-        ]
+        // Data des films (target of movies.json)
+        movies: []
     },
 
     // ---- ROUTINE D'AFFICHAGE DE CHAQUE QUESTION/REPONSES
@@ -411,10 +269,11 @@ const app = {
 
         const getTmdbGeneral = () => {
             return new Promise((success, failure) => {
-                theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {
+
+                theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {  
                     app.htmlElement.mainHeader.remove();
                     let data = JSON.parse(rawData);
-        
+                    console.log(data);
                     // Image
                     const poster = document.createElement('img');
                     poster.src = `https://www.themoviedb.org/t/p/w300${data.poster_path}`;
@@ -422,7 +281,7 @@ const app = {
                     asidePoster.appendChild(poster);
                     app.htmlElement.mainSection.prepend(asidePoster);
         
-                    // Titre, date, saisons
+                    // Titre, date
                     const titleData = document.createElement('h2');
                     if (format === 'movies') {
                         // Check film asiatique (affichage du nom latin)
@@ -431,22 +290,31 @@ const app = {
                         } else {
                             titleData.innerText = data.original_title;
                         }
-                        titleData.innerHTML += `&#8239;-&#8239;${data.release_date.substring(0,4)}`;
+                        titleData.innerHTML += `&nbsp;-&nbsp;${data.release_date.substring(0,4)}`;
                     } else if (format === 'tv') {
                         titleData.innerText = data.original_name;
-                        titleData.innerHTML += `&#8239;-&#8239;${data.first_air_date.substring(0,4)}`;
+                        titleData.innerHTML += `&nbsp;-&nbsp;${data.first_air_date.substring(0,4)}`;
                     }            
                     tmdbHolder.appendChild(titleData);
         
+                    // Saisons, épisodes (format:tv)
                     if (format === 'tv') {
-                        const nbSeasons = document.createElement('p');
-                        nbSeasons.classList.add('tv-seasons');
+                        const nbSeasonsP = document.createElement('p');
+                        nbSeasonsP.classList.add('data-subinfo');
                         let seasonPlural = 'saison';
                         if (data.number_of_seasons > 1) {
                             seasonPlural += 's';
                         }
-                        nbSeasons.innerText = `${data.number_of_seasons} ${seasonPlural}, ${data.number_of_episodes} épisodes`;
-                        tmdbHolder.appendChild(nbSeasons);
+                        nbSeasonsP.innerText = `${data.number_of_seasons} ${seasonPlural}, ${data.number_of_episodes} épisodes`;
+                        tmdbHolder.appendChild(nbSeasonsP);
+                    }
+
+                    // Saga (format:movie)
+                    if (format === 'movies' && data.belongs_to_collection !== null) {
+                        const sagaP = document.createElement('p');
+                        sagaP.classList.add('data-subinfo');
+                        sagaP.innerText = `Collection : ${data.belongs_to_collection.name}`;
+                        tmdbHolder.appendChild(sagaP);
                     }
                     
                     // Résumé
@@ -584,7 +452,7 @@ const app = {
     },
     // ---- CALLBACK ERROR TMDB
     tmdbError: () => {
-        app.htmlElement.mainHeader.innerText = 'Une erreur est survenue auprès de TMDB.';
+        app.htmlElement.mainHeader.innerText = 'Erreur API TMDB';
     },
 
     // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
@@ -602,6 +470,13 @@ const app = {
         }
 
         // Init app data
+        fetch('/data/movies.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                app.data.movies = data;
+            });
         app.data.answers = [];
         app.data.matchingResults = [];
         app.data.quizStep = 0;
@@ -659,11 +534,22 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
-- mettre les 100+ films dans la db
+- rajouter les overviews de : full Marble Hornets
 - gérer les animations par question
-- créer un splash (avec no-anim)
+- créer un splash (avec option no-anim)
+- faire la page Credits (https://www.themoviedb.org/about/logos-attribution)
+
 
 GO BETA !
+
+- pouvoir skip les membres d'une même saga 
+- créer une dernière étape de questionnement spécifique
+- impossible de ne pas trouver de résultats
+
+v2
+- ouvrir à tous les films d'horreur
+- pouvoir ajouter à la bdd des films en front (sous contrôle)
+- FR & EN
 */
 
 
