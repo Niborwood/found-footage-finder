@@ -10,7 +10,12 @@ Triadique : #2d3033, #332d30, #30332d
 
 @keyframes typing {
     from {
-        width: 0
+        width: 0;
+
+    }
+
+    to {
+        visibility: visible;
     }
 }
 
@@ -41,7 +46,7 @@ Triadique : #2d3033, #332d30, #30332d
     }
 
     to {
-        visibility:visible;
+        visibility: visible;
         opacity: 1;
     }
 }
@@ -100,6 +105,7 @@ Triadique : #2d3033, #332d30, #30332d
     background-color: transparent;
     color: #898989;
 }
+
 /* POLICE */
 
 @font-face {
@@ -120,7 +126,8 @@ Triadique : #2d3033, #332d30, #30332d
 
 .typing-effect {
     width: 29ch;
-    animation: typing 3s steps(29), blink .5s step-end infinite alternate;
+    visibility: hidden;
+    animation: typing 3s steps(29) 1s forwards, blink .5s step-end infinite alternate;
     white-space: nowrap;
     overflow: hidden;
     margin: auto;
@@ -129,7 +136,7 @@ Triadique : #2d3033, #332d30, #30332d
 
 .typing-last {
     width: 5ch;
-    animation: transitionDisplay 3s ease-in, typing 1.5s steps(5) 3s, blink .5s step-end infinite alternate;
+    animation: transitionDisplay 3s ease-in, typing 1.5s steps(5) 4s forwards, blink .5s step-end infinite alternate;
     padding-right: 2px;
 }
 
@@ -137,11 +144,11 @@ Triadique : #2d3033, #332d30, #30332d
     animation: transitionDisplay 5.5s ease-in;
 }
 
-/* .delayed-display-fade {
+.delayed-display-fade {
     opacity: 0;
     visibility: hidden;
-    animation: transitionDisplayFade 2s ease-in 5s forwards;
-} */
+    animation: transitionDisplayFade 2s ease-in 6s forwards;
+}
 
 .delayed-display-fade__question {
     opacity: 0;
@@ -285,6 +292,7 @@ button {
 
 
 @media (hover:hover) {
+
     /* Hover effect only on devices that fully support them */
     button:hover {
         color: var(--grey-light);
@@ -398,7 +406,8 @@ div#providers {
     width: 50%;
 }
 
-a.reload-data:hover, .next-question:hover {
+a.reload-data:hover,
+.next-question:hover {
     animation: flickerAnimationEase .8s infinite .2s;
 }
 
@@ -476,7 +485,7 @@ footer {
 
     .answer-button,
     main section h3,
-    main section h2, 
+    main section h2,
     .divider {
         margin-left: 1rem;
     }
@@ -493,7 +502,7 @@ footer {
     div#providers {
         display: block;
     }
-    
+
     #providers div {
         width: auto;
     }
@@ -501,7 +510,7 @@ footer {
     p.divider {
         margin-bottom: .5rem;
     }
-    
+
 }
 
 
@@ -537,7 +546,7 @@ footer {
         display: flex;
         justify-content: space-evenly;
     }
-    
+
     #providers div {
         width: 50%;
     }
