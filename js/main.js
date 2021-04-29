@@ -69,11 +69,8 @@ const app = {
 
         // Event Listener :: Init app
         findMeDiv.addEventListener('click', () => {
-            container.style.visibility = 'visible';
-            splashDiv.remove();
-
-            // Animations Toggle
-            if (app.data.animations) {
+            // Animations Trigger
+            const triggerAnimations = () => {
                 const launchButton = document.querySelector('button#launch-game');
                 const typingH2 = document.querySelector('main h2 div');
                 typingH2.classList.add('typing-effect');
@@ -82,8 +79,42 @@ const app = {
                 app.html.mainSection.classList.add('delayed-display-fade');
                 launchButton.classList.add('delayed-display-fade');
                 app.html.appHeader.classList.add('delayed-display-fade');
-                console.log(app.data.animations);
                 app.glitch();
+            };
+
+            // Si animations
+            if (app.data.animations) {
+                skipAnimationsP.classList.add('fade-out');
+
+                setTimeout(() => {
+                    findMeDiv.style.visibility = 'hidden';
+                }, 1800);
+
+                setTimeout(() => {
+                    findMeDiv.style.visibility = 'visible';
+                    findText.innerText = 'FOUND ';
+                }, 2000);
+
+                setTimeout(() => {
+                    findText.innerText = 'FOUND';
+                    meText.innerText = 'YOU';
+                }, 5000);
+
+                setTimeout(() => {
+                    findMeDiv.removeAttribute('id');
+                    findMeDiv.id = 'find-me-noanim';
+                }, 5800);
+    
+                setTimeout(() => {
+                    container.style.visibility = 'visible';
+                    splashDiv.remove();
+                    triggerAnimations();
+                }, 6000);
+            } 
+            // Si pas d'animations
+            else {
+                container.style.visibility = 'visible';
+                splashDiv.remove();
             }
         });
 
@@ -98,12 +129,15 @@ const app = {
         }
 
         const container = document.querySelector('div#container');
+        const flexWrapper = document.querySelector('div#flex-wrapper');
         let bgIOriginal = container.style.backgroundImage;
         container.style.backgroundImage = 'url(\'img/noise2.png\')';
         container.style.backgroundSize = 'initial';
+        flexWrapper.style.opacity = 0;
         container.style.animation = `animatedBackground ${Math.random()/2}s ease-in infinite`;
 
         setTimeout(() => {
+            flexWrapper.style.opacity = 1;
             container.style.backgroundImage = bgIOriginal;
             container.style.animation = '0';
             container.style.backgroundSize = 'cover';
@@ -155,7 +189,7 @@ const app = {
         question: [
             // Question 1 - format
             [
-                'Quel type de film souhaitez-vous voir ?',
+                'Quels types de films souhaitez-vous voir ?',
                 ['Un found footage classique', 'ff'],
                 ['Un faux-documentaire', 'mockumentary'],
                 ['Un film à sketchs', 'sketch'],
@@ -165,8 +199,8 @@ const app = {
             // Question 2 - Difficulty
             [
                 'Chaud pour un film de niche, ou on y va doucement ?',
-                ['Je connais déjà mes classiques, go !', 'rare'],
-                ['Sors-moi un truc regardable', 'common']
+                ['Je veux un film que je n\'ai problablement pas vu', 'rare'],
+                ['Un film un peu connu, c\'est ok', 'common']
             ],
             // Question 3 - origin
             [
@@ -175,11 +209,11 @@ const app = {
                 ['d\'Europe', 'europe'],
                 ['des USA / Canada', 'usa'],
                 ['d\'Asie', 'asia'],
-                ['ou d\'ailleurs encore', 'other']
+                ['d\'ailleurs encore', 'other']
             ],
             // Question 4 - date
             [
-                'On part piocher à quelle époque ?',
+                'On part piocher à quelles époques ?',
                 ['les 70/80s', '70-80s'],
                 ['les 90s', '90s'],
                 ['les années 2000', '00s'],
@@ -187,7 +221,7 @@ const app = {
             ],
             // Question 5 - theme
             [
-                'Niveau horreur, votre kink, c\'est plutôt...',
+                'Niveau horreur, vos kinks, c\'est plutôt...',
                 ['Les thrillers', 'thriller'],
                 ['Le paranormal', 'paranormal'],
                 ['La science-fiction', 'sf'],
@@ -598,7 +632,6 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
-- gérer les animations par question
 - créer un splash (avec option no-anim)
 - faire la page Credits (https://www.themoviedb.org/about/logos-attribution)
 

@@ -39,7 +39,7 @@ Triadique : #2d3033, #332d30, #30332d
     }
 }
 
-@keyframes transitionDisplayFade {
+@keyframes displayFade {
     from {
         visibility: hidden;
         opacity: 0;
@@ -48,6 +48,17 @@ Triadique : #2d3033, #332d30, #30332d
     to {
         visibility: visible;
         opacity: 1;
+    }
+}
+
+@keyframes hideFade {
+    from {
+        visibility: visible;
+    }
+
+    to {
+        visibility: hidden;
+        opacity: 0;
     }
 }
 
@@ -133,7 +144,6 @@ Triadique : #2d3033, #332d30, #30332d
         opacity: 1;
         transform: skewX(-15deg);
         transform: translate(0px)
-
     }
 
     to {
@@ -163,12 +173,14 @@ Triadique : #2d3033, #332d30, #30332d
 /* ANIMATIONS */
 
 @media (prefers-reduced-motion: reduce) {
+
     .animate-flicker,
     .flicker__fast,
     .typing-effect,
     .typing-last,
     .delayed-display,
-    .delayed-display-fade {
+    .delayed-display-fade,
+    .fade-out {
         animation: none;
     }
 }
@@ -203,7 +215,15 @@ Triadique : #2d3033, #332d30, #30332d
 .delayed-display-fade {
     opacity: 0;
     visibility: hidden;
-    animation: transitionDisplayFade 2s ease-in 6.5s forwards;
+    animation: displayFade 2s ease-in 6.5s forwards;
+}
+
+.fade-out {
+    animation: hideFade 1s ease-out .5s forwards;
+}
+
+.stop-animation {
+    animation-iteration-count: 1;
 }
 
 /* GENERAL */
@@ -288,12 +308,23 @@ button:focus {
     justify-content: center;
 }
 
-#find-me {
+#splash div,
+#splash p {
     cursor: pointer;
+}
+
+#find-me {
     opacity: 0;
     animation: findMe 3s infinite 2s;
     color: var(--red);
     font-size: 1.5rem;
+    mix-blend-mode: screen;
+}
+
+#find-me-noanim {
+    color: var(--red);
+    font-size: 1.5rem;
+    mix-blend-mode: screen;
 }
 
 #me {
@@ -306,10 +337,9 @@ button:focus {
 }
 
 .skip-animations {
-    cursor: pointer;
     font-size: .6rem;
     position: absolute;
-    bottom: 3rem;
+    bottom: 8rem;
     opacity: 0.3;
 }
 
@@ -606,6 +636,10 @@ footer {
 
     p.divider {
         margin-bottom: .5rem;
+    }
+
+    .skip-animations {
+        bottom: 3rem;
     }
 
 }
