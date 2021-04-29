@@ -157,7 +157,7 @@ Triadique : #2d3033, #332d30, #30332d
 :root {
     --grey-dark: #151718;
     --grey-light: #E5E5E5;
-    --red: #d00005;
+    --red: #a50000bd;
 }
 
 ::selection {
@@ -321,6 +321,7 @@ button:focus {
     color: var(--red);
     font-size: 1.5rem;
     mix-blend-mode: screen;
+    font-weight:bold;
 }
 
 #find-me-noanim {

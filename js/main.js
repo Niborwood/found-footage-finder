@@ -110,13 +110,13 @@ const app = {
                     meText.removeAttribute('id');
                     findText.removeAttribute('id');
                 }, 5800);
-    
+
                 setTimeout(() => {
                     container.style.visibility = 'visible';
                     splashDiv.remove();
                     triggerAnimations();
                 }, 6000);
-            } 
+            }
             // Si pas d'animations
             else {
                 container.style.visibility = 'visible';
@@ -139,14 +139,14 @@ const app = {
         container.style.backgroundImage = 'url(\'img/noise2.png\')';
         container.style.backgroundSize = 'initial';
         flexWrapper.style.opacity = 0;
-        container.style.animation = `animatedBackground ${Math.random()/2}s ease-in infinite`;
+        container.style.animation = `animatedBackground ${Math.random() / 2}s ease-in infinite`;
 
         setTimeout(() => {
             flexWrapper.style.opacity = 1;
             container.style.backgroundImage = bgIOriginal;
             container.style.animation = '0';
             container.style.backgroundSize = 'cover';
-        }, Math.random()*210);
+        }, Math.random() * 210);
     },
     // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
     reset: () => {
@@ -155,7 +155,7 @@ const app = {
         app.html.playVhsString.classList.remove('animate-flicker');
         app.html.appTitle.remove();
         app.html.mainSection.innerText = '';
-        app.html.mainSection.classList.remove('section-result');
+        app.html.mainSection.classList.remove('section-result', 'delayed-display-fade');
         app.html.mainButton.remove();
 
         if (app.data.quizStep !== 0) {
@@ -187,8 +187,8 @@ const app = {
         quizSkips: 0,
         answers: [],
         matchingResults: [],
-        reloads:0,
-        animations:true,
+        reloads: 0,
+        animations: true,
 
         // Data des questions
         question: [
@@ -255,12 +255,12 @@ const app = {
         const nextQuestionString = 'Question suivante <span class="forward">▶▶</span>';
         nextStepStr.innerHTML = skipQuestionString;
         app.html.mainSection.appendChild(nextStepStr);
-        
+
 
         // Génération de l'affichage des questions / réponses (avec flag values)
         const currentQuestion = app.data.question[app.data.quizStep];
         app.html.mainHeader.innerText = currentQuestion[0];
-       
+
         const currentAnswers = currentQuestion.slice(1);
         currentAnswers.forEach(answer => {
             answerButton.innerText = answer[0];
@@ -270,32 +270,32 @@ const app = {
 
         // Gestion de la réponse utilisateur et génération du bouton suivant
         const answerButtons = [...document.getElementsByClassName('answer-button')];
-        
+
         answerButtons.forEach(button => {
             button.addEventListener('click', function (event) {
                 event.target.classList.toggle('button-clicked');
-                
+
                 const buttonsClicked = document.getElementsByClassName('button-clicked');
-                if ( nextStepStr.innerHTML === skipQuestionString && buttonsClicked.length !== 0 ) {
+                if (nextStepStr.innerHTML === skipQuestionString && buttonsClicked.length !== 0) {
                     nextStepStr.classList.add('animate-flicker', 'flicker__fast');
                     nextStepStr.innerHTML = nextQuestionString;
-                } 
-                else if (nextStepStr.innerHTML === nextQuestionString && buttonsClicked.length === 0 ) {
+                }
+                else if (nextStepStr.innerHTML === nextQuestionString && buttonsClicked.length === 0) {
                     nextStepStr.innerHTML = skipQuestionString;
                     nextStepStr.classList.remove('animate-flicker', 'flicker__fast');
-                }        
+                }
             }); // Fin de l'EL au clic sur les boutons
         }); // Fin de la boucle de boutons réponses
 
         // Display animation
-        // if (app.data.animations) {
-        // app.html.mainSection.style.visibility = 'hidden';
-        setTimeout(() => {
-            // app.html.mainSection.style.visibility = 'visible';
-            app.html.mainSection.classList.add('display-fade');
-        }, 1);
-        // }
-        
+        if (app.data.animations) {
+            console.log('plop');
+            app.html.mainSection.style.visibility = 'hidden';
+            setTimeout(() => {
+                app.html.mainSection.classList.add('display-fade');
+            }, 100);
+        }
+
         // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
         nextStepStr.addEventListener('click', app.nextQuestion);
     },
@@ -304,7 +304,7 @@ const app = {
         // On enregistre la (les) réponse(s) dans le tableau des flags/réponses
         const userAnswers = [...document.getElementsByClassName('button-clicked')];
         const multiAnswers = (answers) => {
-            let arrayValues = []; 
+            let arrayValues = [];
             for (const answer of answers) {
                 arrayValues.push(answer.value);
             }
@@ -319,11 +319,11 @@ const app = {
         else {
             multiAnswers(userAnswers);
         }
-       
+
         // Est-ce qu'on a fait le tour des questions à poser ?
-        if (app.data.quizStep < app.data.question.length-1) {
-            app.html.mainSection.classList.remove('display-fade');
+        if (app.data.quizStep < app.data.question.length - 1) {
             app.html.mainSection.innerText = '';
+            app.html.mainSection.classList.remove('display-fade');
             app.data.quizStep++;
             app.askQuestion();
         } else {
@@ -340,28 +340,34 @@ const app = {
 
         // S'il n'y a aucun match
         if (app.data.matchingResults.length === 0) {
-            app.html.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :('; 
+            app.html.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :(';
             app.html.mainSection.innerText = '';
             app.displayMore(app.html.mainSection);
         } else {
             app.html.mainHeader.innerText = 'Votre found footage est prêt.';
             app.html.mainSection.innerText = '';
-    
+
             // Si toutes les questions ont été passées, petit message personnalisé
             if (app.data.quizSkips === app.data.question.length) {
                 const showEverythingP = document.createElement('p');
                 showEverythingP.classList.add('show-everything');
+                if (app.data.animation) {
+                    showEverythingP.classList.add('display-fade');
+                }
                 showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
                 app.html.mainSection.appendChild(showEverythingP);
             }
-            
+
             const displayButton = document.createElement('button');
-            displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
             displayButton.classList.add('discover-button');
+            displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
             app.html.mainSection.appendChild(displayButton);
             app.html.playVhsString.innerText = 'STOP';
             app.html.playVhsString.classList.add('animate-flicker');
-    
+            if (app.data.animation) {
+                app.html.playVhsString.classList.add('display-fade');
+            }
+
             displayButton.addEventListener('click', app.displayResults);
         }
 
@@ -381,6 +387,9 @@ const app = {
         movieHolder.id = 'movie-holder';
         const tmdbHolder = document.createElement('div');
         movieHolder.appendChild(tmdbHolder);
+        if (app.data.animations) {
+            movieHolder.classList.add('display-fade');
+        }
         app.html.mainSection.appendChild(movieHolder);
 
         // Lien matchingResult unique > TMDB
@@ -390,9 +399,9 @@ const app = {
                     return { id: movie.tmdb_id, flags: movie.flags };
                 }
             }
-        }; 
+        };
         const tmdbData = tmdbCrawler(app.data.matchingResults[0]);
-        
+
         // TMDB display
         if (tmdbData.flags[0] === 'series') {
             app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv');
@@ -411,19 +420,19 @@ const app = {
             let match = true;
             const movieFlags = Object.values(movie.flags);
 
-            app.data.answers.forEach((answer, index) => { 
+            app.data.answers.forEach((answer, index) => {
                 switch (answer.indexOf(movieFlags[index])) {
                 case -1:
-                    match = false; 
+                    match = false;
                     break;
                 default:
                     break;
-                }  
+                }
             });
             // S'il y a match(s) ET que ce n'est pas un reload de résultat, on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
             if (match && app.data.reloads === 0) {
                 app.data.matchingResults.push(movie.id);
-            } 
+            }
         }); // Fin de la boucle de check des flags
     },
     // ---- AFFICHAGE DES INFOS TMDB
@@ -432,7 +441,7 @@ const app = {
         const getTmdbGeneral = () => {
             return new Promise((success, failure) => {
 
-                theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {  
+                theMovieDb[format].getById({ 'id': tmdbData.id }, (rawData) => {
                     app.html.mainHeader.remove();
                     let data = JSON.parse(rawData);
                     console.log(data);
@@ -442,7 +451,7 @@ const app = {
                     const asidePoster = document.createElement('aside');
                     asidePoster.appendChild(poster);
                     app.html.mainSection.prepend(asidePoster);
-        
+
                     // Titre, date
                     const titleData = document.createElement('h2');
                     if (format === 'movies') {
@@ -452,13 +461,13 @@ const app = {
                         } else {
                             titleData.innerText = data.original_title;
                         }
-                        titleData.innerHTML += `&nbsp;-&nbsp;${data.release_date.substring(0,4)}`;
+                        titleData.innerHTML += `&nbsp;-&nbsp;${data.release_date.substring(0, 4)}`;
                     } else if (format === 'tv') {
                         titleData.innerText = data.original_name;
-                        titleData.innerHTML += `&nbsp;-&nbsp;${data.first_air_date.substring(0,4)}`;
-                    }            
+                        titleData.innerHTML += `&nbsp;-&nbsp;${data.first_air_date.substring(0, 4)}`;
+                    }
                     tmdbHolder.appendChild(titleData);
-        
+
                     // Saisons, épisodes (format:tv)
                     if (format === 'tv') {
                         const nbSeasonsP = document.createElement('p');
@@ -478,7 +487,7 @@ const app = {
                         sagaP.innerText = `Collection : ${data.belongs_to_collection.name}`;
                         tmdbHolder.appendChild(sagaP);
                     }
-                    
+
                     // Résumé
                     const overviewP = document.createElement('p');
                     overviewP.innerText = data.overview;
@@ -486,14 +495,14 @@ const app = {
                     // Divider
                     tmdbHolder.appendChild(dividerP);
                     success();
-                }, 
+                },
                 failure); // Fin d'appel TMDB.getById
             });
         };
-        
+
         const getTmdbProviders = () => {
             // Données providers (SVOD + Location)
-            theMovieDb[format].getProviders({'id': [tmdbData.id]}, (rawData) => {
+            theMovieDb[format].getProviders({ 'id': [tmdbData.id] }, (rawData) => {
                 const data = JSON.parse(rawData);
 
                 // Si aucune option légale
@@ -501,20 +510,20 @@ const app = {
                     const targetH3 = document.createElement('h3');
                     targetH3.innerHTML = 'Indisponible en SVOD & VOD';
                     tmdbHolder.appendChild(targetH3);
-                } 
+                }
                 // Routine d'affichage des providers
                 else {
                     const displayProviders = (providers) => {
                         const providersHolder = document.createElement('div');
                         if (format === 'movies') {
                             providersHolder.id = 'providers';
-                        } 
+                        }
                         tmdbHolder.appendChild(providersHolder);
 
                         providers.forEach(provider => {
                             let targetHolder = document.createElement('div');
                             providersHolder.appendChild(targetHolder);
-                        
+
                             const targetH3 = document.createElement('h3');
                             if (provider === 'flatrate') {
                                 targetH3.innerText = 'SVOD & Abonnement';
@@ -530,19 +539,19 @@ const app = {
                                 } else {
                                     data.results.FR[provider].forEach((element, index) => {
                                         svodListing.innerText += `${element.provider_name}`;
-                                        if (data.results.FR[provider].length-1 !== index) {
-                                            svodListing.innerText += ', '; 
-                                        }  
+                                        if (data.results.FR[provider].length - 1 !== index) {
+                                            svodListing.innerText += ', ';
+                                        }
                                     });
                                 }
                             } else {
                                 if (format === 'movies') {
                                     svodListing.innerText = 'Non disponible';
                                 }
-                            
+
                             }
                             targetHolder.appendChild(svodListing);
-                        }); 
+                        });
                     };
                     const providers = ['flatrate', 'rent'];
                     displayProviders(providers);
@@ -550,7 +559,7 @@ const app = {
                 tmdbHolder.appendChild(dividerP.cloneNode(true));
             }, app.tmdbError); // Fin d'appel TMDB.providers
         };
-
+        
         getTmdbGeneral().then(getTmdbProviders, app.tmdbError);
 
     },
@@ -566,7 +575,7 @@ const app = {
             moreResultsH3.innerText = 'Autres résultats';
             moreHolder.appendChild(moreResultsH3);
         }
-        
+
         // Si 0 ou 1 résultat
         if (app.data.matchingResults.length === 0) {
             moreResultsA.classList.add('reload-movie');
@@ -577,21 +586,21 @@ const app = {
                 moreResultsP.innerHTML = 'Un seul résultat a correspondu à votre requête.<br><br>';
                 moreResultsA.classList.add('reload-movie');
                 moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
-                
+
             } else {
                 moreResultsP.innerHTML = 'Dernier résultat selon vos critères. <br><br>';
                 moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
                 moreResultsA.classList.add('reload-movie');
             }
-            
-        } 
+
+        }
         // Si 2+ autres résultats
         else {
             let resultPlural = 'autres résultats correspondent';
             if (app.data.matchingResults.length === 2) {
                 resultPlural = 'autre résultat correspond';
             }
-            moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.matchingResults.length-1} ${resultPlural} à vos réponses. <br><br>`;
+            moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.matchingResults.length - 1} ${resultPlural} à vos réponses. <br><br>`;
             moreResultsA.innerHTML = '<span class="forward">▶</span> Me proposer autre chose';
         }
 
@@ -648,14 +657,14 @@ function display_ct() {
 
 // ***************** TODO ************************
 
-/* 
+/*
 - créer les animations par question
 - faire la page Credits (https://www.themoviedb.org/about/logos-attribution)
 
 
 GO BETA !
 
-- pouvoir skip les membres d'une même saga 
+- pouvoir skip les membres d'une même saga
 - créer une dernière étape de questionnement spécifique
 - impossible de ne pas trouver de résultats
 
