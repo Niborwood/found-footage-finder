@@ -89,16 +89,65 @@ Triadique : #2d3033, #332d30, #30332d
     }
 }
 
+@keyframes findMe {
+    from {
+        opacity: 0;
+    }
+
+    4% {
+        opacity: 0;
+        transform: translate(35px, -12px)
+    }
+
+    5% {
+        opacity: 1;
+        color: var(--red);
+        transform: translate(-15px, 12px)
+    }
+
+    6% {
+        opacity: 0;
+    }
+
+    44% {
+        opacity: 0;
+        transform: skewX(4deg);
+        transform: translate(0px)
+    }
+
+    45% {
+        opacity: 1;
+    }
+
+    63% {
+        opacity: 1;
+    }
+
+    87% {
+        opacity: 0;
+        transform: skewX(3deg);
+        transform: translate(2px, -5px)
+    }
+
+    88% {
+        opacity: 1;
+        transform: skewX(-15deg);
+        transform: translate(0px)
+
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+/* META */
+
 :root {
     --grey-dark: #151718;
     --grey-light: #E5E5E5;
     --red: #d00005;
-}
-
-#slp,
-.play-vhs,
-#app-logo {
-    cursor: default;
 }
 
 ::selection {
@@ -106,15 +155,23 @@ Triadique : #2d3033, #332d30, #30332d
     color: #898989;
 }
 
-/* POLICE */
-
 @font-face {
     font-family: 'VCR';
     src: url('../fonts/vcr.ttf');
 }
 
-/* FLICKER */
+/* ANIMATIONS */
 
+@media (prefers-reduced-motion: reduce) {
+    .animate-flicker,
+    .flicker__fast,
+    .typing-effect,
+    .typing-last,
+    .delayed-display,
+    .delayed-display-fade {
+        animation: none;
+    }
+}
 
 .animate-flicker {
     animation: flickerAnimation 2s infinite;
@@ -137,7 +194,6 @@ Triadique : #2d3033, #332d30, #30332d
 .typing-last {
     width: 5ch;
     animation: transitionDisplay 3s ease-in, typing 1.5s steps(5) 4s forwards, blink .5s step-end infinite alternate;
-    padding-right: 2px;
 }
 
 .delayed-display {
@@ -147,14 +203,8 @@ Triadique : #2d3033, #332d30, #30332d
 .delayed-display-fade {
     opacity: 0;
     visibility: hidden;
-    animation: transitionDisplayFade 2s ease-in 6s forwards;
+    animation: transitionDisplayFade 2s ease-in 6.5s forwards;
 }
-
-.delayed-display-fade__question {
-    opacity: 0;
-    animation: transitionDisplayFade 2s ease-in 2s forwards;
-}
-
 
 /* GENERAL */
 
@@ -162,6 +212,12 @@ body {
     font-family: 'VCR', sans-serif;
     color: var(--grey-light);
     text-transform: uppercase;
+}
+
+#slp,
+.play-vhs,
+#app-logo {
+    cursor: default;
 }
 
 #container {
@@ -175,7 +231,6 @@ body {
     background-blend-mode: luminosity;
     background-size: cover;
 }
-
 
 #flex-wrapper {
     padding: .5rem 0 0 0;
@@ -213,6 +268,49 @@ textarea:focus,
 select:focus,
 button:focus {
     outline: none;
+}
+
+/* SPLASH */
+
+#splash {
+    position: fixed;
+    background-color: var(--grey-dark);
+    min-width: 100vw;
+    min-height: 100vh;
+    background-image: url('../img/noise.gif');
+    box-sizing: border-box;
+    background-blend-mode: luminosity;
+    background-size: cover;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#find-me {
+    cursor: pointer;
+    opacity: 0;
+    animation: findMe 3s infinite 2s;
+    color: var(--red);
+    font-size: 1.5rem;
+}
+
+#me {
+    animation: findMe .4s infinite .5s;
+}
+
+#find {
+    opacity: 0;
+    animation: findMe 2s infinite 1s;
+}
+
+.skip-animations {
+    cursor: pointer;
+    font-size: .6rem;
+    position: absolute;
+    bottom: 3rem;
+    opacity: 0.3;
 }
 
 
@@ -385,7 +483,6 @@ main h3 {
 aside img {
     border: 3px solid var(--grey-light);
     box-shadow: 5px 5px var(--grey-light);
-    /* cursor: pointer; */
     margin-bottom: 1rem;
 }
 

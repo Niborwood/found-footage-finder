@@ -3,32 +3,142 @@
 
 // ----:::: APP/GAME ::::----
 const app = {
-
-    // --- GLITCH EFFECT
-    glitch: () => {
-        let bgIOriginal = app.htmlElement.container.style.backgroundImage;
-        app.htmlElement.container.style.backgroundImage = 'url(\'img/noise2.png\')';
-        app.htmlElement.container.style.backgroundSize = 'initial';
-        app.htmlElement.container.style.animation = `animatedBackground ${Math.random()/2}s ease-in infinite`;
-
-        setTimeout(() => {
-            app.htmlElement.container.style.backgroundImage = bgIOriginal;
-            app.htmlElement.container.style.animation = '0';
-            app.htmlElement.container.style.backgroundSize = 'cover';
-        }, Math.random()*110);
-    },
-
     // --- ELEMENTS HTML
-    htmlElement: {
+    html: {
         main: document.querySelector('main'),
         mainHeader: document.querySelector('main h2'),
         mainSection: document.querySelector('main section'),
         mainButton: document.querySelector('main button'),
-        launchButton: document.querySelector('button#launch-game'),
         playVhsString: document.querySelector('.play-vhs'),
         appHeader: document.querySelector('h1'),
         appTitle: document.querySelector('#app-title'),
-        container: document.querySelector('div#container')
+    },
+
+    init: () => {
+        const launchButton = document.querySelector('button#launch-game');
+
+        // Display Splash
+        app.displaySplash();
+
+        // Play The Game
+        launchButton.addEventListener('click', app.reset);
+    },
+    displaySplash: () => {
+        // Création du HTML
+        const container = document.querySelector('#container');
+        container.style.visibility = 'hidden';
+
+        const splashDiv = document.createElement('div');
+        splashDiv.id = 'splash';
+        document.body.prepend(splashDiv);
+
+        const findMeDiv = document.createElement('div');
+        findMeDiv.id = 'find-me';
+        const findText = document.createElement('span');
+        findText.id = 'find';
+        findText.innerText = 'Find ';
+        const meText = document.createElement('span');
+        meText.id = 'me';
+        meText.innerText = 'me';
+        findMeDiv.appendChild(findText);
+        findMeDiv.appendChild(meText);
+        splashDiv.appendChild(findMeDiv);
+
+        const skipAnimationsP = document.createElement('p');
+        skipAnimationsP.classList.add('skip-animations');
+        skipAnimationsP.innerText = '[ ] Skip Animations';
+        splashDiv.appendChild(skipAnimationsP);
+
+        // Event Listener :: Skip Animations
+        skipAnimationsP.addEventListener('click', (event) => {
+            if (app.data.animations) {
+                event.target.innerText = '[x] Skip Animations';
+                app.data.animations = false;
+                findMeDiv.removeAttribute('id');
+                meText.removeAttribute('id');
+                findText.removeAttribute('id');
+            } else {
+                event.target.innerText = '[ ] Skip Animations';
+                app.data.animations = true;
+                findMeDiv.setAttribute('id', 'find-me');
+                findText.setAttribute('id', 'find');
+                meText.setAttribute('id', 'me');
+            }
+            console.log(app.data.animations);
+        });
+
+        // Event Listener :: Init app
+        findMeDiv.addEventListener('click', () => {
+            container.style.visibility = 'visible';
+            splashDiv.remove();
+
+            // Animations Toggle
+            if (app.data.animations) {
+                const launchButton = document.querySelector('button#launch-game');
+                const typingH2 = document.querySelector('main h2 div');
+                typingH2.classList.add('typing-effect');
+                const typingLastH2 = document.querySelector('main h2 div:nth-child(2)');
+                typingLastH2.classList.add('typing-effect', 'typing-last');
+                app.html.mainSection.classList.add('delayed-display-fade');
+                launchButton.classList.add('delayed-display-fade');
+                app.html.appHeader.classList.add('delayed-display-fade');
+                console.log(app.data.animations);
+                app.glitch();
+            }
+        });
+
+        app.data.animations = true;
+    },
+
+    // --- GLITCH EFFECT
+    glitch: () => {
+        // Animation check
+        if (!app.data.animations) {
+            return;
+        }
+
+        const container = document.querySelector('div#container');
+        let bgIOriginal = container.style.backgroundImage;
+        container.style.backgroundImage = 'url(\'img/noise2.png\')';
+        container.style.backgroundSize = 'initial';
+        container.style.animation = `animatedBackground ${Math.random()/2}s ease-in infinite`;
+
+        setTimeout(() => {
+            container.style.backgroundImage = bgIOriginal;
+            container.style.animation = '0';
+            container.style.backgroundSize = 'cover';
+        }, Math.random()*210);
+    },
+    // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
+    reset: () => {
+        // Init HTML elements
+        app.html.playVhsString.innerText = '▶ PLAY';
+        app.html.playVhsString.classList.remove('animate-flicker');
+        app.html.appTitle.remove();
+        app.html.mainSection.innerText = '';
+        app.html.mainSection.classList.remove('section-result');
+        app.html.mainButton.remove();
+
+        if (app.data.quizStep !== 0) {
+            app.html.main.prepend(app.html.mainHeader);
+        }
+
+        // Init app data
+        fetch('data/movies.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                app.data.movies = data;
+            });
+        app.data.answers = [];
+        app.data.matchingResults = [];
+        app.data.quizStep = 0;
+        app.data.reloads = 0;
+        app.data.quizSkips = 0;
+
+        // Begin
+        app.askQuestion();
     },
 
     // --- DATA
@@ -39,6 +149,7 @@ const app = {
         answers: [],
         matchingResults: [],
         reloads:0,
+        animations:true,
 
         // Data des questions
         question: [
@@ -97,18 +208,18 @@ const app = {
         answerButton.setAttribute('class', 'answer-button');
         const answersWrapper = document.createElement('div');
         answersWrapper.setAttribute('id', 'answer-wrapper');
-        app.htmlElement.mainSection.appendChild(answersWrapper);
+        app.html.mainSection.appendChild(answersWrapper);
         const nextStepStr = document.createElement('p');
         nextStepStr.classList.add('next-question');
         const skipQuestionString = 'Passer cette question (tout me va) <span class="forward">▶</span>';
         const nextQuestionString = 'Question suivante <span class="forward">▶▶</span>';
         nextStepStr.innerHTML = skipQuestionString;
-        app.htmlElement.mainSection.appendChild(nextStepStr);
+        app.html.mainSection.appendChild(nextStepStr);
         
 
         // Génération de l'affichage des questions / réponses (avec flag values)
         const currentQuestion = app.data.question[app.data.quizStep];
-        app.htmlElement.mainHeader.innerText = currentQuestion[0];
+        app.html.mainHeader.innerText = currentQuestion[0];
         
         const currentAnswers = currentQuestion.slice(1);
         currentAnswers.forEach(answer => {
@@ -162,7 +273,7 @@ const app = {
        
         // Est-ce qu'on a fait le tour des questions à poser ?
         if (app.data.quizStep < app.data.question.length-1) {
-            app.htmlElement.mainSection.innerText = '';
+            app.html.mainSection.innerText = '';
             app.data.quizStep++;
             app.askQuestion();
         } else {
@@ -172,34 +283,34 @@ const app = {
     // ---- ECRAN TEMPORAIRE DE FIN DE QUIZ
     displayEndQuiz: () => {
         app.glitch();
-        app.htmlElement.appHeader.appendChild(app.htmlElement.appTitle);
+        app.html.appHeader.appendChild(app.html.appTitle);
 
         // Matching Engine between user answers and movie flags
         app.matchEngine();
 
         // S'il n'y a aucun match
         if (app.data.matchingResults.length === 0) {
-            app.htmlElement.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :('; 
-            app.htmlElement.mainSection.innerText = '';
-            app.displayMore(app.htmlElement.mainSection);
+            app.html.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :('; 
+            app.html.mainSection.innerText = '';
+            app.displayMore(app.html.mainSection);
         } else {
-            app.htmlElement.mainHeader.innerText = 'Votre found footage est prêt.';
-            app.htmlElement.mainSection.innerText = '';
+            app.html.mainHeader.innerText = 'Votre found footage est prêt.';
+            app.html.mainSection.innerText = '';
     
             // Si toutes les questions ont été passées, petit message personnalisé
             if (app.data.quizSkips === app.data.question.length) {
                 const showEverythingP = document.createElement('p');
                 showEverythingP.classList.add('show-everything');
                 showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
-                app.htmlElement.mainSection.appendChild(showEverythingP);
+                app.html.mainSection.appendChild(showEverythingP);
             }
             
             const displayButton = document.createElement('button');
             displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
             displayButton.classList.add('discover-button');
-            app.htmlElement.mainSection.appendChild(displayButton);
-            app.htmlElement.playVhsString.innerText = 'STOP';
-            app.htmlElement.playVhsString.classList.add('animate-flicker');
+            app.html.mainSection.appendChild(displayButton);
+            app.html.playVhsString.innerText = 'STOP';
+            app.html.playVhsString.classList.add('animate-flicker');
     
             displayButton.addEventListener('click', app.displayResults);
         }
@@ -209,17 +320,17 @@ const app = {
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
         app.glitch();
-        app.htmlElement.mainSection.classList.add('section-result');
+        app.html.mainSection.classList.add('section-result');
 
         // Gestion des éléments HTML
-        app.htmlElement.mainSection.innerText = '';
+        app.html.mainSection.innerText = '';
         const dividerP = document.createElement('p');
         dividerP.classList.add('divider');
         const movieHolder = document.createElement('div');
         movieHolder.id = 'movie-holder';
         const tmdbHolder = document.createElement('div');
         movieHolder.appendChild(tmdbHolder);
-        app.htmlElement.mainSection.appendChild(movieHolder);
+        app.html.mainSection.appendChild(movieHolder);
 
         // Lien matchingResult unique > TMDB
         const tmdbCrawler = (id) => {
@@ -271,7 +382,7 @@ const app = {
             return new Promise((success, failure) => {
 
                 theMovieDb[format].getById({'id': tmdbData.id}, (rawData) => {  
-                    app.htmlElement.mainHeader.remove();
+                    app.html.mainHeader.remove();
                     let data = JSON.parse(rawData);
                     console.log(data);
                     // Image
@@ -279,7 +390,7 @@ const app = {
                     poster.src = `https://www.themoviedb.org/t/p/w300${data.poster_path}`;
                     const asidePoster = document.createElement('aside');
                     asidePoster.appendChild(poster);
-                    app.htmlElement.mainSection.prepend(asidePoster);
+                    app.html.mainSection.prepend(asidePoster);
         
                     // Titre, date
                     const titleData = document.createElement('h2');
@@ -442,7 +553,7 @@ const app = {
             event.preventDefault();
 
             if (event.target.classList.contains('reload-movie')) {
-                app.init();
+                app.reset();
             } else {
                 app.data.matchingResults.shift();
                 app.data.reloads++;
@@ -452,53 +563,16 @@ const app = {
     },
     // ---- CALLBACK ERROR TMDB
     tmdbError: () => {
-        app.htmlElement.mainHeader.innerText = 'Erreur API TMDB';
-    },
-
-    // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
-    init: () => {
-        // Init HTML elements
-        app.htmlElement.playVhsString.innerText = '▶ PLAY';
-        app.htmlElement.playVhsString.classList.remove('animate-flicker');
-        app.htmlElement.appTitle.remove();
-        app.htmlElement.mainSection.innerText = '';
-        app.htmlElement.mainSection.classList.remove('section-result');
-        app.htmlElement.mainButton.remove();
-
-        if (app.data.quizStep !== 0) {
-            app.htmlElement.main.prepend(app.htmlElement.mainHeader);
-        }
-
-        // Init app data
-        fetch('data/movies.json')
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                app.data.movies = data;
-            });
-        app.data.answers = [];
-        app.data.matchingResults = [];
-        app.data.quizStep = 0;
-        app.data.reloads = 0;
-        app.data.quizSkips = 0;
-
-        // Begin
-        app.askQuestion();
+        app.html.mainHeader.innerText = 'Erreur API TMDB';
     },
 
 };
 
-// LAUNCH
-app.htmlElement.launchButton.addEventListener('click', app.init);
+// ---> LAUNCH
+document.addEventListener('DOMContentLoaded', app.init);
 
-
-// ************** ADDITIONAL CODE *******************
-
-//  ---- REAL TIME ---- 
-// [https://www.plus2net.com/javascript_tutorial/clock.php]
-document.body.onload = display_ct();
-
+//  --- REAL TIME SLP [https://www.plus2net.com/javascript_tutorial/clock.php]
+display_ct();
 function display_c() {
     let refresh = 1000;
     let mytime = setTimeout('display_ct()', refresh); // eslint-disable-line
@@ -517,18 +591,8 @@ function display_ct() {
     display_c();
 }
 
+
 // ************** TEST SANDBOX *******************
-// TESTS TMDB
-
-// theMovieDb.movies.getById({'id': 694}, (data) => {
-//     let movie = JSON.parse(data);
-//     console.log(movie);
-  
-// }, () => {
-//     console.log('plop');
-// }); // Fin d'appel TMDB
-
-// VAR TESTS
 
 
 // ***************** TODO ************************
