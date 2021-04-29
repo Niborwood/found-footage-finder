@@ -3,7 +3,7 @@
 
 // ----:::: APP/GAME ::::----
 const app = {
-    // --- ELEMENTS HTML
+    // ------ ELEMENTS HTML
     html: {
         main: document.querySelector('main'),
         mainHeader: document.querySelector('main h2'),
@@ -14,6 +14,8 @@ const app = {
         appTitle: document.querySelector('#app-title'),
     },
 
+    // ------ COMMON
+    // --- INITIALISATION
     init: () => {
         const launchButton = document.querySelector('button#launch-game');
 
@@ -23,6 +25,7 @@ const app = {
         // Play The Game
         launchButton.addEventListener('click', app.reset);
     },
+    // --- SPLASH
     displaySplash: () => {
         // Création du HTML
         const container = document.querySelector('#container');
@@ -78,7 +81,8 @@ const app = {
                 typingLastH2.classList.add('typing-effect', 'typing-last');
                 app.html.mainSection.classList.add('delayed-display-fade');
                 launchButton.classList.add('delayed-display-fade');
-                app.html.appHeader.classList.add('delayed-display-fade');
+                app.html.appHeader.classList.add('delayed-display-fade', 'glitch', 'gl-5');
+                app.html.playVhsString.classList.add('animate-flicker');
                 app.glitch();
             };
 
@@ -103,6 +107,8 @@ const app = {
                 setTimeout(() => {
                     findMeDiv.removeAttribute('id');
                     findMeDiv.id = 'find-me-noanim';
+                    meText.removeAttribute('id');
+                    findText.removeAttribute('id');
                 }, 5800);
     
                 setTimeout(() => {
@@ -120,7 +126,6 @@ const app = {
 
         app.data.animations = true;
     },
-
     // --- GLITCH EFFECT
     glitch: () => {
         // Animation check
@@ -175,7 +180,7 @@ const app = {
         app.askQuestion();
     },
 
-    // --- DATA
+    // ------ DATA
     data: {
         // Data des réponses
         quizStep: 0,
@@ -233,13 +238,14 @@ const app = {
         movies: []
     },
 
+    // ------ QUIZ ROUTINE
     // ---- ROUTINE D'AFFICHAGE DE CHAQUE QUESTION/REPONSES
     askQuestion: () => {
         app.glitch();
 
         // Elements HTML générés
         const answerButton = document.createElement('button');
-        answerButton.setAttribute('class', 'answer-button');
+        answerButton.classList.add('answer-button');
         const answersWrapper = document.createElement('div');
         answersWrapper.setAttribute('id', 'answer-wrapper');
         app.html.mainSection.appendChild(answersWrapper);
@@ -254,7 +260,7 @@ const app = {
         // Génération de l'affichage des questions / réponses (avec flag values)
         const currentQuestion = app.data.question[app.data.quizStep];
         app.html.mainHeader.innerText = currentQuestion[0];
-        
+       
         const currentAnswers = currentQuestion.slice(1);
         currentAnswers.forEach(answer => {
             answerButton.innerText = answer[0];
@@ -280,6 +286,15 @@ const app = {
                 }        
             }); // Fin de l'EL au clic sur les boutons
         }); // Fin de la boucle de boutons réponses
+
+        // Display animation
+        // if (app.data.animations) {
+        // app.html.mainSection.style.visibility = 'hidden';
+        setTimeout(() => {
+            // app.html.mainSection.style.visibility = 'visible';
+            app.html.mainSection.classList.add('display-fade');
+        }, 1);
+        // }
         
         // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
         nextStepStr.addEventListener('click', app.nextQuestion);
@@ -307,6 +322,7 @@ const app = {
        
         // Est-ce qu'on a fait le tour des questions à poser ?
         if (app.data.quizStep < app.data.question.length-1) {
+            app.html.mainSection.classList.remove('display-fade');
             app.html.mainSection.innerText = '';
             app.data.quizStep++;
             app.askQuestion();
@@ -351,6 +367,7 @@ const app = {
 
     },
 
+    // ------- QUIZ ENDING
     // ---- AFFICHAGE DU RESULTAT
     displayResults: () => {
         app.glitch();
@@ -602,7 +619,7 @@ const app = {
 
 };
 
-// ---> LAUNCH
+// ------> LAUNCH
 document.addEventListener('DOMContentLoaded', app.init);
 
 //  --- REAL TIME SLP [https://www.plus2net.com/javascript_tutorial/clock.php]
@@ -632,7 +649,7 @@ function display_ct() {
 // ***************** TODO ************************
 
 /* 
-- créer un splash (avec option no-anim)
+- créer les animations par question
 - faire la page Credits (https://www.themoviedb.org/about/logos-attribution)
 
 

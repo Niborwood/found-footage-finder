@@ -208,8 +208,10 @@ Triadique : #2d3033, #332d30, #30332d
     animation: transitionDisplay 3s ease-in, typing 1.5s steps(5) 4s forwards, blink .5s step-end infinite alternate;
 }
 
-.delayed-display {
-    animation: transitionDisplay 5.5s ease-in;
+.display-fade {
+    opacity: 0;
+    visibility: hidden;
+    animation: displayFade .5s ease-in .2s forwards;
 }
 
 .delayed-display-fade {
