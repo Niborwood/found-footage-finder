@@ -53,7 +53,7 @@ const app = {
         splashDiv.appendChild(skipAnimationsP);
 
         // Event Listener :: Skip Animations
-        skipAnimationsP.addEventListener('click', (event) => {
+        const skipAnimations = (event) => {
             if (app.data.animations) {
                 event.target.innerText = '[x] Skip Animations';
                 app.data.animations = false;
@@ -67,11 +67,13 @@ const app = {
                 findText.setAttribute('id', 'find');
                 meText.setAttribute('id', 'me');
             }
-            console.log(app.data.animations);
-        });
+        };
+        skipAnimationsP.addEventListener('click', skipAnimations);
 
         // Event Listener :: Init app
         findMeDiv.addEventListener('click', () => {
+            findMeDiv.removeEventListener('click', () => {});
+            skipAnimationsP.removeEventListener ('click', skipAnimations);
             // Animations Trigger
             const triggerAnimations = () => {
                 const launchButton = document.querySelector('button#launch-game');
@@ -126,6 +128,11 @@ const app = {
 
         app.data.animations = true;
     },
+    displayAnimations: (element) => {
+        if (app.data.animations) {
+            element.classList.add('display-fade');
+        }
+    },
     // --- GLITCH EFFECT
     glitch: () => {
         // Animation check
@@ -136,7 +143,8 @@ const app = {
         const container = document.querySelector('div#container');
         const flexWrapper = document.querySelector('div#flex-wrapper');
         let bgIOriginal = container.style.backgroundImage;
-        container.style.backgroundImage = 'url(\'img/noise2.png\')';
+        const backgrounds = ['url(\'img/noise4.jpg\')', 'url(\'img/noise2.png\')'];
+        container.style.backgroundImage = backgrounds[Math.floor(Math.random()*2)];
         container.style.backgroundSize = 'initial';
         flexWrapper.style.opacity = 0;
         container.style.animation = `animatedBackground ${Math.random() / 2}s ease-in infinite`;
@@ -351,9 +359,7 @@ const app = {
             if (app.data.quizSkips === app.data.question.length) {
                 const showEverythingP = document.createElement('p');
                 showEverythingP.classList.add('show-everything');
-                if (app.data.animation) {
-                    showEverythingP.classList.add('display-fade');
-                }
+                app.displayAnimations(showEverythingP);
                 showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
                 app.html.mainSection.appendChild(showEverythingP);
             }
@@ -364,9 +370,7 @@ const app = {
             app.html.mainSection.appendChild(displayButton);
             app.html.playVhsString.innerText = 'STOP';
             app.html.playVhsString.classList.add('animate-flicker');
-            if (app.data.animation) {
-                app.html.playVhsString.classList.add('display-fade');
-            }
+            app.displayAnimations(app.html.playVhsString);
 
             displayButton.addEventListener('click', app.displayResults);
         }
@@ -387,9 +391,8 @@ const app = {
         movieHolder.id = 'movie-holder';
         const tmdbHolder = document.createElement('div');
         movieHolder.appendChild(tmdbHolder);
-        if (app.data.animations) {
-            movieHolder.classList.add('display-fade');
-        }
+        app.displayAnimations(movieHolder);
+
         app.html.mainSection.appendChild(movieHolder);
 
         // Lien matchingResult unique > TMDB
@@ -658,15 +661,13 @@ function display_ct() {
 // ***************** TODO ************************
 
 /*
-- créer les animations par question
-- faire la page Credits (https://www.themoviedb.org/about/logos-attribution)
-
 
 GO BETA !
 
+- impossible de ne pas trouver de résultats
 - pouvoir skip les membres d'une même saga
 - créer une dernière étape de questionnement spécifique
-- impossible de ne pas trouver de résultats
+
 
 v2
 - ouvrir à tous les films d'horreur

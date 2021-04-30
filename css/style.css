@@ -285,6 +285,10 @@ a:visited {
     cursor: pointer;
 }
 
+a:hover {
+    animation: flickerAnimationEase .8s infinite .2s;
+}
+
 input:focus,
 textarea:focus,
 select:focus,
@@ -328,6 +332,7 @@ button:focus {
     color: var(--red);
     font-size: 1.5rem;
     mix-blend-mode: screen;
+    font-weight: bold
 }
 
 #me {
@@ -457,7 +462,6 @@ span.circle-button {
 button.answer-button {
     font-size: initial;
     margin-bottom: 1em;
-    /* display: block; */
 }
 
 button.discover-button {
@@ -549,6 +553,50 @@ footer {
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+}
+
+footer#credits-footer {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+/* CREDITS */
+
+#credits {
+    margin: 3rem auto 3rem auto;
+}
+
+#credits h1 {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.credits-single {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: .5rem;
+}
+
+.credits-single div {
+    font-size: .8rem;
+}
+
+.credit-left, .credit-right {
+    width:50%;
+}
+
+.credit-left {
+    text-align:right;
+}
+
+.credit-right {
+    text-align: left;
+}
+
+.back-home {
+    text-align: center;
 }
 
 /* *************** RESPONSIVE ************ */
