@@ -20,7 +20,7 @@
 
 ## 1. Synopsis
 
-L'idée est de poser 10 questions au user pour qu'il puisse choisir son found footage à voir, parmi une liste de 100+ found footages.  
+L'idée est de poser quelques questions au user pour qu'il puisse choisir son found footage à voir, parmi une liste de 100+ found footages.  
 
 Nous appellerons désormais cette application :
 
@@ -50,18 +50,9 @@ L'application est créée via **HTML**, **CSS** et **JavaScript**, sans base de 
 
 ### 4.1 **[O]** Poser des questions au user pour trouver un found footage qui correspond à ses envies
 
-L'application a pour but de poser 10 questions d'ordre général puis de plus en plus précises sur les goûts du user pour l'aiguiller vers une réponse unique.
+L'application a pour but de poser une série de questions d'ordre général puis de plus en plus précises sur les goûts du user pour l'aiguiller vers une réponse unique.
 
 Le questionnaire n'est pas fixe : suivant les réponses aux questions, les questions sont gérées dynamiquement. Cela se traduit par le fait que le user puisse utiliser un grand nombre de fois l'application sans tomber une seule fois sur le même questionnaire.
-
-#### *Facultatif* : choix de la précision
-
-Le user peut choisir la préciosité de son temps pour ajuster le nombre de questions posées. Typiquement :
-
-- **Je suis pressé** : 7 questions ;
-- **Je veux la version normale** : 10 questions ;
-- **J'ai tout mon temps** : 15 questions ;
-- **Trouve moi un film que je n'ai pas vu, sinon tu me dois 10 balles** : questionnaire porté sur un film inconnu du user
 
 ### 4.2 [I] Afficher le found footage suivant un modèle front
 

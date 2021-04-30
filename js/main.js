@@ -665,8 +665,10 @@ function display_ct() {
 GO BETA !
 
 - impossible de ne pas trouver de résultats
-- pouvoir skip les membres d'une même saga
+- clean themoviedatabase.js
 - créer une dernière étape de questionnement spécifique
+- pouvoir skip les membres d'une même saga
+
 
 
 v2
