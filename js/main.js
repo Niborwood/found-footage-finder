@@ -71,9 +71,11 @@ const app = {
         skipAnimationsP.addEventListener('click', skipAnimations);
 
         // Event Listener :: Init app
-        findMeDiv.addEventListener('click', () => {
-            findMeDiv.removeEventListener('click', () => {});
+        const findMeTrigger = () => {
+            // Remove Animations
+            findMeDiv.removeEventListener('click', findMeTrigger);
             skipAnimationsP.removeEventListener ('click', skipAnimations);
+
             // Animations Trigger
             const triggerAnimations = () => {
                 const launchButton = document.querySelector('button#launch-game');
@@ -124,9 +126,8 @@ const app = {
                 container.style.visibility = 'visible';
                 splashDiv.remove();
             }
-        });
-
-        app.data.animations = true;
+        };
+        findMeDiv.addEventListener('click', findMeTrigger);
     },
     displayAnimations: (element) => {
         if (app.data.animations) {
@@ -297,7 +298,6 @@ const app = {
 
         // Display animation
         if (app.data.animations) {
-            console.log('plop');
             app.html.mainSection.style.visibility = 'hidden';
             setTimeout(() => {
                 app.html.mainSection.classList.add('display-fade');
