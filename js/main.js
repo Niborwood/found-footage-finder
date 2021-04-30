@@ -207,7 +207,7 @@ const app = {
                 ['Un found footage classique', 'ff'],
                 ['Un faux-documentaire', 'mockumentary'],
                 ['Un film à sketchs', 'sketch'],
-                ['Une série épisodique', 'series'],
+                ['Une série', 'series'],
                 ['Un film-écran', 'screen'],
             ],
             // Question 2 - Difficulty
@@ -655,8 +655,20 @@ function display_ct() {
 }
 
 
-// ************** TEST SANDBOX *******************
+// ************** FEED BACK *******************
 
+/*
+
+ALEX CCFR :
+- Le « découvrir un autre résultat » est peut être trop petit (sur smartphone). Je me demande si on parlait d’une autre proposition (film) ou d’une autre requête.
+
+MELANCOSEL : 
+- En fait c'est juste la première question avec le faux documentaire/found footage classique qui m'induit en erreur
+- (plusieurs choix) Je suis sur portable j'ai pas vraiment fait gaffe ahah
+
+
+
+*/
 
 // ***************** TODO ************************
 
@@ -668,7 +680,6 @@ GO BETA !
 - clean themoviedatabase.js
 - créer une dernière étape de questionnement spécifique
 - pouvoir skip les membres d'une même saga
-
 
 
 v2
