@@ -177,10 +177,9 @@ const app = {
                 return response.json();
             })
             .then(data => {
-                app.data.movies = data;
+                app.data.movies = Object.entries(data);
             });
         app.data.answers = [];
-        app.data.matchingResults = [];
         app.data.quizStep = 0;
         app.data.reloads = 0;
         app.data.quizSkips = 0;
@@ -252,12 +251,74 @@ const app = {
     askQuestion: () => {
         app.glitch();
 
-        // Elements HTML générés
+        // Génération de l'affichage des questions / réponses (avec flag values)
+        
+        const currentQuestion = app.data.question[app.data.quizStep];
+        app.html.mainHeader.innerText = currentQuestion[0];
+        const currentAnswers = currentQuestion.slice(1);
+        console.log('Les réponses après la question', app.data.quizStep+1, ' : ', app.data.answers);
+
+
+        // Si ce n'est pas la 1ère question
+        if (app.data.quizStep !== 0) {
+            // On récupère les films restants par rapport à la réponse précédente
+            const moviesLeft = [];
+            const currentFlags = app.data.answers[app.data.quizStep-1];
+
+            for (const movie of app.data.movies) {
+                for (const flag of currentFlags) { 
+                    if( movie[1].flags.indexOf(flag) !== -1 ) {
+                        moviesLeft.push(movie);
+                    }
+                }       
+            }
+            app.data.movies = moviesLeft;
+            console.table('*********Les datas des films qu\'il me reste :', app.data.movies);
+
+            // ON RECUPERE LA LISTE DES REPONSES PERTINENTES POUR L'UTILISATEUR
+            const relevantAnswers = [];
+            for (const answer of currentAnswers) {
+                let uselessCounter = 0;
+                for (const movie of moviesLeft) {
+                    if (movie[1].flags.indexOf(answer[1]) === -1) {
+                        uselessCounter++;
+                    }
+                }
+                if (moviesLeft.length !== uselessCounter) {
+                    relevantAnswers.push(answer);
+                }
+            }
+
+            // S'il n'y a qu'une seule réponse, pas la peine de la poser
+            if (relevantAnswers.length === 1) {
+                app.nextQuestion('skip', relevantAnswers);
+            } 
+            // S'il y a plusieurs réponses, on passe la question
+            else {
+                app.displayAnswers(relevantAnswers);
+            }
+        } 
+        // Si c'est la 1ere question uniquement (pas de réponse précédente)
+        else {
+            app.displayAnswers(currentAnswers);
+        }
+    },
+    displayAnswers: (answers) => {
+
+        // Routine d'affichage des boutons & values
         const answerButton = document.createElement('button');
         answerButton.classList.add('answer-button');
         const answersWrapper = document.createElement('div');
         answersWrapper.setAttribute('id', 'answer-wrapper');
         app.html.mainSection.appendChild(answersWrapper);
+
+        answers.forEach(answer => {
+            answerButton.innerText = answer[0];
+            answerButton.value = answer[1];
+            answersWrapper.appendChild(answerButton.cloneNode(true));
+        });
+        // Gestion de la réponse utilisateur et génération du bouton suivant
+
         const nextStepStr = document.createElement('p');
         nextStepStr.classList.add('next-question');
         const skipQuestionString = 'Passer cette question (tout me va) <span class="forward">▶</span>';
@@ -265,25 +326,10 @@ const app = {
         nextStepStr.innerHTML = skipQuestionString;
         app.html.mainSection.appendChild(nextStepStr);
 
-
-        // Génération de l'affichage des questions / réponses (avec flag values)
-        const currentQuestion = app.data.question[app.data.quizStep];
-        app.html.mainHeader.innerText = currentQuestion[0];
-
-        const currentAnswers = currentQuestion.slice(1);
-        currentAnswers.forEach(answer => {
-            answerButton.innerText = answer[0];
-            answerButton.value = answer[1];
-            answersWrapper.appendChild(answerButton.cloneNode(true));
-        });
-
-        // Gestion de la réponse utilisateur et génération du bouton suivant
-        const answerButtons = [...document.getElementsByClassName('answer-button')];
-
-        answerButtons.forEach(button => {
+        const buttons = [...document.getElementsByClassName('answer-button')];
+        for (const button of buttons) {
             button.addEventListener('click', function (event) {
                 event.target.classList.toggle('button-clicked');
-
                 const buttonsClicked = document.getElementsByClassName('button-clicked');
                 if (nextStepStr.innerHTML === skipQuestionString && buttonsClicked.length !== 0) {
                     nextStepStr.classList.add('animate-flicker', 'flicker__fast');
@@ -294,7 +340,7 @@ const app = {
                     nextStepStr.classList.remove('animate-flicker', 'flicker__fast');
                 }
             }); // Fin de l'EL au clic sur les boutons
-        }); // Fin de la boucle de boutons réponses
+        }
 
         // Display animation
         if (app.data.animations) {
@@ -307,8 +353,9 @@ const app = {
         // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
         nextStepStr.addEventListener('click', app.nextQuestion);
     },
+    
     // ---- ROUTINE DE STOCKAGE DE REPONSE / GENERATION DE NOUVELLE QUESTION / APPEL DE RESULTATS
-    nextQuestion: () => {
+    nextQuestion: (state, relevantAnswers) => {
         // On enregistre la (les) réponse(s) dans le tableau des flags/réponses
         const userAnswers = [...document.getElementsByClassName('button-clicked')];
         const multiAnswers = (answers) => {
@@ -319,22 +366,47 @@ const app = {
             app.data.answers.push(arrayValues);
         };
 
-        if (userAnswers.length === 0) {
-            const allAnswers = [...document.getElementsByClassName('answer-button')];
-            multiAnswers(allAnswers);
-            app.data.quizSkips++;
-        }
-        else {
-            multiAnswers(userAnswers);
+        // Si la question est sautée par algorithme
+        if (state === 'skip') {
+            let arrayValues = [];
+            for (const answer of relevantAnswers) {
+                console.log('La question', app.data.quizStep+1, 'a été passée.');
+                arrayValues.push(answer[1]);
+            }
+            app.data.answers.push(arrayValues);
+        } else {
+            // Si la question est sautée par l'utilisateur (toutes les réponses)
+            if (userAnswers.length === 0) {
+                const allAnswers = [...document.getElementsByClassName('answer-button')];
+                multiAnswers(allAnswers);
+                app.data.quizSkips++;
+            }
+            // Si la question comporte une ou plusieurs (mais pas toutes) réponses par l'utilisateur
+            else {
+                multiAnswers(userAnswers);
+            }
+            
         }
 
         // Est-ce qu'on a fait le tour des questions à poser ?
-        if (app.data.quizStep < app.data.question.length - 1) {
+        if ( app.data.quizStep < (app.data.question.length -1) ) {
             app.html.mainSection.innerText = '';
             app.html.mainSection.classList.remove('display-fade');
             app.data.quizStep++;
             app.askQuestion();
         } else {
+            const moviesLeft = [];
+            const currentFlags = app.data.answers[app.data.quizStep];
+
+            for (const movie of app.data.movies) {
+                for (const flag of currentFlags) { 
+                    if( movie[1].flags.indexOf(flag) !== -1 ) {
+                        moviesLeft.push(movie);
+                    }
+                }       
+            }
+            app.data.movies = moviesLeft;
+            console.log(moviesLeft);
             app.displayEndQuiz();
         }
     },
@@ -343,37 +415,37 @@ const app = {
         app.glitch();
         app.html.appHeader.appendChild(app.html.appTitle);
 
-        // Matching Engine between user answers and movie flags
-        app.matchEngine();
+        // S'il n'y a aucun match (à virer ?)
+        // if (app.data.movies.length === 0) {
+        //     app.html.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :(';
+        //     app.html.mainSection.innerText = '';
+        //     app.displayMore(app.html.mainSection);
+        // } 
+        // Sinon
+        // else {
+        app.html.mainHeader.innerText = 'Votre found footage est prêt.';
+        app.html.mainSection.innerText = '';
 
-        // S'il n'y a aucun match
-        if (app.data.matchingResults.length === 0) {
-            app.html.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :(';
-            app.html.mainSection.innerText = '';
-            app.displayMore(app.html.mainSection);
-        } else {
-            app.html.mainHeader.innerText = 'Votre found footage est prêt.';
-            app.html.mainSection.innerText = '';
-
-            // Si toutes les questions ont été passées, petit message personnalisé
-            if (app.data.quizSkips === app.data.question.length) {
-                const showEverythingP = document.createElement('p');
-                showEverythingP.classList.add('show-everything');
-                app.displayAnimations(showEverythingP);
-                showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
-                app.html.mainSection.appendChild(showEverythingP);
-            }
-
-            const displayButton = document.createElement('button');
-            displayButton.classList.add('discover-button');
-            displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
-            app.html.mainSection.appendChild(displayButton);
-            app.html.playVhsString.innerText = 'STOP';
-            app.html.playVhsString.classList.add('animate-flicker');
-            app.displayAnimations(app.html.playVhsString);
-
-            displayButton.addEventListener('click', app.displayResults);
+        // Si toutes les questions ont été passées, petit message personnalisé
+        if (app.data.quizSkips === app.data.question.length) {
+            const showEverythingP = document.createElement('p');
+            showEverythingP.classList.add('show-everything');
+            app.displayAnimations(showEverythingP);
+            showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
+            app.html.mainSection.appendChild(showEverythingP);
         }
+
+        const displayButton = document.createElement('button');
+        displayButton.classList.add('discover-button');
+        displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
+        app.html.mainSection.appendChild(displayButton);
+        app.html.playVhsString.innerText = 'STOP';
+        app.html.playVhsString.classList.add('animate-flicker');
+        app.displayAnimations(app.html.playVhsString);
+
+        // EL :: click pour afficher le résultat (DECOUVREZ LE)
+        displayButton.addEventListener('click', app.displayResults);
+        // }
 
     },
 
@@ -398,12 +470,13 @@ const app = {
         // Lien matchingResult unique > TMDB
         const tmdbCrawler = (id) => {
             for (const movie of app.data.movies) {
-                if (movie.id === id) {
-                    return { id: movie.tmdb_id, flags: movie.flags };
+                if (movie[1].id === id) {
+                    return { id: movie[1].tmdb_id, flags: movie[1].flags };
                 }
             }
         };
-        const tmdbData = tmdbCrawler(app.data.matchingResults[0]);
+        const tmdbData = tmdbCrawler(app.data.movies[0][1].id);
+        console.log(tmdbData);
 
         // TMDB display
         if (tmdbData.flags[0] === 'series') {
@@ -415,29 +488,29 @@ const app = {
         // More (reload data/quiz) display
         app.displayMore(movieHolder);
     },
-    // ---- MATCHING ENGINE RESULTS-DB
-    matchEngine: () => {
-        const movies = Object.values(app.data.movies);
-        movies.forEach(movie => {
-            // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd            
-            let match = true;
-            const movieFlags = Object.values(movie.flags);
+    // ---- MATCHING ENGINE RESULTS-DB (à virer ?)
+    // matchEngine: () => {
+    //     const movies = Object.values(app.data.movies);
+    //     movies.forEach(movie => {
+    //         // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd            
+    //         let match = true;
+    //         const movieFlags = Object.values(movie.flags);
 
-            app.data.answers.forEach((answer, index) => {
-                switch (answer.indexOf(movieFlags[index])) {
-                case -1:
-                    match = false;
-                    break;
-                default:
-                    break;
-                }
-            });
-            // S'il y a match(s) ET que ce n'est pas un reload de résultat, on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
-            if (match && app.data.reloads === 0) {
-                app.data.matchingResults.push(movie.id);
-            }
-        }); // Fin de la boucle de check des flags
-    },
+    //         app.data.answers.forEach((answer, index) => {
+    //             switch (answer.indexOf(movieFlags[index])) {
+    //             case -1:
+    //                 match = false;
+    //                 break;
+    //             default:
+    //                 break;
+    //             }
+    //         });
+    //         // S'il y a match(s) ET que ce n'est pas un reload de résultat, on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
+    //         if (match && app.data.reloads === 0) {
+    //             app.data.matchingResults.push(movie.id);
+    //         }
+    //     }); // Fin de la boucle de check des flags
+    // },
     // ---- AFFICHAGE DES INFOS TMDB
     displayTmdbData: (tmdbData, tmdbHolder, dividerP, format) => {
 
@@ -573,18 +646,18 @@ const app = {
         const moreResultsA = document.createElement('a');
         moreResultsA.classList.add('reload-data');
         // Affichage de l'intertitre seulement s'il y a eu match
-        if (app.data.matchingResults.length !== 0) {
+        if (app.data.movies.length !== 0) {
             const moreResultsH3 = document.createElement('h3');
             moreResultsH3.innerText = 'Autres résultats';
             moreHolder.appendChild(moreResultsH3);
         }
 
         // Si 0 ou 1 résultat
-        if (app.data.matchingResults.length === 0) {
+        if (app.data.movies.length === 0) {
             moreResultsA.classList.add('reload-movie');
             moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
         }
-        else if (app.data.matchingResults.length === 1) {
+        else if (app.data.movies.length === 1) {
             if (app.data.reloads === 0) {
                 moreResultsP.innerHTML = 'Un seul résultat a correspondu à votre requête.<br><br>';
                 moreResultsA.classList.add('reload-movie');
@@ -600,10 +673,10 @@ const app = {
         // Si 2+ autres résultats
         else {
             let resultPlural = 'autres résultats correspondent';
-            if (app.data.matchingResults.length === 2) {
+            if (app.data.movies.length === 2) {
                 resultPlural = 'autre résultat correspond';
             }
-            moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.matchingResults.length - 1} ${resultPlural} à vos réponses. <br><br>`;
+            moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.movies.length - 1} ${resultPlural} à vos réponses. <br><br>`;
             moreResultsA.innerHTML = '<span class="forward">▶</span> Me proposer autre chose';
         }
 
@@ -618,7 +691,7 @@ const app = {
             if (event.target.classList.contains('reload-movie')) {
                 app.reset();
             } else {
-                app.data.matchingResults.shift();
+                app.data.movies.shift();
                 app.data.reloads++;
                 app.displayResults();
             }
@@ -655,6 +728,9 @@ function display_ct() {
 }
 
 
+// ************** SANDBOX *******************
+
+
 // ************** FEED BACK *******************
 
 /*
@@ -666,6 +742,9 @@ MELANCOSEL :
 - En fait c'est juste la première question avec le faux documentaire/found footage classique qui m'induit en erreur
 - (plusieurs choix) Je suis sur portable j'ai pas vraiment fait gaffe ahah
 
+THIBAULT : 
+- Par contre j’ai fixé l’animation de base pendant 5 minutes avant de me rendre compte qu’il y aurait rien d’autre que le « find me »
+
 
 
 */
@@ -676,16 +755,16 @@ MELANCOSEL :
 
 GO BETA !
 
-- impossible de ne pas trouver de résultats
 - clean themoviedatabase.js
 - créer une dernière étape de questionnement spécifique
 - pouvoir skip les membres d'une même saga
 
 
 v2
+- FR & EN
 - ouvrir à tous les films d'horreur
 - pouvoir ajouter à la bdd des films en front (sous contrôle)
-- FR & EN
+
 */
 
 
