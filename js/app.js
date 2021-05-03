@@ -151,7 +151,7 @@ const app = {
 
         setTimeout(() => {
             flexWrapper.style.opacity = 1;
-            container.style.backgroundImage = 'url(../img/noise.gif)';
+            container.style.backgroundImage = 'url(\'img/noise.gif\')';
             container.style.animation = '0';
             container.style.backgroundSize = 'cover';
         }, Math.random() * 210);
@@ -176,7 +176,7 @@ const app = {
                 return response.json();
             })
             .then(data => {
-                app.data.movies = Object.entries(data);
+                app.data.movies = Object.values(data);
             });
         app.data.answers = [];
         app.data.quizStep = 0;
@@ -235,8 +235,32 @@ const app = {
             // Question 5 - Difficulty
             [
                 'Chaud pour un film de niche, ou on y va doucement ?',
-                ['Je veux un film que je n\'ai problablement pas vu', 'rare'],
-                ['Un film un peu connu, c\'est ok', 'common']
+                ['Sors-moi quelque chose je n\'ai problablement pas vu', 'rare'],
+                ['Si c\'est un peu connu, c\'est ok', 'common']
+            ],
+            // Question 6 - Specs
+            [
+                'Une petite eccentricité ?',
+                ['Des démons', 'demon'],
+                ['Des sorcières', 'witch'],
+                ['Des aliens', 'alien'],
+                ['Des possessions', 'possession'],
+                ['Des tueurs en série', 'serial-killer'],
+                ['De l\'apocalypse', 'apocalypse'], 
+                ['Des losers', 'lonely'],
+                ['Des clowns', 'clown'],
+                ['Des blockbusters', 'blockbuster'],
+                ['Du gore', 'gore'],
+                ['Des forêts cheloues', 'woods'],
+                ['Des sectes', 'cult'],
+                ['Des zombies / infectés', 'zombie'],
+                ['De la fausse télé-réalité', 'reality-show'],
+                ['Du drame (oui, c\'est possible)', 'drama'],
+                ['Des vieux', 'old'],
+                ['De la parodie', 'comedy'],
+                ['De la flotte', 'water'],
+                ['Inspiré d\'une histoire vraie', 'true-story'],
+                ['WTF', 'wtf']
             ],
             
         ],
@@ -271,7 +295,7 @@ const app = {
 
             for (const movie of app.data.movies) {
                 for (const flag of currentFlags) { 
-                    if( movie[1].flags.indexOf(flag) !== -1 ) {
+                    if( movie.flags.indexOf(flag) !== -1 ) {
                         moviesLeft.push(movie);
                     }
                 }       
@@ -286,7 +310,7 @@ const app = {
             for (const answer of currentAnswers) {
                 let uselessCounter = 0;
                 for (const movie of moviesLeft) {
-                    if (movie[1].flags.indexOf(answer[1]) === -1) {
+                    if (movie.flags.flat().indexOf(answer[1]) === -1) {
                         uselessCounter++;
                     }
                 }
@@ -397,8 +421,8 @@ const app = {
             
         }
 
-        // Est-ce qu'on a fait le tour des questions à poser ?
-        if ( app.data.quizStep < (app.data.question.length -1) ) {
+        // Est-ce qu'on a fait le tour des questions à poser ? (nombre de questions + ne pas poser de question s'il n'y a qu'une réponse possible)
+        if ( app.data.quizStep < (app.data.question.length -1) && app.data.movies.length !== 1 ) {
             app.html.mainSection.innerText = '';
             app.html.mainSection.classList.remove('display-fade');
             app.data.quizStep++;
@@ -410,13 +434,12 @@ const app = {
 
             for (const movie of app.data.movies) {
                 for (const flag of currentFlags) { 
-                    if( movie[1].flags.indexOf(flag) !== -1 ) {
+                    if( movie.flags.flat().indexOf(flag) !== -1 ) {
                         moviesLeft.push(movie);
                     }
                 }       
             }
             app.data.movies = moviesLeft;
-            console.log(moviesLeft);
 
             app.displayEndQuiz();
         }
@@ -477,12 +500,12 @@ const app = {
         // Lien matchingResult unique > TMDB
         const tmdbCrawler = (id) => {
             for (const movie of app.data.movies) {
-                if (movie[1].id === id) {
-                    return { id: movie[1].tmdb_id, flags: movie[1].flags };
+                if (movie.id === id) {
+                    return { id: movie.tmdb_id, flags: movie.flags };
                 }
             }
         };
-        const tmdbData = tmdbCrawler(app.data.movies[0][1].id);
+        const tmdbData = tmdbCrawler(app.data.movies[0].id);
 
         // TMDB display
         tmdbData.flags[0] === 'series' ? app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv') : app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'movies');
@@ -689,16 +712,7 @@ const app = {
 document.addEventListener('DOMContentLoaded', app.init);
 
 
-// ************** SANDBOX *******************
-
 /*
-
-GO BETA !
-
-- afficher les tags des films sous le poster
-- créer une dernière étape de questionnement spécifique
-- pouvoir skip les membres d'une même saga
-
 
 v2
 - FR & EN

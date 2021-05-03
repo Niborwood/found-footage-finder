@@ -117,7 +117,7 @@
         "_title": "20 - Open Windows",
         "id": 20,
         "tmdb_id": 151368,
-        "flags": ["screen", "rare", "usa", "10s", "thriller", [""]]
+        "flags": ["screen", "rare", "usa", "10s", "thriller", ["serial-killer"]]
     },
     {
         "_title": "21 - V/H/S",
@@ -260,7 +260,7 @@
         "_title": "44 - Digging Up The Marrow",
         "id": 44,
         "tmdb_id": 279972,
-        "flags": ["mockumentary", "common", "usa", "10s", "monsters", ["???"]]
+        "flags": ["mockumentary", "common", "usa", "10s", "monsters", ["comedy"]]
     },
     {
         "_title": "45 - Savageland",
