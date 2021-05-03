@@ -255,13 +255,16 @@ const app = {
         const currentQuestion = app.data.question[app.data.quizStep];
         app.html.mainHeader.innerText = currentQuestion[0];
         const currentAnswers = currentQuestion.slice(1);
+        const multiInfoP = document.createElement('p');
+        multiInfoP.classList.add('multi-info');
+        multiInfoP.innerText = 'Vous pouvez sélectionner plusieurs réponses.';
+        app.html.mainHeader.parentNode.insertBefore(multiInfoP, app.html.mainHeader.nextSibling);
         console.log('Les réponses après la question', app.data.quizStep+1, ' : ', app.data.answers);
 
 
         // Si ce n'est pas la 1ère question
         if (app.data.quizStep !== 0) {
             // On récupère les films restants par rapport à la réponse précédente
-
             
             const moviesLeft = [];
             const currentFlags = app.data.answers[app.data.quizStep-1];
@@ -274,7 +277,6 @@ const app = {
                 }       
             }
             app.data.movies = moviesLeft;
-
 
             console.table('*********Les datas des films qu\'il me reste :', app.data.movies);
 
@@ -296,7 +298,7 @@ const app = {
             if (relevantAnswers.length === 1) {
                 app.nextQuestion('skip', relevantAnswers);
             } 
-            // S'il y a plusieurs réponses, on passe la question
+            // S'il y a plusieurs réponses, on affiche la question à l'utilisateur
             else {
                 app.displayAnswers(relevantAnswers);
             }
@@ -359,6 +361,9 @@ const app = {
     
     // ---- ROUTINE DE STOCKAGE DE REPONSE / GENERATION DE NOUVELLE QUESTION / APPEL DE RESULTATS
     nextQuestion: (state, relevantAnswers) => {
+        // On retire l'info de multi-réponses pour éviter son clonage
+        document.querySelector('.multi-info').remove();
+
         // On enregistre la (les) réponse(s) dans le tableau des flags/réponses
         const userAnswers = [...document.getElementsByClassName('button-clicked')];
         const multiAnswers = (answers) => {
@@ -616,32 +621,24 @@ const app = {
     },
     // ---- AFFICHAGE DU RESULTAT
     displayMore: (moreHolder) => {
+        // Affichage de l'intertitre
+        const moreResultsH3 = document.createElement('h3');
+        moreResultsH3.innerText = 'Autres résultats';
+        moreHolder.appendChild(moreResultsH3);
+
         // Film déjà vu ou propositions d'autres résultats si possible
         const moreResultsP = document.createElement('p');
         const moreResultsA = document.createElement('a');
         moreResultsA.classList.add('reload-data');
-        // Affichage de l'intertitre seulement s'il y a eu match
-        if (app.data.movies.length !== 0) {
-            const moreResultsH3 = document.createElement('h3');
-            moreResultsH3.innerText = 'Autres résultats';
-            moreHolder.appendChild(moreResultsH3);
-        }
+        const reloadResultsA = document.createElement('a');
+        reloadResultsA.innerHTML = '<br><br><span class="forward">▶▶</span> Relancer un test';
 
-        // Si 0 ou 1 résultat
-        if (app.data.movies.length === 0) {
-            moreResultsA.classList.add('reload-movie');
-            moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
-        }
-        else if (app.data.movies.length === 1) {
+        // Affichage d'un texte personnalisé pour le dernier des autres résultats (ou le seul)
+        if (app.data.movies.length === 1) {
             if (app.data.reloads === 0) {
                 moreResultsP.innerHTML = 'Un seul résultat a correspondu à votre requête.<br><br>';
-                moreResultsA.classList.add('reload-movie');
-                moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
-
             } else {
                 moreResultsP.innerHTML = 'Dernier résultat selon vos critères. <br><br>';
-                moreResultsA.innerHTML = '<span class="forward">▶▶</span> Relancer un test';
-                moreResultsA.classList.add('reload-movie');
             }
 
         }
@@ -652,24 +649,26 @@ const app = {
                 resultPlural = 'autre résultat correspond';
             }
             moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.movies.length - 1} ${resultPlural} à vos réponses. <br><br>`;
-            moreResultsA.innerHTML = '<span class="forward">▶</span> Me proposer autre chose';
+            moreResultsA.innerHTML = '<span class="forward">▶</span> Me proposer un autre résultat parmi les mêmes critères';
         }
 
         // Affichage et traitement du résultat (via .reload-data)
         moreHolder.appendChild(moreResultsP);
         moreResultsP.appendChild(moreResultsA);
+        moreResultsP.appendChild(reloadResultsA);
 
-        // EL click (voir un autre film / reload)
-        document.querySelector('a.reload-data').addEventListener('click', (event) => {
+        // EL :: click (voir un autre film des mêmes critères)
+        moreResultsA.addEventListener('click', (event) => {
             event.preventDefault();
+            app.data.movies.shift();
+            app.data.reloads++;
+            app.displayResults();
+        });
 
-            if (event.target.classList.contains('reload-movie')) {
-                app.reset();
-            } else {
-                app.data.movies.shift();
-                app.data.reloads++;
-                app.displayResults();
-            }
+        // EL :: click (relancer un quiz)
+        reloadResultsA.addEventListener('click', (event) => {
+            event.preventDefault();
+            app.reset();
         });
     },
     // ---- CALLBACK ERROR TMDB
@@ -682,61 +681,14 @@ const app = {
 // ------> LAUNCH
 document.addEventListener('DOMContentLoaded', app.init);
 
-//  --- REAL TIME SLP [https://www.plus2net.com/javascript_tutorial/clock.php]
-display_ct();
-function display_c() {
-    let refresh = 1000;
-    let mytime = setTimeout('display_ct()', refresh); // eslint-disable-line
-}
-function display_ct() {
-    let date = new Date();
-    function zeroDigits(digit) {
-        if (digit < 10) {
-            return `0${digit}`;
-        } else {
-            return digit;
-        }
-    }
-    let timeDisplay = zeroDigits(date.getHours()) + ':' + zeroDigits(date.getMinutes()) + ':' + zeroDigits(date.getSeconds());
-    document.getElementById('current-time').innerHTML = timeDisplay;
-    display_c();
-}
-
 
 // ************** SANDBOX *******************
-
-
-// ************** FEED BACK *******************
-
-/*
-
-ALEX CCFR :
-- Le « découvrir un autre résultat » est peut être trop petit (sur smartphone). Je me demande si on parlait d’une autre proposition (film) ou d’une autre requête.
-
-MELANCOSEL : 
-- En fait c'est juste la première question avec le faux documentaire/found footage classique qui m'induit en erreur
-- (plusieurs choix) Je suis sur portable j'ai pas vraiment fait gaffe ahah
-
-THIBAULT : 
-- Par contre j’ai fixé l’animation de base pendant 5 minutes avant de me rendre compte qu’il y aurait rien d’autre que le « find me »
-
-ENZO :
-- FF | Un peu connu | ailleurs = rien ne s'affiche (skip animations OK) > TOUS | FF | D'ailleurs
-- n'est pas possible de relancer un test que si on a exploré tous les résultats de recherche
-- 
-
-
-*/
-
-// ***************** TODO ************************
 
 /*
 
 GO BETA !
 
-- debug feedback
-- update credits (tmdb.js, beta testers)
-- clean themoviedatabase.js
+- afficher les tags des films sous le poster
 - créer une dernière étape de questionnement spécifique
 - pouvoir skip les membres d'une même saga
 
