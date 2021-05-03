@@ -540,7 +540,7 @@ div#providers {
     width: 50%;
 }
 
-a.reload-data:hover,
+a.reload-data,
 .next-question:hover {
     animation: flickerAnimationEase .8s infinite .2s;
 }

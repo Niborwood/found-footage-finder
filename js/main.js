@@ -143,7 +143,6 @@ const app = {
 
         const container = document.querySelector('div#container');
         const flexWrapper = document.querySelector('div#flex-wrapper');
-        let bgIOriginal = container.style.backgroundImage;
         const backgrounds = ['url(\'img/noise4.jpg\')', 'url(\'img/noise2.png\')'];
         container.style.backgroundImage = backgrounds[Math.floor(Math.random()*2)];
         container.style.backgroundSize = 'initial';
@@ -152,7 +151,7 @@ const app = {
 
         setTimeout(() => {
             flexWrapper.style.opacity = 1;
-            container.style.backgroundImage = bgIOriginal;
+            container.style.backgroundImage = 'url(../img/noise.gif)';
             container.style.animation = '0';
             container.style.backgroundSize = 'cover';
         }, Math.random() * 210);
@@ -194,13 +193,20 @@ const app = {
         quizStep: 0,
         quizSkips: 0,
         answers: [],
-        matchingResults: [],
         reloads: 0,
         animations: true,
 
         // Data des questions
         question: [
-            // Question 1 - format
+            // Question 1 - theme
+            [
+                'Niveau horreur, vos kinks, c\'est plutôt...',
+                ['Les thrillers', 'thriller'],
+                ['Le paranormal', 'paranormal'],
+                ['La science-fiction', 'sf'],
+                ['Les monstres', 'monsters']
+            ],
+            // Question 2 - format
             [
                 'Quels types de films souhaitez-vous voir ?',
                 ['Un found footage classique', 'ff'],
@@ -208,12 +214,6 @@ const app = {
                 ['Un film à sketchs', 'sketch'],
                 ['Une série', 'series'],
                 ['Un film-écran', 'screen'],
-            ],
-            // Question 2 - Difficulty
-            [
-                'Chaud pour un film de niche, ou on y va doucement ?',
-                ['Je veux un film que je n\'ai problablement pas vu', 'rare'],
-                ['Un film un peu connu, c\'est ok', 'common']
             ],
             // Question 3 - origin
             [
@@ -232,14 +232,13 @@ const app = {
                 ['les années 2000', '00s'],
                 ['de 2010 à aujourd\'hui', '10s']
             ],
-            // Question 5 - theme
+            // Question 5 - Difficulty
             [
-                'Niveau horreur, vos kinks, c\'est plutôt...',
-                ['Les thrillers', 'thriller'],
-                ['Le paranormal', 'paranormal'],
-                ['La science-fiction', 'sf'],
-                ['Les monstres', 'monsters']
-            ]
+                'Chaud pour un film de niche, ou on y va doucement ?',
+                ['Je veux un film que je n\'ai problablement pas vu', 'rare'],
+                ['Un film un peu connu, c\'est ok', 'common']
+            ],
+            
         ],
 
         // Data des films (target of movies.json)
@@ -262,6 +261,8 @@ const app = {
         // Si ce n'est pas la 1ère question
         if (app.data.quizStep !== 0) {
             // On récupère les films restants par rapport à la réponse précédente
+
+            
             const moviesLeft = [];
             const currentFlags = app.data.answers[app.data.quizStep-1];
 
@@ -273,6 +274,8 @@ const app = {
                 }       
             }
             app.data.movies = moviesLeft;
+
+
             console.table('*********Les datas des films qu\'il me reste :', app.data.movies);
 
             // ON RECUPERE LA LISTE DES REPONSES PERTINENTES POUR L'UTILISATEUR
@@ -345,9 +348,9 @@ const app = {
         // Display animation
         if (app.data.animations) {
             app.html.mainSection.style.visibility = 'hidden';
-            setTimeout(() => {
-                app.html.mainSection.classList.add('display-fade');
-            }, 100);
+            // setTimeout(() => {
+            app.html.mainSection.classList.add('display-fade');
+            // }, 100);
         }
 
         // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
@@ -393,6 +396,7 @@ const app = {
             app.html.mainSection.innerText = '';
             app.html.mainSection.classList.remove('display-fade');
             app.data.quizStep++;
+
             app.askQuestion();
         } else {
             const moviesLeft = [];
@@ -407,6 +411,7 @@ const app = {
             }
             app.data.movies = moviesLeft;
             console.log(moviesLeft);
+
             app.displayEndQuiz();
         }
     },
@@ -415,14 +420,6 @@ const app = {
         app.glitch();
         app.html.appHeader.appendChild(app.html.appTitle);
 
-        // S'il n'y a aucun match (à virer ?)
-        // if (app.data.movies.length === 0) {
-        //     app.html.mainHeader.innerText = 'Aucun résultat suivant les critères donnés :(';
-        //     app.html.mainSection.innerText = '';
-        //     app.displayMore(app.html.mainSection);
-        // } 
-        // Sinon
-        // else {
         app.html.mainHeader.innerText = 'Votre found footage est prêt.';
         app.html.mainSection.innerText = '';
 
@@ -435,6 +432,12 @@ const app = {
             app.html.mainSection.appendChild(showEverythingP);
         }
 
+        // Affichage du bouton
+        if (app.data.animations) {
+            app.html.mainSection.style.visibility = 'hidden';
+            app.html.mainSection.classList.add('display-fade');
+        }
+
         const displayButton = document.createElement('button');
         displayButton.classList.add('discover-button');
         displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
@@ -445,8 +448,6 @@ const app = {
 
         // EL :: click pour afficher le résultat (DECOUVREZ LE)
         displayButton.addEventListener('click', app.displayResults);
-        // }
-
     },
 
     // ------- QUIZ ENDING
@@ -479,38 +480,12 @@ const app = {
         console.log(tmdbData);
 
         // TMDB display
-        if (tmdbData.flags[0] === 'series') {
-            app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv');
-        } else {
-            app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'movies');
-        }
+        tmdbData.flags[0] === 'series' ? app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv') : app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'movies');
 
         // More (reload data/quiz) display
         app.displayMore(movieHolder);
     },
-    // ---- MATCHING ENGINE RESULTS-DB (à virer ?)
-    // matchEngine: () => {
-    //     const movies = Object.values(app.data.movies);
-    //     movies.forEach(movie => {
-    //         // On check la correspondance entre les flags de l'utilisateur et ceux de la bdd            
-    //         let match = true;
-    //         const movieFlags = Object.values(movie.flags);
 
-    //         app.data.answers.forEach((answer, index) => {
-    //             switch (answer.indexOf(movieFlags[index])) {
-    //             case -1:
-    //                 match = false;
-    //                 break;
-    //             default:
-    //                 break;
-    //             }
-    //         });
-    //         // S'il y a match(s) ET que ce n'est pas un reload de résultat, on renseigne les id de chaque match pour en retrouver plus tard les infos. Sinon, pas de résultat...
-    //         if (match && app.data.reloads === 0) {
-    //             app.data.matchingResults.push(movie.id);
-    //         }
-    //     }); // Fin de la boucle de check des flags
-    // },
     // ---- AFFICHAGE DES INFOS TMDB
     displayTmdbData: (tmdbData, tmdbHolder, dividerP, format) => {
 
@@ -745,6 +720,10 @@ MELANCOSEL :
 THIBAULT : 
 - Par contre j’ai fixé l’animation de base pendant 5 minutes avant de me rendre compte qu’il y aurait rien d’autre que le « find me »
 
+ENZO :
+- FF | Un peu connu | ailleurs = rien ne s'affiche (skip animations OK) > TOUS | FF | D'ailleurs
+- n'est pas possible de relancer un test que si on a exploré tous les résultats de recherche
+- 
 
 
 */
@@ -755,6 +734,8 @@ THIBAULT :
 
 GO BETA !
 
+- debug feedback
+- update credits (tmdb.js, beta testers)
 - clean themoviedatabase.js
 - créer une dernière étape de questionnement spécifique
 - pouvoir skip les membres d'une même saga
