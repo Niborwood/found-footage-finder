@@ -528,6 +528,12 @@ aside img {
     width: 60%;
 }
 
+.flags {
+    font-size: 0.6rem;
+    padding-right: .5rem;
+    font-style: italic;
+}
+
 .data-subinfo {
     font-style: italic;
 }
@@ -704,6 +710,10 @@ footer#credits-footer {
 
     aside img {
         width: auto;
+    }
+
+    .flags {
+        border-right: 3px solid white;
     }
 }
 

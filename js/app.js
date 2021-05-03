@@ -261,7 +261,7 @@ const app = {
         app.html.mainHeader.parentNode.insertBefore(multiInfoP, app.html.mainHeader.nextSibling);
         console.log('Les réponses après la question', app.data.quizStep+1, ' : ', app.data.answers);
 
-
+        
         // Si ce n'est pas la 1ère question
         if (app.data.quizStep !== 0) {
             // On récupère les films restants par rapport à la réponse précédente
@@ -276,6 +276,7 @@ const app = {
                     }
                 }       
             }
+
             app.data.movies = moviesLeft;
 
             console.table('*********Les datas des films qu\'il me reste :', app.data.movies);
@@ -482,7 +483,6 @@ const app = {
             }
         };
         const tmdbData = tmdbCrawler(app.data.movies[0][1].id);
-        console.log(tmdbData);
 
         // TMDB display
         tmdbData.flags[0] === 'series' ? app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv') : app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'movies');
@@ -500,13 +500,19 @@ const app = {
                 theMovieDb[format].getById({ 'id': tmdbData.id }, (rawData) => {
                     app.html.mainHeader.remove();
                     let data = JSON.parse(rawData);
-                    console.log(data);
+
                     // Image
                     const poster = document.createElement('img');
                     poster.src = `https://www.themoviedb.org/t/p/w300${data.poster_path}`;
                     const asidePoster = document.createElement('aside');
                     asidePoster.appendChild(poster);
                     app.html.mainSection.prepend(asidePoster);
+
+                    // Tags
+                    const flagsHolder = document.createElement('div');
+                    flagsHolder.classList.add('flags');
+                    flagsHolder.innerText = tmdbData.flags.flat().join(', ');
+                    asidePoster.appendChild(flagsHolder);
 
                     // Titre, date
                     const titleData = document.createElement('h2');
@@ -600,6 +606,7 @@ const app = {
                                         }
                                     });
                                 }
+
                             } else {
                                 if (format === 'movies') {
                                     svodListing.innerText = 'Non disponible';
