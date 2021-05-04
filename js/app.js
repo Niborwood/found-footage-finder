@@ -240,7 +240,7 @@ const app = {
             ],
             // Question 6 - Specs
             [
-                'Une petite eccentricité ?',
+                'Des petites eccentricités ?',
                 ['Des démons', 'demon'],
                 ['Des sorcières', 'witch'],
                 ['Des aliens', 'alien'],
@@ -262,7 +262,6 @@ const app = {
                 ['Inspiré d\'une histoire vraie', 'true-story'],
                 ['WTF', 'wtf']
             ],
-            
         ],
 
         // Data des films (target of movies.json)
@@ -434,7 +433,7 @@ const app = {
 
             for (const movie of app.data.movies) {
                 for (const flag of currentFlags) { 
-                    if( movie.flags.flat().indexOf(flag) !== -1 ) {
+                    if( movie.flags.flat().indexOf(flag) !== -1 && moviesLeft.find(movieLeft => movieLeft === movie) === undefined) {
                         moviesLeft.push(movie);
                     }
                 }       
