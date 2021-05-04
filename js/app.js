@@ -222,7 +222,7 @@ const app = {
                 ['d\'Europe', 'europe'],
                 ['des USA / Canada', 'usa'],
                 ['d\'Asie', 'asia'],
-                ['d\'ailleurs encore', 'other']
+                ['... et de quelques recoins du monde', 'other']
             ],
             // Question 4 - date
             [
@@ -247,17 +247,21 @@ const app = {
                 ['Des possessions', 'possession'],
                 ['Des tueurs en série', 'serial-killer'],
                 ['De l\'apocalypse', 'apocalypse'], 
-                ['Des losers', 'lonely'],
+                ['Des losers', 'loser'],
+                ['Des hôpitaux psychiatriques', 'hospital'],
                 ['Des clowns', 'clown'],
                 ['Des blockbusters', 'blockbuster'],
                 ['Du gore', 'gore'],
                 ['Des forêts cheloues', 'woods'],
                 ['Des sectes', 'cult'],
+                ['Des yetis', 'bigfoot'],
+                ['De la mythologie', 'mythology'],
+                ['Des webcams', 'webcam'],
                 ['Des zombies / infectés', 'zombie'],
                 ['De la fausse télé-réalité', 'reality-show'],
                 ['Du drame (oui, c\'est possible)', 'drama'],
                 ['Des vieux', 'old'],
-                ['De la parodie', 'comedy'],
+                ['De la comédie', 'comedy'],
                 ['De la flotte', 'water'],
                 ['Inspiré d\'une histoire vraie', 'true-story'],
                 ['WTF', 'wtf']
@@ -504,6 +508,11 @@ const app = {
                 }
             }
         };
+
+        // Tri par score
+        app.data.movies.sort(function(a,b){
+            return b.score - a.score;
+        });
         const tmdbData = tmdbCrawler(app.data.movies[0].id);
 
         // TMDB display
@@ -533,7 +542,7 @@ const app = {
                     // Tags
                     const flagsHolder = document.createElement('div');
                     flagsHolder.classList.add('flags');
-                    flagsHolder.innerText = tmdbData.flags.flat().join(', ');
+                    flagsHolder.innerText = tmdbData.flags.flat().sort().join(', ');
                     asidePoster.appendChild(flagsHolder);
 
                     // Titre, date
@@ -689,6 +698,7 @@ const app = {
         // EL :: click (voir un autre film des mêmes critères)
         moreResultsA.addEventListener('click', (event) => {
             event.preventDefault();
+            // A facto
             app.data.movies.shift();
             app.data.reloads++;
             app.displayResults();
@@ -712,6 +722,10 @@ document.addEventListener('DOMContentLoaded', app.init);
 
 
 /*
+
+V.beta02
+- Passer les indisponibles SVOD / VOD
+- Add score sorting
 
 v2
 - FR & EN
