@@ -246,7 +246,7 @@ const app = {
             ],
             // Question 6 - Specs
             [
-                'Des petites eccentricités ?',
+                'Des petites excentricités ?',
                 ['Des démons', 'demon'],
                 ['Des sorcières', 'witch'],
                 ['Des aliens', 'alien'],
