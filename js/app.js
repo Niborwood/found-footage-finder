@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', app.init);
 
 /*
 
-V.beta02
+V.beta2
 - Navigation des résultats au clavier
 
 v2
@@ -779,6 +779,8 @@ v2
 
 */
 
+app.use((request, response, next) => {
 
+});
 
 
