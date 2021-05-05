@@ -161,8 +161,8 @@ Triadique : #2d3033, #332d30, #30332d
 }
 
 ::selection {
-    background-color: transparent;
-    color: #898989;
+    background-color: var(--grey-light);
+    color:var(--grey-dark);
 }
 
 @font-face {
@@ -248,8 +248,9 @@ body {
     background-image: url('../img/noise.gif');
     box-sizing: border-box;
     min-height: 100vh;
-    background-blend-mode: luminosity;
-    background-size: cover;
+    /* background-blend-mode: luminosity; */
+    /* background-size: cover; */
+    transform: translateZ(0);
 }
 
 #flex-wrapper {
@@ -324,6 +325,7 @@ button:focus {
     font-size: 1.5rem;
     mix-blend-mode: screen;
     font-weight: bold;
+    transform: translateZ(0);
 }
 
 #find-me-noanim {
@@ -335,11 +337,13 @@ button:focus {
 
 #me {
     animation: findMe .4s infinite .5s;
+    transform: translateZ(0);
 }
 
 #find {
     opacity: 0;
     animation: findMe 2s infinite 1s;
+    transform: translateZ(0);
 }
 
 .skip-animations {
@@ -426,7 +430,6 @@ button {
 
 
 @media (hover:hover) {
-
     /* Hover effect only on devices that fully support them */
     button:hover {
         color: var(--grey-light);
@@ -495,6 +498,26 @@ span.forward {
 
 p.show-everything {
     font-size: .6rem;
+    position: relative;
+    bottom: 1.5rem;
+}
+
+.footage-ready {
+    margin-bottom: 2rem;
+}
+
+.vod-option {
+    margin-top: 1rem;
+    font-size: .6rem;
+    cursor: pointer;
+}
+
+.vod-option::before {
+    content: "[x] ";
+}
+
+.vod-option-active::before {
+    content: "[ ] ";
 }
 
 /* AFFICHAGE DES RESULTATS */

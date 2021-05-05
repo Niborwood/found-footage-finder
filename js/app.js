@@ -15,7 +15,7 @@ const app = {
     },
 
     // ------ COMMON
-    // --- INITIALISATION
+    // --- INIT
     init: () => {
         const launchButton = document.querySelector('button#launch-game');
 
@@ -156,7 +156,7 @@ const app = {
             container.style.backgroundSize = 'cover';
         }, Math.random() * 210);
     },
-    // --- INITIALISATION DU JEU, POUR LA PREMIERE OU POUR UN REPLAY
+    // --- GAME RESERT (LAUNCH | REPLAY)
     reset: () => {
         // Init HTML elements
         app.html.playVhsString.innerText = '▶ PLAY';
@@ -273,7 +273,7 @@ const app = {
     },
 
     // ------ QUIZ ROUTINE
-    // ---- ROUTINE D'AFFICHAGE DE CHAQUE QUESTION/REPONSES
+    // ---- QUESTIONS AND ANSWERS DISPLAY
     askQuestion: () => {
         app.glitch();
 
@@ -387,7 +387,7 @@ const app = {
         nextStepStr.addEventListener('click', app.nextQuestion);
     },
     
-    // ---- ROUTINE DE STOCKAGE DE REPONSE / GENERATION DE NOUVELLE QUESTION / APPEL DE RESULTATS
+    // ---- DATA RECORD & NEW QUESTION | END QUESTIONS
     nextQuestion: (state, relevantAnswers) => {
         // On retire l'info de multi-réponses pour éviter son clonage
         document.querySelector('.multi-info').remove();
@@ -442,17 +442,24 @@ const app = {
                     }
                 }       
             }
-            app.data.movies = moviesLeft;
 
+            // Score sorting
+            app.data.movies = moviesLeft.sort(function(a,b){
+                return b.score - a.score;
+            });
+
+            // Display Ending Screen
             app.displayEndQuiz();
         }
     },
-    // ---- ECRAN TEMPORAIRE DE FIN DE QUIZ
+    // ---- TEMP END DISPLAY
     displayEndQuiz: () => {
+        console.log('****** Mon résultat final :', app.data.movies);
         app.glitch();
         app.html.appHeader.appendChild(app.html.appTitle);
 
         app.html.mainHeader.innerText = 'Votre found footage est prêt.';
+        app.html.mainHeader.classList.add('footage-ready');
         app.html.mainSection.innerText = '';
 
         // Si toutes les questions ont été passées, petit message personnalisé
@@ -464,7 +471,7 @@ const app = {
             app.html.mainSection.appendChild(showEverythingP);
         }
 
-        // Affichage du bouton
+        // Display discover-results button
         if (app.data.animations) {
             app.html.mainSection.style.visibility = 'hidden';
             app.html.mainSection.classList.add('display-fade');
@@ -478,20 +485,56 @@ const app = {
         app.html.playVhsString.classList.add('animate-flicker');
         app.displayAnimations(app.html.playVhsString);
 
-        // EL :: click pour afficher le résultat (DECOUVREZ LE)
-        displayButton.addEventListener('click', app.displayResults);
+        // Display SVOD-VOD option
+        let noStreamingCounter = 1;
+        const noStreamingMovies = [];
+        for (const movie of app.data.movies) {
+            
+            theMovieDb.movies.getProviders({ 'id': [movie.tmdb_id] }, (rawData) => {
+                const data = JSON.parse(rawData);
+                if (data.results.FR === undefined) {
+                    noStreamingCounter++;
+                    noStreamingMovies.push(movie.id);
+                } 
+            }, app.tmdbError);
+        }
+
+        if (noStreamingCounter !== app.data.movies.length) {
+            // HTML elements
+            const svodOptionP = document.createElement('p');
+            svodOptionP.classList.add('vod-option');
+            svodOptionP.innerText = 'Afficher les résultats indisponibles en SVOD/VOD';
+            app.html.mainSection.appendChild(svodOptionP);
+
+            // EL :: click to activate.deactivate svod-vod
+            svodOptionP.addEventListener('click', (event) => {
+                event.target.classList.toggle('vod-option-active');
+            });
+        }       
+
+        // EL :: click to launch display tmdb/movie results
+        displayButton.addEventListener('click', () => { app.displayResults(noStreamingMovies); });
     },
 
     // ------- QUIZ ENDING
-    // ---- AFFICHAGE DU RESULTAT
-    displayResults: () => {
+    // ---- DISPLAY RESULT
+    displayResults: (noStreamingMovies) => {
         app.glitch();
+
+        // Catching SVOD-VOD button state and removing unavailable movies if need be
+        const svodOption = document.querySelector('.vod-option-active');
+        if (svodOption !== null) {
+            app.data.movies = app.data.movies.filter(function(movie) {
+                return !noStreamingMovies.includes(movie.id); 
+            });
+        }
+
+        // Preparing / emptying the template
+        app.html.mainSection.innerText = '';
+        app.html.mainHeader.classList.remove('footage-ready');
         app.html.mainSection.classList.add('section-result');
 
-        // Gestion des éléments HTML
-        app.html.mainSection.innerText = '';
-        const dividerP = document.createElement('p');
-        dividerP.classList.add('divider');
+        // HTML elements
         const movieHolder = document.createElement('div');
         movieHolder.id = 'movie-holder';
         const tmdbHolder = document.createElement('div');
@@ -499,31 +542,21 @@ const app = {
         app.displayAnimations(movieHolder);
 
         app.html.mainSection.appendChild(movieHolder);
-
-        // Lien matchingResult unique > TMDB
-        const tmdbCrawler = (id) => {
-            for (const movie of app.data.movies) {
-                if (movie.id === id) {
-                    return { id: movie.tmdb_id, flags: movie.flags };
-                }
-            }
-        };
-
-        // Tri par score
-        app.data.movies.sort(function(a,b){
-            return b.score - a.score;
-        });
-        const tmdbData = tmdbCrawler(app.data.movies[0].id);
-
-        // TMDB display
-        tmdbData.flags[0] === 'series' ? app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'tv') : app.displayTmdbData(tmdbData, tmdbHolder, dividerP, 'movies');
+        
+        // TMDB display (movies | series)
+        const tmdbData = app.tmdbCrawler(app.data.movies[0].id);
+        tmdbData.flags.indexOf('series') !== -1 ? app.displayTmdbData(tmdbData, tmdbHolder, 'tv') : app.displayTmdbData(tmdbData, tmdbHolder, 'movies');
 
         // More (reload data/quiz) display
         app.displayMore(movieHolder);
     },
 
-    // ---- AFFICHAGE DES INFOS TMDB
-    displayTmdbData: (tmdbData, tmdbHolder, dividerP, format) => {
+    // ---- DISPLAY TMDB DATA (API RESPONSE)
+    displayTmdbData: (tmdbData, tmdbHolder, format) => {
+
+        // HTML elements
+        const dividerP = document.createElement('p');
+        dividerP.classList.add('divider');
 
         const getTmdbGeneral = () => {
             return new Promise((success, failure) => {
@@ -598,13 +631,13 @@ const app = {
             theMovieDb[format].getProviders({ 'id': [tmdbData.id] }, (rawData) => {
                 const data = JSON.parse(rawData);
 
-                // Si aucune option légale
+                // If no legal SVOD-VOD option
                 if (data.results.FR === undefined) {
                     const targetH3 = document.createElement('h3');
                     targetH3.innerHTML = 'Indisponible en SVOD & VOD';
                     tmdbHolder.appendChild(targetH3);
                 }
-                // Routine d'affichage des providers
+                // Provider display routine
                 else {
                     const displayProviders = (providers) => {
                         const providersHolder = document.createElement('div');
@@ -657,7 +690,8 @@ const app = {
         getTmdbGeneral().then(getTmdbProviders, app.tmdbError);
 
     },
-    // ---- AFFICHAGE DU RESULTAT
+
+    // ---- DISPLAY MORE
     displayMore: (moreHolder) => {
         // Affichage de l'intertitre
         const moreResultsH3 = document.createElement('h3');
@@ -695,7 +729,7 @@ const app = {
         moreResultsP.appendChild(moreResultsA);
         moreResultsP.appendChild(reloadResultsA);
 
-        // EL :: click (voir un autre film des mêmes critères)
+        // EL :: click (voir un autre film avec les mêmes critères)
         moreResultsA.addEventListener('click', (event) => {
             event.preventDefault();
             // A facto
@@ -709,6 +743,12 @@ const app = {
             event.preventDefault();
             app.reset();
         });
+    },
+
+    // ---- FETCH MOVIEDATA.ID WITH TMDB.DATA, RETURN CURRENT ID & FLAGS
+    tmdbCrawler: (id) => {
+        const currentMovie = app.data.movies.find(movie => movie.id === id);
+        return { id: currentMovie.tmdb_id, flags: currentMovie.flags };
     },
     // ---- CALLBACK ERROR TMDB
     tmdbError: () => {
@@ -724,8 +764,8 @@ document.addEventListener('DOMContentLoaded', app.init);
 /*
 
 V.beta02
-- Passer les indisponibles SVOD / VOD
-- Add score sorting
+- Unselectable EL
+- Navigation des résultats au clavier
 
 v2
 - FR & EN

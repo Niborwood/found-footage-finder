@@ -709,7 +709,7 @@
         "_title": "102 - The Gallows",
         "id": 102,
         "tmdb_id": 299245,
-        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon"]],
+        "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "blockbuster"]],
         "score": 10
     },
     {

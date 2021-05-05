@@ -1,6 +1,7 @@
 @charset "UTF-8";
 .glitch {
   position: relative;
+  transform: translateZ(0);
 }
 
 .glitch > * {

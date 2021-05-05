@@ -64,7 +64,7 @@ Le user doit pouvoir, en un clic, accéder aux plateformes légales françaises 
 
 ### 4.3 [I] Afficher les métadonnées du film grâce à une base de données externes
 
-L'application utilise une API externe pour accéder aux données des films. Cette API est celle de [The Movie Data Base](https://www.themoviedb.org/?language=fr), et plus spécifiquement, son portage JavaScript.
+L'application utilise une API externe pour accéder aux données des films. Cette API est celle de [The Movie Database](https://www.themoviedb.org/?language=fr), et plus spécifiquement, son portage JavaScript.
 
 Un grand merci à [themoviedb-javascript-library](https://github.com/cavestri/themoviedb-javascript-library/) !
 
@@ -79,5 +79,5 @@ De même, on veille à ce qu'elle soit à la fois simple et esthétique dans son
 ## 6. Ressources
 
 - Police : [VCR OSD Mono](https://www.dafont.com/vcr-osd-mono.font)
-- Data des films : [The Movie Data Base](https://www.themoviedb.org/?language=fr)
+- Data des films : [The Movie Database](https://www.themoviedb.org/?language=fr)
 - Script JS TMDB : [themoviedb-javascript-library](https://github.com/cavestri/themoviedb-javascript-library/)
