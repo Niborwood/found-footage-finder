@@ -67,8 +67,12 @@ Triadique : #2d3033, #332d30, #30332d
         background-position: 0 0;
     }
 
-    to {
+    31% {
         background-position: 100% 3%;
+    }
+
+    to {
+        background-position: 57% -3%;
     }
 }
 
@@ -282,6 +286,7 @@ a,
 a:visited {
     color: var(--grey-light);
     cursor: pointer;
+    user-select: none;
 }
 
 a:hover {
@@ -304,8 +309,8 @@ button:focus {
     min-height: 100vh;
     background-image: url('../img/noise.gif');
     box-sizing: border-box;
-    background-blend-mode: luminosity;
-    background-size: cover;
+    /* background-blend-mode: luminosity; */
+    /* background-size: cover; */
     z-index: 1;
     display: flex;
     flex-direction: column;
@@ -326,13 +331,15 @@ button:focus {
     mix-blend-mode: screen;
     font-weight: bold;
     transform: translateZ(0);
+    user-select: none;
 }
 
 #find-me-noanim {
     color: var(--red);
     font-size: 1.5rem;
     mix-blend-mode: screen;
-    font-weight: bold
+    font-weight: bold;
+    user-select: none;
 }
 
 #me {
@@ -351,6 +358,7 @@ button:focus {
     position: absolute;
     bottom: 8rem;
     opacity: 0.3;
+    user-select: none;
 }
 
 
@@ -360,6 +368,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: start;
+    user-select: none;
 }
 
 header h1 {
@@ -385,6 +394,7 @@ header h1 {
 
 #slp {
     margin-bottom: .5rem;
+    user-select: none;
 }
 
 /* MAIN */
@@ -482,6 +492,7 @@ button.discover-button {
     padding: 1em;
     letter-spacing: 1px;
     font-size: .8em;
+    user-select: none;
 }
 
 span.forward {

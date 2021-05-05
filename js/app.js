@@ -87,7 +87,7 @@ const app = {
                 launchButton.classList.add('delayed-display-fade');
                 app.html.appHeader.classList.add('delayed-display-fade', 'glitch', 'gl-5');
                 app.html.playVhsString.classList.add('animate-flicker');
-                app.glitch();
+                app.glitch(500);
             };
 
             // Si animations
@@ -135,10 +135,16 @@ const app = {
         }
     },
     // --- GLITCH EFFECT
-    glitch: () => {
+    glitch: (duration) => {
         // Animation check
         if (!app.data.animations) {
             return;
+        }
+
+        // Check duration (random if null)
+        let timeoutDuration = Math.random() * 210;
+        if (typeof duration !== 'undefined') {
+            timeoutDuration = duration;
         }
 
         const container = document.querySelector('div#container');
@@ -154,7 +160,7 @@ const app = {
             container.style.backgroundImage = 'url(\'img/noise.gif\')';
             container.style.animation = '0';
             container.style.backgroundSize = 'cover';
-        }, Math.random() * 210);
+        }, timeoutDuration);
     },
     // --- GAME RESERT (LAUNCH | REPLAY)
     reset: () => {
@@ -764,7 +770,6 @@ document.addEventListener('DOMContentLoaded', app.init);
 /*
 
 V.beta02
-- Unselectable EL
 - Navigation des résultats au clavier
 
 v2
