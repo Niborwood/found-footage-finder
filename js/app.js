@@ -1,4 +1,4 @@
-// ************** CORE CODE *******************
+// ************** [●] CORE CODE [●] *******************
 /* global theMovieDb */
 
 // ----:::: APP/GAME ::::----
@@ -63,7 +63,7 @@ const app = {
     // --- SPLASH
     displaySplash: () => {
         // HTML elements
-        const launchButton = document.querySelector('button#launch-game');
+        
         const container = document.querySelector('#container');
         container.style.visibility = 'hidden';
 
@@ -110,9 +110,10 @@ const app = {
 
         // Event Listener :: Init app
         const findMeTrigger = () => {
+            const launchButton = document.querySelector('button#launch-game');
             // Remove Animations
             findMeDiv.removeEventListener('click', findMeTrigger);
-            skipAnimationsP.removeEventListener ('click', skipAnimations);
+            skipAnimationsP.removeEventListener('click', skipAnimations);
 
             // Animations Trigger
             const triggerAnimations = () => {
@@ -129,11 +130,13 @@ const app = {
                 // Wait for display-fade animation to end to fire EL :: keyup & click (to launch the game)
                 setTimeout(() => {
                     app.nextAction('next', launchButton, app.reset);
+
                 }, 8000);
             };
 
             // Si animations
             if (app.data.animations) {
+                
                 skipAnimationsP.classList.add('fade-out');
 
                 setTimeout(() => {
@@ -170,9 +173,12 @@ const app = {
                 app.nextAction('next', launchButton, app.reset);
                 // app.reset(); OLD EL
             }
+
+            document.removeEventListener('keyup', findMeTrigger);
         };
 
         // EL :: click on FIND ME text
+        document.addEventListener('keyup', findMeTrigger);
         findMeDiv.addEventListener('click', findMeTrigger);
     },
     
@@ -691,7 +697,7 @@ const app = {
             app.displayResults();
         };
 
-        app.nextChoice(reloadMovie, app.reset, moreResultsA, reloadResultsA);
+        app.navigateResults(reloadMovie, app.reset, moreResultsA, reloadResultsA);
 
         // OLD EL
         // EL :: click (reloadMovie)
@@ -716,7 +722,8 @@ const app = {
     tmdbError: () => {
         app.html.mainHeader.innerText = 'Erreur API TMDB';
     },
-    // ---- HANDLE KEYBOARDS & CLICK EVENTS & CALLBACKS
+
+    // ---- HANDLE KEYBOARDS & CLICK => EL, CALLBACKS
     nextAction: (action, clickTarget, callback, parameter) => {
         // Switch keys between selected action
         let keys;
@@ -747,7 +754,7 @@ const app = {
                 callback(parameter);
             }
             document.removeEventListener('keyup', nextListener);
-            document.removeEventListener('click', nextListener);
+            clickTarget.removeEventListener('click', nextListener);
         };
 
         // EL :: keyup & click
@@ -755,7 +762,7 @@ const app = {
         document.addEventListener('keyup', nextListener);
 
     },
-    nextChoice: (callbackNext, callbackCancel, clickTargetNext, clickTargetCancel, parameter) => {
+    navigateResults: (callbackNext, callbackCancel, clickTargetNext, clickTargetCancel) => {
         const nextListener = (event) => {
             event.preventDefault();
             event.stopPropagation();
@@ -764,18 +771,17 @@ const app = {
                 if (event.type === 'keyup') {
                     for (const key of app.data.nextKeys) {
                         if (event.code === key) {
-                            callbackNext(parameter);
+                            callbackNext();
                         }
                     }
                 } else if (event.type === 'click') {
-                    callbackNext(parameter);
+                    callbackNext();
                 }
+            } else {
+                callbackCancel();
             }
-
             document.removeEventListener('keyup', nextListener);
-            document.removeEventListener('click', nextListener);
-            // document.removeEventListener('keyup', cancelListener);
-            // document.removeEventListener('click', cancelListener);
+            clickTargetNext.removeEventListener('click', nextListener);
         };
 
         const cancelListener = (event) => {
@@ -786,48 +792,28 @@ const app = {
                 if (event.type === 'keyup') {
                     for (const key of app.data.cancelKeys) {
                         if (event.code === key) {
-                            callbackCancel(parameter);
+                            callbackCancel();
                         }
                     }
                 } else if (event.type === 'click') {
-                    callbackCancel(parameter);
+                    callbackCancel();
                 }
             }
-
             document.removeEventListener('keyup', cancelListener);
-            document.removeEventListener('click', cancelListener);
+            clickTargetCancel.removeEventListener('click', cancelListener);
             document.removeEventListener('keyup', nextListener);
-            document.removeEventListener('click', nextListener);
+            clickTargetNext.removeEventListener('click', nextListener);
+            
         };
 
         document.addEventListener('keyup', nextListener);
         document.addEventListener('keyup', cancelListener);
         clickTargetNext.addEventListener('click', nextListener);
         clickTargetCancel.addEventListener('click', cancelListener);
-    }
-
+    },
 };
 
 // ------> LAUNCH
 document.addEventListener('DOMContentLoaded', app.init);
 
-// document.addEventListener('click', (event) => {
-//     console.log(event);
-// });
-
-/*
-
-V.beta02
-- Navigation globale au clavier
-
-v2
-- FR & EN
-- Add sounds (idle, click, display, glitch)
-- ouvrir à tous les films d'horreur
-- pouvoir ajouter à la bdd des films en front (sous contrôle)
-
-*/
-
-
-
-
+// [●] 
