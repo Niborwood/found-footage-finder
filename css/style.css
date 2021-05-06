@@ -204,7 +204,6 @@ Triadique : #2d3033, #332d30, #30332d
     white-space: nowrap;
     overflow: hidden;
     margin: auto;
-    /* border-right: 3px solid var(--grey-light); */
 }
 
 .typing-last {
@@ -253,7 +252,7 @@ body {
     box-sizing: border-box;
     min-height: 100vh;
     /* background-blend-mode: luminosity; */
-    /* background-size: cover; */
+    background-size: cover;
     transform: translateZ(0);
 }
 
@@ -361,6 +360,13 @@ button:focus {
     user-select: none;
 }
 
+.skip-animations::before {
+    content: '[ ] ';
+}
+
+.skip-animations-active::before {
+    content: '[x] ';
+}
 
 /* HEADER */
 

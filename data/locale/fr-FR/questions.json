@@ -1,0 +1,69 @@
+[
+    [
+        "Niveau horreur, vos kinks, c'est plutôt...",
+        ["Les thrillers", "thriller"],
+        ["Le paranormal", "paranormal"],
+        ["La science-fiction", "sf"],
+        ["Les monstres", "monsters"]
+    ],
+
+    [
+        "Quels types de films souhaitez-vous voir ?",
+        ["Un found footage classique", "ff"],
+        ["Un faux-documentaire", "mockumentary"],
+        ["Un film à sketchs", "sketch"],
+        ["Une série", "series"],
+        ["Un film-écran", "screen"]
+    ],
+
+    [
+        "Il doit venir d'où, ce film ?",
+        ["de France", "france"],
+        ["d'Europe", "europe"],
+        ["des USA / Canada", "usa"],
+        ["d'Asie", "asia"],
+        ["... et de quelques recoins du monde", "other"]
+    ],
+
+    [
+        "On part piocher à quelles époques ?",
+        ["les 70/80s", "70-80s"],
+        ["les 90s", "90s"],
+        ["les années 2000", "00s"],
+        ["de 2010 à aujourd'hui", "10s"]
+    ],
+
+    [
+        "Chaud pour un film de niche, ou on y va doucement ?",
+        ["Sors-moi quelque chose je n'ai problablement pas vu", "rare"],
+        ["Si c'est un peu connu, c'est ok", "common"]
+    ],
+
+    [
+        "Des petites excentricités ?",
+        ["Des démons", "demon"],
+        ["Des sorcières", "witch"],
+        ["Des aliens", "alien"],
+        ["Des possessions", "possession"],
+        ["Des tueurs en série", "serial-killer"],
+        ["De l'apocalypse", "apocalypse"], 
+        ["Des losers", "loser"],
+        ["Des hôpitaux psychiatriques", "hospital"],
+        ["Des clowns", "clown"],
+        ["Des blockbusters", "blockbuster"],
+        ["Du gore", "gore"],
+        ["Des forêts cheloues", "woods"],
+        ["Des sectes", "cult"],
+        ["Des yetis", "bigfoot"],
+        ["De la mythologie", "mythology"],
+        ["Des webcams", "webcam"],
+        ["Des zombies / infectés", "zombie"],
+        ["De la fausse télé-réalité", "reality-show"],
+        ["Du drame (oui, c'est possible)", "drama"],
+        ["Des vieux", "old"],
+        ["De la comédie", "comedy"],
+        ["De la flotte", "water"],
+        ["Inspiré d'une histoire vraie", "true-story"],
+        ["WTF", "wtf"]
+    ]
+]

@@ -1,5 +1,5 @@
-/* global theMovieDb */
 // ************** CORE CODE *******************
+/* global theMovieDb */
 
 // ----:::: APP/GAME ::::----
 const app = {
@@ -13,21 +13,57 @@ const app = {
         appHeader: document.querySelector('h1'),
         appTitle: document.querySelector('#app-title'),
     },
+    // ------ DATA
+    data: {
+        quizStep: 0,
+        quizSkips: 0,
+        answers: [],
+        reloads: 0,
+        animations: true,
+        nextKeys: ['ArrowRight', 'KeyD', 'Enter'],
+        cancelKeys: ['Backspace', 'Escape', 'Delete']
+    },
 
     // ------ COMMON
-    // --- INIT
-    init: () => {
-        const launchButton = document.querySelector('button#launch-game');
-
-        // Display Splash
-        app.displaySplash();
-
-        // Play The Game
-        launchButton.addEventListener('click', app.reset);
+    displayAnimations: (element) => {
+        if (app.data.animations) {
+            element.classList.add('display-fade');
+        }
     },
+    // --- GLITCH EFFECT
+    glitch: (duration) => {
+        // Animation check
+        if (!app.data.animations) {
+            return;
+        }
+
+        // Check duration (random if null)
+        let timeoutDuration = Math.random() * 210;
+        if (typeof duration !== 'undefined') {
+            timeoutDuration = duration;
+        }
+
+        const container = document.querySelector('div#container');
+        const flexWrapper = document.querySelector('div#flex-wrapper');
+        const backgrounds = ['url(\'img/noise4.jpg\')', 'url(\'img/noise2.png\')'];
+        container.style.backgroundImage = backgrounds[Math.floor(Math.random()*2)];
+        container.style.backgroundSize = 'initial';
+        flexWrapper.style.opacity = 0;
+        container.style.animation = `animatedBackground ${Math.random() / 2}s ease-in infinite`;
+
+        setTimeout(() => {
+            flexWrapper.style.opacity = 1;
+            container.style.backgroundImage = 'url(\'img/noise.gif\')';
+            container.style.animation = '0';
+            container.style.backgroundSize = 'cover';
+        }, timeoutDuration);
+    },
+
+    
     // --- SPLASH
     displaySplash: () => {
-        // Création du HTML
+        // HTML elements
+        const launchButton = document.querySelector('button#launch-game');
         const container = document.querySelector('#container');
         container.style.visibility = 'hidden';
 
@@ -35,6 +71,7 @@ const app = {
         splashDiv.id = 'splash';
         document.body.prepend(splashDiv);
 
+        // FIND-ME text
         const findMeDiv = document.createElement('div');
         findMeDiv.id = 'find-me';
         const findText = document.createElement('span');
@@ -47,21 +84,22 @@ const app = {
         findMeDiv.appendChild(meText);
         splashDiv.appendChild(findMeDiv);
 
+        // Skip Animations 
         const skipAnimationsP = document.createElement('p');
         skipAnimationsP.classList.add('skip-animations');
-        skipAnimationsP.innerText = '[ ] Skip Animations';
+        skipAnimationsP.innerText = 'Skip Animations';
         splashDiv.appendChild(skipAnimationsP);
 
         // Event Listener :: Skip Animations
         const skipAnimations = (event) => {
             if (app.data.animations) {
-                event.target.innerText = '[x] Skip Animations';
+                event.target.classList.toggle('skip-animations-active');
                 app.data.animations = false;
                 findMeDiv.removeAttribute('id');
                 meText.removeAttribute('id');
                 findText.removeAttribute('id');
             } else {
-                event.target.innerText = '[ ] Skip Animations';
+                event.target.classList.toggle('skip-animations-active');
                 app.data.animations = true;
                 findMeDiv.setAttribute('id', 'find-me');
                 findText.setAttribute('id', 'find');
@@ -78,7 +116,6 @@ const app = {
 
             // Animations Trigger
             const triggerAnimations = () => {
-                const launchButton = document.querySelector('button#launch-game');
                 const typingH2 = document.querySelector('main h2 div');
                 typingH2.classList.add('typing-effect');
                 const typingLastH2 = document.querySelector('main h2 div:nth-child(2)');
@@ -88,6 +125,11 @@ const app = {
                 app.html.appHeader.classList.add('delayed-display-fade', 'glitch', 'gl-5');
                 app.html.playVhsString.classList.add('animate-flicker');
                 app.glitch(500);
+
+                // Wait for display-fade animation to end to fire EL :: keyup & click (to launch the game)
+                setTimeout(() => {
+                    app.nextAction('next', launchButton, app.reset);
+                }, 8000);
             };
 
             // Si animations
@@ -125,42 +167,33 @@ const app = {
             else {
                 container.style.visibility = 'visible';
                 splashDiv.remove();
+                app.nextAction('next', launchButton, app.reset);
+                // app.reset(); OLD EL
             }
         };
+
+        // EL :: click on FIND ME text
         findMeDiv.addEventListener('click', findMeTrigger);
     },
-    displayAnimations: (element) => {
-        if (app.data.animations) {
-            element.classList.add('display-fade');
-        }
-    },
-    // --- GLITCH EFFECT
-    glitch: (duration) => {
-        // Animation check
-        if (!app.data.animations) {
-            return;
-        }
+    
+    // --- INIT
+    init: () => {
 
-        // Check duration (random if null)
-        let timeoutDuration = Math.random() * 210;
-        if (typeof duration !== 'undefined') {
-            timeoutDuration = duration;
-        }
+        // Display Splash
+        app.displaySplash();
 
-        const container = document.querySelector('div#container');
-        const flexWrapper = document.querySelector('div#flex-wrapper');
-        const backgrounds = ['url(\'img/noise4.jpg\')', 'url(\'img/noise2.png\')'];
-        container.style.backgroundImage = backgrounds[Math.floor(Math.random()*2)];
-        container.style.backgroundSize = 'initial';
-        flexWrapper.style.opacity = 0;
-        container.style.animation = `animatedBackground ${Math.random() / 2}s ease-in infinite`;
+        // Fetch questions (JSON)
+        fetch('data/locale/fr-FR/questions.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                app.data.question = data;
+            });
 
-        setTimeout(() => {
-            flexWrapper.style.opacity = 1;
-            container.style.backgroundImage = 'url(\'img/noise.gif\')';
-            container.style.animation = '0';
-            container.style.backgroundSize = 'cover';
-        }, timeoutDuration);
+        // OLD EL
+        // const launchButton = document.querySelector('button#launch-game');
+        // launchButton.addEventListener('click', app.reset);
     },
     // --- GAME RESERT (LAUNCH | REPLAY)
     reset: () => {
@@ -176,7 +209,7 @@ const app = {
             app.html.main.prepend(app.html.mainHeader);
         }
 
-        // Init app data
+        // Fetch movies (JSON)
         fetch('data/movies.json')
             .then(response => {
                 return response.json();
@@ -184,6 +217,8 @@ const app = {
             .then(data => {
                 app.data.movies = Object.values(data);
             });
+
+        // Init app data
         app.data.answers = [];
         app.data.quizStep = 0;
         app.data.reloads = 0;
@@ -193,97 +228,12 @@ const app = {
         app.askQuestion();
     },
 
-    // ------ DATA
-    data: {
-        // Data des réponses
-        quizStep: 0,
-        quizSkips: 0,
-        answers: [],
-        reloads: 0,
-        animations: true,
-
-        // Data des questions
-        question: [
-            // Question 1 - theme
-            [
-                'Niveau horreur, vos kinks, c\'est plutôt...',
-                ['Les thrillers', 'thriller'],
-                ['Le paranormal', 'paranormal'],
-                ['La science-fiction', 'sf'],
-                ['Les monstres', 'monsters']
-            ],
-            // Question 2 - format
-            [
-                'Quels types de films souhaitez-vous voir ?',
-                ['Un found footage classique', 'ff'],
-                ['Un faux-documentaire', 'mockumentary'],
-                ['Un film à sketchs', 'sketch'],
-                ['Une série', 'series'],
-                ['Un film-écran', 'screen'],
-            ],
-            // Question 3 - origin
-            [
-                'Il doit venir d\'où, ce film ?',
-                ['de France', 'france'],
-                ['d\'Europe', 'europe'],
-                ['des USA / Canada', 'usa'],
-                ['d\'Asie', 'asia'],
-                ['... et de quelques recoins du monde', 'other']
-            ],
-            // Question 4 - date
-            [
-                'On part piocher à quelles époques ?',
-                ['les 70/80s', '70-80s'],
-                ['les 90s', '90s'],
-                ['les années 2000', '00s'],
-                ['de 2010 à aujourd\'hui', '10s']
-            ],
-            // Question 5 - Difficulty
-            [
-                'Chaud pour un film de niche, ou on y va doucement ?',
-                ['Sors-moi quelque chose je n\'ai problablement pas vu', 'rare'],
-                ['Si c\'est un peu connu, c\'est ok', 'common']
-            ],
-            // Question 6 - Specs
-            [
-                'Des petites excentricités ?',
-                ['Des démons', 'demon'],
-                ['Des sorcières', 'witch'],
-                ['Des aliens', 'alien'],
-                ['Des possessions', 'possession'],
-                ['Des tueurs en série', 'serial-killer'],
-                ['De l\'apocalypse', 'apocalypse'], 
-                ['Des losers', 'loser'],
-                ['Des hôpitaux psychiatriques', 'hospital'],
-                ['Des clowns', 'clown'],
-                ['Des blockbusters', 'blockbuster'],
-                ['Du gore', 'gore'],
-                ['Des forêts cheloues', 'woods'],
-                ['Des sectes', 'cult'],
-                ['Des yetis', 'bigfoot'],
-                ['De la mythologie', 'mythology'],
-                ['Des webcams', 'webcam'],
-                ['Des zombies / infectés', 'zombie'],
-                ['De la fausse télé-réalité', 'reality-show'],
-                ['Du drame (oui, c\'est possible)', 'drama'],
-                ['Des vieux', 'old'],
-                ['De la comédie', 'comedy'],
-                ['De la flotte', 'water'],
-                ['Inspiré d\'une histoire vraie', 'true-story'],
-                ['WTF', 'wtf']
-            ],
-        ],
-
-        // Data des films (target of movies.json)
-        movies: []
-    },
-
-    // ------ QUIZ ROUTINE
+    // **** QUIZ ROUTINE
     // ---- QUESTIONS AND ANSWERS DISPLAY
     askQuestion: () => {
         app.glitch();
 
-        // Génération de l'affichage des questions / réponses (avec flag values)
+        // HTML Elements
         
         const currentQuestion = app.data.question[app.data.quizStep];
         app.html.mainHeader.innerText = currentQuestion[0];
@@ -296,7 +246,10 @@ const app = {
 
         
         // Si ce n'est pas la 1ère question
-        if (app.data.quizStep !== 0) {
+        if (app.data.quizStep === 0) {
+            app.displayAnswers(currentAnswers);
+        }
+        else {
             // On récupère les films restants par rapport à la réponse précédente
             
             const moviesLeft = [];
@@ -337,14 +290,12 @@ const app = {
                 app.displayAnswers(relevantAnswers);
             }
         } 
-        // Si c'est la 1ere question uniquement (pas de réponse précédente)
-        else {
-            app.displayAnswers(currentAnswers);
-        }
+        
+        
     },
     displayAnswers: (answers) => {
 
-        // Routine d'affichage des boutons & values
+        // Display buttons, innerText and values from question data
         const answerButton = document.createElement('button');
         answerButton.classList.add('answer-button');
         const answersWrapper = document.createElement('div');
@@ -356,8 +307,8 @@ const app = {
             answerButton.value = answer[1];
             answersWrapper.appendChild(answerButton.cloneNode(true));
         });
-        // Gestion de la réponse utilisateur et génération du bouton suivant
 
+        // Gestion de la réponse utilisateur et génération du bouton suivant
         const nextStepStr = document.createElement('p');
         nextStepStr.classList.add('next-question');
         const skipQuestionString = 'Passer cette question (tout me va) <span class="forward">▶</span>';
@@ -378,19 +329,17 @@ const app = {
                     nextStepStr.innerHTML = skipQuestionString;
                     nextStepStr.classList.remove('animate-flicker', 'flicker__fast');
                 }
-            }); // Fin de l'EL au clic sur les boutons
+            });
         }
 
         // Display animation
         if (app.data.animations) {
             app.html.mainSection.style.visibility = 'hidden';
-            // setTimeout(() => {
             app.html.mainSection.classList.add('display-fade');
-            // }, 100);
         }
 
-        // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
-        nextStepStr.addEventListener('click', app.nextQuestion);
+        // EL :: keyup & click to answer processing & next question loading
+        app.nextAction('next', nextStepStr, app.nextQuestion);
     },
     
     // ---- DATA RECORD & NEW QUESTION | END QUESTIONS
@@ -516,10 +465,10 @@ const app = {
             svodOptionP.addEventListener('click', (event) => {
                 event.target.classList.toggle('vod-option-active');
             });
-        }       
-
-        // EL :: click to launch display tmdb/movie results
-        displayButton.addEventListener('click', () => { app.displayResults(noStreamingMovies); });
+        }
+        
+        // EL :: keyup & click to launch display tmdb/movie results
+        app.nextAction('next', displayButton, app.displayResults, noStreamingMovies);
     },
 
     // ------- QUIZ ENDING
@@ -699,19 +648,19 @@ const app = {
 
     // ---- DISPLAY MORE
     displayMore: (moreHolder) => {
-        // Affichage de l'intertitre
+        // H3 header
         const moreResultsH3 = document.createElement('h3');
         moreResultsH3.innerText = 'Autres résultats';
         moreHolder.appendChild(moreResultsH3);
 
-        // Film déjà vu ou propositions d'autres résultats si possible
+        // HTML elements
         const moreResultsP = document.createElement('p');
         const moreResultsA = document.createElement('a');
         moreResultsA.classList.add('reload-data');
         const reloadResultsA = document.createElement('a');
         reloadResultsA.innerHTML = '<br><br><span class="forward">▶▶</span> Relancer un test';
 
-        // Affichage d'un texte personnalisé pour le dernier des autres résultats (ou le seul)
+        // Display custom prompt regarding corresponding movie data
         if (app.data.movies.length === 1) {
             if (app.data.reloads === 0) {
                 moreResultsP.innerHTML = 'Un seul résultat a correspondu à votre requête.<br><br>';
@@ -720,7 +669,7 @@ const app = {
             }
 
         }
-        // Si 2+ autres résultats
+        // If 2+ results
         else {
             let resultPlural = 'autres résultats correspondent';
             if (app.data.movies.length === 2) {
@@ -730,25 +679,32 @@ const app = {
             moreResultsA.innerHTML = '<span class="forward">▶</span> Me proposer un autre résultat parmi les mêmes critères';
         }
 
-        // Affichage et traitement du résultat (via .reload-data)
+        // Display processed HTML elements (via .reload-data)
         moreHolder.appendChild(moreResultsP);
         moreResultsP.appendChild(moreResultsA);
         moreResultsP.appendChild(reloadResultsA);
 
-        // EL :: click (voir un autre film avec les mêmes critères)
-        moreResultsA.addEventListener('click', (event) => {
-            event.preventDefault();
-            // A facto
+        // Reload Movie function (reload another movie with the same flags) & listener
+        const reloadMovie = () => {
             app.data.movies.shift();
             app.data.reloads++;
             app.displayResults();
-        });
+        };
 
-        // EL :: click (relancer un quiz)
-        reloadResultsA.addEventListener('click', (event) => {
-            event.preventDefault();
-            app.reset();
-        });
+        app.nextChoice(reloadMovie, app.reset, moreResultsA, reloadResultsA);
+
+        // OLD EL
+        // EL :: click (reloadMovie)
+        // moreResultsA.addEventListener('click', (event) => {
+        //     event.preventDefault();
+        //     reloadMovie();            
+        // });
+
+        // EL :: click (reload another quiz)
+        // reloadResultsA.addEventListener('click', (event) => {
+        //     event.preventDefault();
+        //     app.reset();
+        // });
     },
 
     // ---- FETCH MOVIEDATA.ID WITH TMDB.DATA, RETURN CURRENT ID & FLAGS
@@ -760,20 +716,113 @@ const app = {
     tmdbError: () => {
         app.html.mainHeader.innerText = 'Erreur API TMDB';
     },
+    // ---- HANDLE KEYBOARDS & CLICK EVENTS & CALLBACKS
+    nextAction: (action, clickTarget, callback, parameter) => {
+        // Switch keys between selected action
+        let keys;
+        switch (action) {
+        case 'next':
+            keys = app.data.nextKeys;
+            break;
+
+        case 'cancel':
+            keys = app.data.cancelKeys;
+            break;
+        
+        default:
+            break;
+        }
+        
+        // Keyboard function
+        const nextListener = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.type === 'keyup') {
+                for (const key of keys) {
+                    if (event.code === key) {
+                        callback(parameter);
+                    }
+                }
+            } else if (event.type === 'click') {
+                callback(parameter);
+            }
+            document.removeEventListener('keyup', nextListener);
+            document.removeEventListener('click', nextListener);
+        };
+
+        // EL :: keyup & click
+        clickTarget.addEventListener('click', nextListener);
+        document.addEventListener('keyup', nextListener);
+
+    },
+    nextChoice: (callbackNext, callbackCancel, clickTargetNext, clickTargetCancel, parameter) => {
+        const nextListener = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (app.data.movies.length > 1) {
+                if (event.type === 'keyup') {
+                    for (const key of app.data.nextKeys) {
+                        if (event.code === key) {
+                            callbackNext(parameter);
+                        }
+                    }
+                } else if (event.type === 'click') {
+                    callbackNext(parameter);
+                }
+            }
+
+            document.removeEventListener('keyup', nextListener);
+            document.removeEventListener('click', nextListener);
+            // document.removeEventListener('keyup', cancelListener);
+            // document.removeEventListener('click', cancelListener);
+        };
+
+        const cancelListener = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (app.data.movies.length >= 1) {
+                if (event.type === 'keyup') {
+                    for (const key of app.data.cancelKeys) {
+                        if (event.code === key) {
+                            callbackCancel(parameter);
+                        }
+                    }
+                } else if (event.type === 'click') {
+                    callbackCancel(parameter);
+                }
+            }
+
+            document.removeEventListener('keyup', cancelListener);
+            document.removeEventListener('click', cancelListener);
+            document.removeEventListener('keyup', nextListener);
+            document.removeEventListener('click', nextListener);
+        };
+
+        document.addEventListener('keyup', nextListener);
+        document.addEventListener('keyup', cancelListener);
+        clickTargetNext.addEventListener('click', nextListener);
+        clickTargetCancel.addEventListener('click', cancelListener);
+    }
 
 };
 
 // ------> LAUNCH
 document.addEventListener('DOMContentLoaded', app.init);
 
+// document.addEventListener('click', (event) => {
+//     console.log(event);
+// });
 
 /*
 
 V.beta02
-- Navigation des résultats au clavier
+- Navigation globale au clavier
 
 v2
 - FR & EN
+- Add sounds (idle, click, display, glitch)
 - ouvrir à tous les films d'horreur
 - pouvoir ajouter à la bdd des films en front (sous contrôle)
 
