@@ -1,0 +1,69 @@
+[
+    [
+        "What's your horror kink?",
+        ["Thrillers", "thriller"],
+        ["Paranormal", "paranormal"],
+        ["Science fiction", "sf"],
+        ["Monsters", "monsters"]
+    ],
+
+    [
+        "What subgenre are you interested in?",
+        ["Classic found footage", "ff"],
+        ["Mockumentary", "mockumentary"],
+        ["Anthology", "sketch"],
+        ["TV Series", "series"],
+        ["Video-meeting", "screen"]
+    ],
+
+    [
+        "Where should it come from?",
+        ["France", "france"],
+        ["Europe", "europe"],
+        ["USA / Canada", "usa"],
+        ["Asia", "asia"],
+        ["... and other parts of the world", "other"]
+    ],
+
+    [
+        "A favorite decade, maybe?",
+        ["70-80s", "70-80s"],
+        ["90s", "90s"],
+        ["2000s", "00s"],
+        ["from 2010 to today", "10s"]
+    ],
+
+    [
+        "Are you a rookie or a pro?",
+        ["Fetch me something I might not have seen", "rare"],
+        ["If it's somewhat popular, I don't mind", "common"]
+    ],
+
+    [
+        "Let's be specific, shall we? What do you really want?",
+        ["Demons", "demon"],
+        ["Witches", "witch"],
+        ["Aliens", "alien"],
+        ["Possessions", "possession"],
+        ["Serial killers", "serial-killer"],
+        ["Apocalypse", "apocalypse"], 
+        ["Losers", "loser"],
+        ["Psychiatric hospitals", "hospital"],
+        ["Clowns", "clown"],
+        ["Blockbusters", "blockbuster"],
+        ["Gore", "gore"],
+        ["Woods", "woods"],
+        ["Cults", "cult"],
+        ["Bigfoot", "bigfoot"],
+        ["Mythology", "mythology"],
+        ["Webcams", "webcam"],
+        ["Zombies / Infected", "zombie"],
+        ["Fake reality TV", "reality-show"],
+        ["Drama (why not)", "drama"],
+        ["Old people", "old"],
+        ["Comedy", "comedy"],
+        ["Water", "water"],
+        ["Inspired by true events", "true-story"],
+        ["WTF", "wtf"]
+    ]
+]

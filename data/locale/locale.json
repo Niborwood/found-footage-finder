@@ -1,3 +1,101 @@
-[
+{
+    "strings": {
+        "skipAnimations": {
+            "frFR": "Retirer les animations",
+            "enUS": "Skip Animations"
+        },
+        "headlineMain": {
+            "frFR": "VOTRE TAPE N'ATTEND QUE",
+            "enUS": "THERE'S A TAPE AWAITING"
+        },
+        "headlineEm": {
+            "frFR": "Vous.",
+            "enUS": " You."
+        },
+        "headlineOverview": {
+            "frFR": "En quelques questions,<br>trouvez le found footage parfait à voir ce soir.",
+            "enUS": "In a few questions,<br>find the perfect found footage to watch."
+        },
+        "questionMultiAnswers": {
+            "frFR": "VOUS POUVEZ SÉLECTIONNER PLUSIEURS RÉPONSES.",
+            "enUS": "YOU CAN SELECT MULTIPLE ANSWERS."
+        },
+        "questionSkip": {
+            "frFR": "Passer cette question (tout me va)",
+            "enUS": "Skip this question (anything goes)"
+        },
+        "resultReady": {
+            "frFR": "VOTRE FOUND FOOTAGE EST PRÊT.",
+            "enUS": "YOUR FOUND FOOTAGE IS READY."
+        },
+        "resultAllSkips": {
+            "frFR": "(APRÈS, VOUS N'AVEZ MIS AUCUN FILTRE, DONC BON.)",
+            "enUS": "(WELL, YOU'VE SKIPPED EVERY QUESTION, SO...)"
+        },
+        "resultDiscover": {
+            "frFR": "&#9679; Découvrez le &#9679;",
+            "enUS": "&#9679; Discover it &#9679;"
+        },
+        "resultSvod": {
+            "frFR": "Afficher les résultats indisponibles en SVOD & VOD",
+            "enUS": "Display results unavailable on streaming or rent"
+        },
+        "movieSvodUnavailable": {
+            "frFR": "INDISPONIBLE EN SVOD & VOD",
+            "enUS": "Streaming or rent unavailable"
+        },
+        "movieSvod": {
+            "frFR": "SVOD & ABONNEMENT",
+            "enUS": "STREAMING"
+        },
+        "movieRent": {
+            "frFR": "VOD & LOCATION SD-HD",
+            "enUS": "RENT"
+        },
+        "movieUnavailable": {
+            "frFR": "Non disponible",
+            "enUS": "Unavailable"
+        },
+        "tvSeason": {
+            "frFR": "saison",
+            "enUS": "season"
+        },
+        "tvEpisodes": {
+            "frFR": "épisodes",
+            "enUS": "episodes"
+        },
+        "moreTitle": {
+            "frFR": "AUTRES RÉSULTATS",
+            "enUS": "Other results"
+        },
+        "moreResultsDejaVu": {
+            "frFR": "Déjà vu ?",
+            "enUS": "Already seen this one?"
+        },
+        "moreResultsOne": {
+            "frFR": "Un seul résultat a correspondu à votre requête.",
+            "enUS": "Only one result matched your answers."
+        },
+        "moreResultsSeveralSingle": {
+            "frFR": "autre résultat correspond à vos réponses.",
+            "enUS": "other result MATCH YOUR ANSWERS."
+        },
+        "moreResultsSeveralPlural": {
+            "frFR": "autres résultats correspondent à vos réponses.",
+            "enUS": "other results MATCH YOUR ANSWERS."
+        },
+        "moreResultsLast": {
+            "frFR": "DERNIER RÉSULTAT SELON VOS CRITÈRES.",
+            "enUS": "LAST RESULT ACCORDING TO YOUR ANSWERS."
+        },
+        "moreResultsReloadMovie": {
+            "frFR": "Me proposer un autre résultat parmi les mêmes critères",
+            "enUS": "Suggest me another result among the same criteria"
+        },
+        "moreResultsReloadQuiz": {
+            "frFR": "Relancer un test",
+            "enUS": "Take another test"
+        }
+    }
     
-]
+}
