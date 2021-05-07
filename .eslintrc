@@ -9,4 +9,5 @@
         "quotes": ["error", "single"],
         "semi": ["warn", "always"]
     }
+    
 }

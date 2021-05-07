@@ -1,0 +1,8 @@
+<<<<<<< Updated upstream
+*.eslintrc
+*.version
+=======
+
+.version
+.eslintrc
+>>>>>>> Stashed changes

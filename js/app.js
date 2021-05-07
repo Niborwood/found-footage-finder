@@ -1,5 +1,5 @@
+// ************** [●] CORE CODE [●] *******************
 /* global theMovieDb */
-// ************** CORE CODE *******************
 
 // ----:::: APP/GAME ::::----
 const app = {
@@ -13,122 +13,19 @@ const app = {
         appHeader: document.querySelector('h1'),
         appTitle: document.querySelector('#app-title'),
     },
+    // ------ DATA
+    data: {
+        quizStep: 0,
+        quizSkips: 0,
+        answers: [],
+        reloads: 0,
+        animations: true,
+        nextKeys: ['ArrowRight', 'KeyD', 'Enter'],
+        cancelKeys: ['Backspace', 'Escape', 'Delete'],
+        locale: 'fr-FR',
+    },
 
     // ------ COMMON
-    // --- INIT
-    init: () => {
-        const launchButton = document.querySelector('button#launch-game');
-
-        // Display Splash
-        app.displaySplash();
-
-        // Play The Game
-        launchButton.addEventListener('click', app.reset);
-    },
-    // --- SPLASH
-    displaySplash: () => {
-        // Création du HTML
-        const container = document.querySelector('#container');
-        container.style.visibility = 'hidden';
-
-        const splashDiv = document.createElement('div');
-        splashDiv.id = 'splash';
-        document.body.prepend(splashDiv);
-
-        const findMeDiv = document.createElement('div');
-        findMeDiv.id = 'find-me';
-        const findText = document.createElement('span');
-        findText.id = 'find';
-        findText.innerText = 'Find ';
-        const meText = document.createElement('span');
-        meText.id = 'me';
-        meText.innerText = 'me';
-        findMeDiv.appendChild(findText);
-        findMeDiv.appendChild(meText);
-        splashDiv.appendChild(findMeDiv);
-
-        const skipAnimationsP = document.createElement('p');
-        skipAnimationsP.classList.add('skip-animations');
-        skipAnimationsP.innerText = '[ ] Skip Animations';
-        splashDiv.appendChild(skipAnimationsP);
-
-        // Event Listener :: Skip Animations
-        const skipAnimations = (event) => {
-            if (app.data.animations) {
-                event.target.innerText = '[x] Skip Animations';
-                app.data.animations = false;
-                findMeDiv.removeAttribute('id');
-                meText.removeAttribute('id');
-                findText.removeAttribute('id');
-            } else {
-                event.target.innerText = '[ ] Skip Animations';
-                app.data.animations = true;
-                findMeDiv.setAttribute('id', 'find-me');
-                findText.setAttribute('id', 'find');
-                meText.setAttribute('id', 'me');
-            }
-        };
-        skipAnimationsP.addEventListener('click', skipAnimations);
-
-        // Event Listener :: Init app
-        const findMeTrigger = () => {
-            // Remove Animations
-            findMeDiv.removeEventListener('click', findMeTrigger);
-            skipAnimationsP.removeEventListener ('click', skipAnimations);
-
-            // Animations Trigger
-            const triggerAnimations = () => {
-                const launchButton = document.querySelector('button#launch-game');
-                const typingH2 = document.querySelector('main h2 div');
-                typingH2.classList.add('typing-effect');
-                const typingLastH2 = document.querySelector('main h2 div:nth-child(2)');
-                typingLastH2.classList.add('typing-effect', 'typing-last');
-                app.html.mainSection.classList.add('delayed-display-fade');
-                launchButton.classList.add('delayed-display-fade');
-                app.html.appHeader.classList.add('delayed-display-fade', 'glitch', 'gl-5');
-                app.html.playVhsString.classList.add('animate-flicker');
-                app.glitch(500);
-            };
-
-            // Si animations
-            if (app.data.animations) {
-                skipAnimationsP.classList.add('fade-out');
-
-                setTimeout(() => {
-                    findMeDiv.style.visibility = 'hidden';
-                }, 1800);
-
-                setTimeout(() => {
-                    findMeDiv.style.visibility = 'visible';
-                    findText.innerText = 'FOUND ';
-                }, 2000);
-
-                setTimeout(() => {
-                    findText.innerText = 'FOUND';
-                    meText.innerText = 'YOU';
-                }, 5000);
-
-                setTimeout(() => {
-                    findMeDiv.removeAttribute('id');
-                    findMeDiv.id = 'find-me-noanim';
-                    meText.removeAttribute('id');
-                    findText.removeAttribute('id');
-                }, 5800);
-
-                setTimeout(() => {
-                    container.style.visibility = 'visible';
-                    splashDiv.remove();
-                    triggerAnimations();
-                }, 6000);
-            }
-            // Si pas d'animations
-            else {
-                container.style.visibility = 'visible';
-                splashDiv.remove();
-            }
-        };
-        findMeDiv.addEventListener('click', findMeTrigger);
-    },
     displayAnimations: (element) => {
         if (app.data.animations) {
             element.classList.add('display-fade');
@@ -148,20 +45,205 @@ const app = {
         }
 
         const container = document.querySelector('div#container');
-        const flexWrapper = document.querySelector('div#flex-wrapper');
+        // const flexWrapper = document.querySelector('div#flex-wrapper');
         const backgrounds = ['url(\'img/noise4.jpg\')', 'url(\'img/noise2.png\')'];
         container.style.backgroundImage = backgrounds[Math.floor(Math.random()*2)];
         container.style.backgroundSize = 'initial';
-        flexWrapper.style.opacity = 0;
+        // flexWrapper.style.opacity = 0;
         container.style.animation = `animatedBackground ${Math.random() / 2}s ease-in infinite`;
 
         setTimeout(() => {
-            flexWrapper.style.opacity = 1;
-            container.style.backgroundImage = 'url(\'img/noise.gif\')';
+            // flexWrapper.style.opacity = 1;
+            container.style.backgroundImage = 'url(\'img/noise2.gif\')';
             container.style.animation = '0';
             container.style.backgroundSize = 'cover';
         }, timeoutDuration);
     },
+    toLocale: (locale) => {
+        return locale.replace('-', '');
+    },
+    init: () => {
+        // Get localized strings
+        fetch('/data/locale/locale.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                app.data.locals = Object.values(data)[0];
+
+                // Display Splash
+                app.displaySplash();
+            });
+    },
+    
+    // --- SPLASH
+    displaySplash: () => {
+        // HTML elements
+        const container = document.querySelector('#container');
+        container.style.visibility = 'hidden';
+
+        const splashDiv = document.createElement('div');
+        splashDiv.id = 'splash';
+        document.body.prepend(splashDiv);
+        const splashOptionsDiv = document.createElement('div');
+        splashOptionsDiv.classList.add('splash-options');
+        splashDiv.appendChild(splashOptionsDiv);
+
+        // FIND-ME text
+        const findMeDiv = document.createElement('div');
+        findMeDiv.id = 'find-me';
+        const findText = document.createElement('span');
+        findText.id = 'find';
+        findText.innerText = 'Find ';
+        const meText = document.createElement('span');
+        meText.id = 'me';
+        meText.innerText = 'me';
+        findMeDiv.appendChild(findText);
+        findMeDiv.appendChild(meText);
+        splashDiv.appendChild(findMeDiv);
+
+        // Locale Selector /with EL::click
+        const localeWrapper = document.createElement('p');
+        localeWrapper.classList.add('locale-wrapper');
+        const localeFrP = document.createElement('span');
+        localeFrP.innerText = 'FR';
+        localeFrP.classList.add('locale', 'locale-fr', 'locale-active');
+        const localeDivider = document.createElement('span');
+        localeDivider.innerText = ' | ';
+        const localeEnP = document.createElement('span');
+        localeEnP.innerText = 'EN';
+        localeEnP.classList.add('locale', 'locale-en');
+        localeWrapper.appendChild(localeFrP);
+        localeWrapper.appendChild(localeDivider);
+        localeWrapper.appendChild(localeEnP);
+        splashOptionsDiv.appendChild(localeWrapper);
+
+        const localeSelector = () => {
+            localeFrP.classList.toggle('locale-active');
+            localeEnP.classList.toggle('locale-active');
+            if (app.data.locale === 'fr-FR') {
+                app.data.locale = theMovieDb.common.language = 'en-US';
+            } 
+            else if (app.data.locale === 'en-US') {
+                app.data.locale = theMovieDb.common.language = 'fr-FR';
+            }
+            skipAnimationsP.innerText = app.data.locals.skipAnimations[app.toLocale(app.data.locale)];
+        };
+        localeWrapper.addEventListener('click', localeSelector);
+
+        // Skip Animations /with EL :: click
+        const skipAnimationsP = document.createElement('p');
+        skipAnimationsP.classList.add('skip-animations');
+        skipAnimationsP.innerText = app.data.locals.skipAnimations[app.toLocale(app.data.locale)];
+        splashOptionsDiv.appendChild(skipAnimationsP);
+
+        const skipAnimations = (event) => {
+            if (app.data.animations) {
+                event.target.classList.toggle('skip-animations-active');
+                app.data.animations = false;
+                splashDiv.style.backgroundImage = 'none';
+                findMeDiv.removeAttribute('id');
+                meText.removeAttribute('id');
+                findText.removeAttribute('id');
+            } else {
+                event.target.classList.toggle('skip-animations-active');
+                app.data.animations = true;
+                splashDiv.style.backgroundImage = 'url(../img/noise.gif)';
+                findMeDiv.setAttribute('id', 'find-me');
+                findText.setAttribute('id', 'find');
+                meText.setAttribute('id', 'me');
+            }
+        };
+        skipAnimationsP.addEventListener('click', skipAnimations);
+
+        
+        // Event Listener :: Init app
+        const findMeTrigger = () => {
+            const launchButton = document.querySelector('button#launch-game');
+            // Remove Animations
+            findMeDiv.removeEventListener('click', findMeTrigger);
+            localeWrapper.removeEventListener('click', localeSelector);
+            skipAnimationsP.removeEventListener('click', skipAnimations);
+
+            // Localize home strings
+            document.querySelector('.header-main').innerText = app.data.locals.headlineMain[app.toLocale(app.data.locale)];
+            document.querySelector('.header-em').innerText = app.data.locals.headlineEm[app.toLocale(app.data.locale)];
+            document.querySelector('.overview').innerHTML = app.data.locals.headlineOverview[app.toLocale(app.data.locale)];
+
+            // At the end of the splash animation, remove splash and call homepage
+            const triggerAnimations = () => {
+                const typingH2 = document.querySelector('main h2 div');
+                typingH2.classList.add('typing-effect');
+                const typingLastH2 = document.querySelector('main h2 div:nth-child(2)');
+                typingLastH2.classList.add('typing-effect', 'typing-last');
+                app.html.mainSection.classList.add('delayed-display-fade');
+                launchButton.classList.add('delayed-display-fade');
+                app.html.appHeader.classList.add('delayed-display-fade', 'glitch', 'gl-5');
+                app.html.playVhsString.classList.add('animate-flicker');
+                app.glitch(500);
+
+                // Wait for display-fade animation to end to fire EL :: keyup & click (to launch the game)
+                setTimeout(() => {
+                    app.nextAction('next', launchButton, app.reset);
+
+                }, 8000);
+            };
+
+            // If animation is activated
+            if (app.data.animations) {
+                splashOptionsDiv.classList.add('fade-out');
+
+                setTimeout(() => {
+                    findMeDiv.style.visibility = 'hidden';
+                }, 1800);
+                setTimeout(() => {
+                    findMeDiv.style.visibility = 'visible';
+                    findText.innerText = 'FOUND ';
+                }, 2000);
+                setTimeout(() => {
+                    findText.innerText = 'FOUND';
+                    meText.innerText = 'YOU';
+                }, 5000);
+                setTimeout(() => {
+                    findMeDiv.removeAttribute('id');
+                    findMeDiv.id = 'find-me-noanim';
+                    meText.removeAttribute('id');
+                    findText.removeAttribute('id');
+                }, 5800);
+                setTimeout(() => {
+                    container.style.visibility = 'visible';
+                    splashDiv.remove();
+                    triggerAnimations();
+                }, 6000);
+            }
+            // If no animation
+            else {
+                container.style.visibility = 'visible';
+                splashDiv.remove();
+                container.style.backgroundImage = 'none';
+                app.nextAction('next', launchButton, app.reset);
+            }
+
+            // Remove EL :: keyup to launch
+            document.removeEventListener('keyup', findMeTrigger);
+
+            // Fetch questions (JSON) through locale
+            fetch(`data/locale/${app.data.locale}/questions.json`)
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    app.data.question = data;
+                });
+        };
+
+        // EL :: click on FIND ME text
+        document.addEventListener('keyup', findMeTrigger);
+        findMeDiv.addEventListener('click', findMeTrigger);
+    },
+    
+    // --- INIT
+    
     // --- GAME RESERT (LAUNCH | REPLAY)
     reset: () => {
         // Init HTML elements
@@ -176,14 +258,16 @@ const app = {
             app.html.main.prepend(app.html.mainHeader);
         }
 
-        // Init app data
-        fetch('data/movies.json')
+        // Fetch movies (JSON)
+        fetch('/data/movies.json')
             .then(response => {
                 return response.json();
             })
             .then(data => {
                 app.data.movies = Object.values(data);
             });
+
+        // Init app data
         app.data.answers = [];
         app.data.quizStep = 0;
         app.data.reloads = 0;
@@ -193,112 +277,27 @@ const app = {
         app.askQuestion();
     },
 
-    // ------ DATA
-    data: {
-        // Data des réponses
-        quizStep: 0,
-        quizSkips: 0,
-        answers: [],
-        reloads: 0,
-        animations: true,
-
-        // Data des questions
-        question: [
-            // Question 1 - theme
-            [
-                'Niveau horreur, vos kinks, c\'est plutôt...',
-                ['Les thrillers', 'thriller'],
-                ['Le paranormal', 'paranormal'],
-                ['La science-fiction', 'sf'],
-                ['Les monstres', 'monsters']
-            ],
-            // Question 2 - format
-            [
-                'Quels types de films souhaitez-vous voir ?',
-                ['Un found footage classique', 'ff'],
-                ['Un faux-documentaire', 'mockumentary'],
-                ['Un film à sketchs', 'sketch'],
-                ['Une série', 'series'],
-                ['Un film-écran', 'screen'],
-            ],
-            // Question 3 - origin
-            [
-                'Il doit venir d\'où, ce film ?',
-                ['de France', 'france'],
-                ['d\'Europe', 'europe'],
-                ['des USA / Canada', 'usa'],
-                ['d\'Asie', 'asia'],
-                ['... et de quelques recoins du monde', 'other']
-            ],
-            // Question 4 - date
-            [
-                'On part piocher à quelles époques ?',
-                ['les 70/80s', '70-80s'],
-                ['les 90s', '90s'],
-                ['les années 2000', '00s'],
-                ['de 2010 à aujourd\'hui', '10s']
-            ],
-            // Question 5 - Difficulty
-            [
-                'Chaud pour un film de niche, ou on y va doucement ?',
-                ['Sors-moi quelque chose je n\'ai problablement pas vu', 'rare'],
-                ['Si c\'est un peu connu, c\'est ok', 'common']
-            ],
-            // Question 6 - Specs
-            [
-                'Des petites excentricités ?',
-                ['Des démons', 'demon'],
-                ['Des sorcières', 'witch'],
-                ['Des aliens', 'alien'],
-                ['Des possessions', 'possession'],
-                ['Des tueurs en série', 'serial-killer'],
-                ['De l\'apocalypse', 'apocalypse'], 
-                ['Des losers', 'loser'],
-                ['Des hôpitaux psychiatriques', 'hospital'],
-                ['Des clowns', 'clown'],
-                ['Des blockbusters', 'blockbuster'],
-                ['Du gore', 'gore'],
-                ['Des forêts cheloues', 'woods'],
-                ['Des sectes', 'cult'],
-                ['Des yetis', 'bigfoot'],
-                ['De la mythologie', 'mythology'],
-                ['Des webcams', 'webcam'],
-                ['Des zombies / infectés', 'zombie'],
-                ['De la fausse télé-réalité', 'reality-show'],
-                ['Du drame (oui, c\'est possible)', 'drama'],
-                ['Des vieux', 'old'],
-                ['De la comédie', 'comedy'],
-                ['De la flotte', 'water'],
-                ['Inspiré d\'une histoire vraie', 'true-story'],
-                ['WTF', 'wtf']
-            ],
-        ],
-
-        // Data des films (target of movies.json)
-        movies: []
-    },
-
-    // ------ QUIZ ROUTINE
+    // **** QUIZ ROUTINE
     // ---- QUESTIONS AND ANSWERS DISPLAY
     askQuestion: () => {
         app.glitch();
 
-        // Génération de l'affichage des questions / réponses (avec flag values)
+        // HTML Elements
         
         const currentQuestion = app.data.question[app.data.quizStep];
         app.html.mainHeader.innerText = currentQuestion[0];
         const currentAnswers = currentQuestion.slice(1);
         const multiInfoP = document.createElement('p');
         multiInfoP.classList.add('multi-info');
-        multiInfoP.innerText = 'Vous pouvez sélectionner plusieurs réponses.';
+        multiInfoP.innerText = app.data.locals.questionMultiAnswers[app.toLocale(app.data.locale)];
         app.html.mainHeader.parentNode.insertBefore(multiInfoP, app.html.mainHeader.nextSibling);
-        console.log('Les réponses après la question', app.data.quizStep+1, ' : ', app.data.answers);
-
         
         // Si ce n'est pas la 1ère question
-        if (app.data.quizStep !== 0) {
+        if (app.data.quizStep === 0) {
+            app.displayAnswers(currentAnswers);
+        }
+        else {
             // On récupère les films restants par rapport à la réponse précédente
-            
             const moviesLeft = [];
             const currentFlags = app.data.answers[app.data.quizStep-1];
 
@@ -309,10 +308,7 @@ const app = {
                     }
                 }       
             }
-
             app.data.movies = moviesLeft;
-
-            console.table('*********Les datas des films qu\'il me reste :', app.data.movies);
 
             // ON RECUPERE LA LISTE DES REPONSES PERTINENTES POUR L'UTILISATEUR
             const relevantAnswers = [];
@@ -337,14 +333,12 @@ const app = {
                 app.displayAnswers(relevantAnswers);
             }
         } 
-        // Si c'est la 1ere question uniquement (pas de réponse précédente)
-        else {
-            app.displayAnswers(currentAnswers);
-        }
+        
+        
     },
     displayAnswers: (answers) => {
 
-        // Routine d'affichage des boutons & values
+        // Display buttons, innerText and values from question data
         const answerButton = document.createElement('button');
         answerButton.classList.add('answer-button');
         const answersWrapper = document.createElement('div');
@@ -356,11 +350,11 @@ const app = {
             answerButton.value = answer[1];
             answersWrapper.appendChild(answerButton.cloneNode(true));
         });
-        // Gestion de la réponse utilisateur et génération du bouton suivant
 
+        // Gestion de la réponse utilisateur et génération du bouton suivant
         const nextStepStr = document.createElement('p');
         nextStepStr.classList.add('next-question');
-        const skipQuestionString = 'Passer cette question (tout me va) <span class="forward">▶</span>';
+        const skipQuestionString = app.data.locals.questionSkip[app.toLocale(app.data.locale)];
         const nextQuestionString = 'Question suivante <span class="forward">▶▶</span>';
         nextStepStr.innerHTML = skipQuestionString;
         app.html.mainSection.appendChild(nextStepStr);
@@ -378,19 +372,17 @@ const app = {
                     nextStepStr.innerHTML = skipQuestionString;
                     nextStepStr.classList.remove('animate-flicker', 'flicker__fast');
                 }
-            }); // Fin de l'EL au clic sur les boutons
+            });
         }
 
         // Display animation
         if (app.data.animations) {
             app.html.mainSection.style.visibility = 'hidden';
-            // setTimeout(() => {
             app.html.mainSection.classList.add('display-fade');
-            // }, 100);
         }
 
-        // On enregistre le flag/réponse, on efface tout et on relance la prochaine question
-        nextStepStr.addEventListener('click', app.nextQuestion);
+        // EL :: keyup & click to answer processing & next question loading
+        app.nextAction('next', nextStepStr, app.nextQuestion);
     },
     
     // ---- DATA RECORD & NEW QUESTION | END QUESTIONS
@@ -460,11 +452,10 @@ const app = {
     },
     // ---- TEMP END DISPLAY
     displayEndQuiz: () => {
-        console.log('****** Mon résultat final :', app.data.movies);
         app.glitch();
         app.html.appHeader.appendChild(app.html.appTitle);
 
-        app.html.mainHeader.innerText = 'Votre found footage est prêt.';
+        app.html.mainHeader.innerText = app.data.locals.resultReady[app.toLocale(app.data.locale)];
         app.html.mainHeader.classList.add('footage-ready');
         app.html.mainSection.innerText = '';
 
@@ -473,7 +464,7 @@ const app = {
             const showEverythingP = document.createElement('p');
             showEverythingP.classList.add('show-everything');
             app.displayAnimations(showEverythingP);
-            showEverythingP.innerText = '(Après, vous n\'avez mis aucun filtre, donc bon.)';
+            showEverythingP.innerText = app.data.locals.resultAllSkips[app.toLocale(app.data.locale)];
             app.html.mainSection.appendChild(showEverythingP);
         }
 
@@ -485,7 +476,7 @@ const app = {
 
         const displayButton = document.createElement('button');
         displayButton.classList.add('discover-button');
-        displayButton.innerHTML = '&#9679; Découvrez-le. &#9679;';
+        displayButton.innerHTML = app.data.locals.resultDiscover[app.toLocale(app.data.locale)];
         app.html.mainSection.appendChild(displayButton);
         app.html.playVhsString.innerText = 'STOP';
         app.html.playVhsString.classList.add('animate-flicker');
@@ -494,11 +485,11 @@ const app = {
         // Display SVOD-VOD option
         let noStreamingCounter = 1;
         const noStreamingMovies = [];
+
         for (const movie of app.data.movies) {
-            
             theMovieDb.movies.getProviders({ 'id': [movie.tmdb_id] }, (rawData) => {
                 const data = JSON.parse(rawData);
-                if (data.results.FR === undefined) {
+                if (data.results[app.data.locale.slice(-2)] === undefined) {
                     noStreamingCounter++;
                     noStreamingMovies.push(movie.id);
                 } 
@@ -509,24 +500,23 @@ const app = {
             // HTML elements
             const svodOptionP = document.createElement('p');
             svodOptionP.classList.add('vod-option');
-            svodOptionP.innerText = 'Afficher les résultats indisponibles en SVOD/VOD';
+            svodOptionP.innerText = app.data.locals.resultSvod[app.toLocale(app.data.locale)];
             app.html.mainSection.appendChild(svodOptionP);
 
             // EL :: click to activate.deactivate svod-vod
             svodOptionP.addEventListener('click', (event) => {
                 event.target.classList.toggle('vod-option-active');
             });
-        }       
-
-        // EL :: click to launch display tmdb/movie results
-        displayButton.addEventListener('click', () => { app.displayResults(noStreamingMovies); });
+        }
+        
+        // EL :: keyup & click to launch display tmdb/movie results
+        app.nextAction('next', displayButton, app.displayResults, noStreamingMovies);
     },
 
     // ------- QUIZ ENDING
     // ---- DISPLAY RESULT
     displayResults: (noStreamingMovies) => {
         app.glitch();
-
         // Catching SVOD-VOD button state and removing unavailable movies if need be
         const svodOption = document.querySelector('.vod-option-active');
         if (svodOption !== null) {
@@ -604,11 +594,11 @@ const app = {
                     if (format === 'tv') {
                         const nbSeasonsP = document.createElement('p');
                         nbSeasonsP.classList.add('data-subinfo');
-                        let seasonPlural = 'saison';
+                        let seasonPlural = app.data.locals.tvSeason[app.toLocale(app.data.locale)];
                         if (data.number_of_seasons > 1) {
                             seasonPlural += 's';
                         }
-                        nbSeasonsP.innerText = `${data.number_of_seasons} ${seasonPlural}, ${data.number_of_episodes} épisodes`;
+                        nbSeasonsP.innerText = `${data.number_of_seasons} ${seasonPlural}, ${data.number_of_episodes} ${app.data.locals.tvEpisodes[app.toLocale(app.data.locale)]}`;
                         tmdbHolder.appendChild(nbSeasonsP);
                     }
 
@@ -638,9 +628,9 @@ const app = {
                 const data = JSON.parse(rawData);
 
                 // If no legal SVOD-VOD option
-                if (data.results.FR === undefined) {
+                if (data.results[app.data.locale.slice(-2)] === undefined) {
                     const targetH3 = document.createElement('h3');
-                    targetH3.innerHTML = 'Indisponible en SVOD & VOD';
+                    targetH3.innerHTML = app.data.locals.movieSvodUnavailable[app.toLocale(app.data.locale)];
                     tmdbHolder.appendChild(targetH3);
                 }
                 // Provider display routine
@@ -658,20 +648,20 @@ const app = {
 
                             const targetH3 = document.createElement('h3');
                             if (provider === 'flatrate') {
-                                targetH3.innerText = 'SVOD & Abonnement';
+                                targetH3.innerText = app.data.locals.movieSvod[app.toLocale(app.data.locale)];
                             } else if (provider === 'rent' && format === 'movies') {
-                                targetH3.innerText = 'VOD & Location SD-HD';
+                                targetH3.innerText = app.data.locals.movieRent[app.toLocale(app.data.locale)];
                             }
                             targetHolder.appendChild(targetH3);
                             const svodListing = document.createElement('p');
                             svodListing.classList.add('provider-infos');
-                            if (data.results.FR[provider] !== undefined) {
-                                if (data.results.FR[provider].length === 1) {
-                                    svodListing.innerText = data.results.FR[provider][0].provider_name;
+                            if (data.results[app.data.locale.slice(-2)][provider] !== undefined) {
+                                if (data.results[app.data.locale.slice(-2)][provider].length === 1) {
+                                    svodListing.innerText = data.results[app.data.locale.slice(-2)][provider][0].provider_name;
                                 } else {
-                                    data.results.FR[provider].forEach((element, index) => {
+                                    data.results[app.data.locale.slice(-2)][provider].forEach((element, index) => {
                                         svodListing.innerText += `${element.provider_name}`;
-                                        if (data.results.FR[provider].length - 1 !== index) {
+                                        if (data.results[app.data.locale.slice(-2)][provider].length - 1 !== index) {
                                             svodListing.innerText += ', ';
                                         }
                                     });
@@ -679,7 +669,7 @@ const app = {
 
                             } else {
                                 if (format === 'movies') {
-                                    svodListing.innerText = 'Non disponible';
+                                    svodListing.innerText = app.data.locals.movieUnavailable[app.toLocale(app.data.locale)];
                                 }
 
                             }
@@ -699,56 +689,50 @@ const app = {
 
     // ---- DISPLAY MORE
     displayMore: (moreHolder) => {
-        // Affichage de l'intertitre
+        // H3 header
         const moreResultsH3 = document.createElement('h3');
-        moreResultsH3.innerText = 'Autres résultats';
+        moreResultsH3.innerText = app.data.locals.moreTitle[app.toLocale(app.data.locale)];
         moreHolder.appendChild(moreResultsH3);
 
-        // Film déjà vu ou propositions d'autres résultats si possible
+        // HTML elements
         const moreResultsP = document.createElement('p');
         const moreResultsA = document.createElement('a');
         moreResultsA.classList.add('reload-data');
         const reloadResultsA = document.createElement('a');
-        reloadResultsA.innerHTML = '<br><br><span class="forward">▶▶</span> Relancer un test';
+        reloadResultsA.innerHTML = `<br><br><span class="forward">▶▶</span> ${app.data.locals.moreResultsReloadQuiz[app.toLocale(app.data.locale)]}`;
 
-        // Affichage d'un texte personnalisé pour le dernier des autres résultats (ou le seul)
+        // Display custom prompt regarding corresponding movie data
         if (app.data.movies.length === 1) {
             if (app.data.reloads === 0) {
-                moreResultsP.innerHTML = 'Un seul résultat a correspondu à votre requête.<br><br>';
+                moreResultsP.innerHTML = `${app.data.locals.moreResultsOne[app.toLocale(app.data.locale)]} <br><br>`;
             } else {
-                moreResultsP.innerHTML = 'Dernier résultat selon vos critères. <br><br>';
+                moreResultsP.innerHTML = `${app.data.locals.moreResultsLast[app.toLocale(app.data.locale)]} <br><br>`;
             }
 
         }
-        // Si 2+ autres résultats
+        // If 2+ results
         else {
-            let resultPlural = 'autres résultats correspondent';
+            let resultPlural = app.data.locals.moreResultsSeveralPlural[app.toLocale(app.data.locale)];
             if (app.data.movies.length === 2) {
-                resultPlural = 'autre résultat correspond';
+                resultPlural = app.data.locals.moreResultsSeveralSingle[app.toLocale(app.data.locale)];
             }
-            moreResultsP.innerHTML = `Déjà vu ?<br> ${app.data.movies.length - 1} ${resultPlural} à vos réponses. <br><br>`;
-            moreResultsA.innerHTML = '<span class="forward">▶</span> Me proposer un autre résultat parmi les mêmes critères';
+            moreResultsP.innerHTML = `${app.data.locals.moreResultsDejaVu[app.toLocale(app.data.locale)]}<br> ${app.data.movies.length - 1} ${resultPlural} <br><br>`;
+            moreResultsA.innerHTML = `<span class="forward">▶</span> ${app.data.locals.moreResultsReloadMovie[app.toLocale(app.data.locale)]}`;
         }
 
-        // Affichage et traitement du résultat (via .reload-data)
+        // Display processed HTML elements (via .reload-data)
         moreHolder.appendChild(moreResultsP);
         moreResultsP.appendChild(moreResultsA);
         moreResultsP.appendChild(reloadResultsA);
 
-        // EL :: click (voir un autre film avec les mêmes critères)
-        moreResultsA.addEventListener('click', (event) => {
-            event.preventDefault();
-            // A facto
+        // Reload Movie function (reload another movie with the same flags) & listener
+        const reloadMovie = () => {
             app.data.movies.shift();
             app.data.reloads++;
             app.displayResults();
-        });
+        };
 
-        // EL :: click (relancer un quiz)
-        reloadResultsA.addEventListener('click', (event) => {
-            event.preventDefault();
-            app.reset();
-        });
+        app.navigateResults(reloadMovie, app.reset, moreResultsA, reloadResultsA);
     },
 
     // ---- FETCH MOVIEDATA.ID WITH TMDB.DATA, RETURN CURRENT ID & FLAGS
@@ -758,29 +742,109 @@ const app = {
     },
     // ---- CALLBACK ERROR TMDB
     tmdbError: () => {
-        app.html.mainHeader.innerText = 'Erreur API TMDB';
+        app.html.mainHeader.innerText = 'TMDB API Error';
     },
 
+    // ---- HANDLE KEYBOARDS & CLICK => EL, CALLBACKS
+    nextAction: (action, clickTarget, callback, parameter) => {
+        // Switch keys between selected action
+        let keys;
+        switch (action) {
+        case 'next':
+            keys = app.data.nextKeys;
+            break;
+
+        case 'cancel':
+            keys = app.data.cancelKeys;
+            break;
+        
+        default:
+            break;
+        }
+        
+        // Keyboard function
+        const nextListener = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.type === 'keyup') {
+                for (const key of keys) {
+                    if (event.code === key) {
+                        document.removeEventListener('keyup', nextListener);
+                        clickTarget.removeEventListener('click', nextListener);
+                        callback(parameter);
+                    }
+                }
+            } else if (event.type === 'click') {
+                document.removeEventListener('keyup', nextListener);
+                clickTarget.removeEventListener('click', nextListener);
+                callback(parameter);
+            }
+            
+        };
+
+        // EL :: keyup & click
+        clickTarget.addEventListener('click', nextListener);
+        document.addEventListener('keyup', nextListener);
+
+    },
+    navigateResults: (callbackNext, callbackCancel, clickTargetNext, clickTargetCancel) => {
+        const removeListeners = () => {
+            document.removeEventListener('keyup', cancelListener);
+            clickTargetCancel.removeEventListener('click', cancelListener);
+            document.removeEventListener('keyup', nextListener);
+            clickTargetNext.removeEventListener('click', nextListener);
+        };
+
+        const nextListener = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            if (app.data.movies.length > 1) {
+                if (event.type === 'keyup') {
+                    for (const key of app.data.nextKeys) {
+                        if (event.code === key) {
+                            removeListeners();
+                            callbackNext();
+                        }
+                    }
+                } else if (event.type === 'click') {
+                    removeListeners();
+                    callbackNext();
+                }
+            } else {
+                removeListeners();
+                callbackCancel();
+            }
+        };
+
+        const cancelListener = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (app.data.movies.length >= 1) {
+                if (event.type === 'keyup') {
+                    for (const key of app.data.cancelKeys) {
+                        if (event.code === key) {
+                            removeListeners();
+                            callbackCancel();
+                        }
+                    }
+                } else if (event.type === 'click') {
+                    removeListeners();
+                    callbackCancel();
+                }
+            }
+        };
+
+        document.addEventListener('keyup', nextListener);
+        document.addEventListener('keyup', cancelListener);
+        clickTargetNext.addEventListener('click', nextListener);
+        clickTargetCancel.addEventListener('click', cancelListener);
+    },
 };
 
 // ------> LAUNCH
+
 document.addEventListener('DOMContentLoaded', app.init);
 
-
-/*
-
-V.beta2
-- Navigation des résultats au clavier
-
-v2
-- FR & EN
-- ouvrir à tous les films d'horreur
-- pouvoir ajouter à la bdd des films en front (sous contrôle)
-
-*/
-
-app.use((request, response, next) => {
-
-});
-
-
+// [●] 

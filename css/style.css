@@ -204,7 +204,6 @@ Triadique : #2d3033, #332d30, #30332d
     white-space: nowrap;
     overflow: hidden;
     margin: auto;
-    /* border-right: 3px solid var(--grey-light); */
 }
 
 .typing-last {
@@ -249,11 +248,12 @@ body {
 #container {
     padding: .5rem;
     background-color: var(--grey-dark);
-    background-image: url('../img/noise.gif');
+    background-image: url('../img/noise2.gif');
     box-sizing: border-box;
     min-height: 100vh;
     /* background-blend-mode: luminosity; */
-    /* background-size: cover; */
+    background-position: center;
+    background-size: cover;
     transform: translateZ(0);
 }
 
@@ -309,8 +309,8 @@ button:focus {
     min-height: 100vh;
     background-image: url('../img/noise.gif');
     box-sizing: border-box;
-    /* background-blend-mode: luminosity; */
-    /* background-size: cover; */
+    background-blend-mode: luminosity;
+    background-size: cover;
     z-index: 1;
     display: flex;
     flex-direction: column;
@@ -353,14 +353,25 @@ button:focus {
     transform: translateZ(0);
 }
 
-.skip-animations {
-    font-size: .6rem;
+.splash-options {
     position: absolute;
     bottom: 8rem;
     opacity: 0.3;
     user-select: none;
+    text-align: center;
 }
 
+.splash-options p {
+    font-size: .6rem;
+}
+
+.skip-animations::before, .locale::before {
+    content: '[ ] ';
+}
+
+.skip-animations-active::before, .locale-active::before {
+    content: '[x] ';
+}
 
 /* HEADER */
 
@@ -503,8 +514,10 @@ span.forward {
 
 #answer-wrapper {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 1rem;
 }
 
 p.show-everything {
@@ -702,7 +715,7 @@ footer#credits-footer {
 
     #answer-wrapper {
         display: block;
-        max-width: 600px;
+        max-width: 750px;
         margin-left: auto;
     }
 
