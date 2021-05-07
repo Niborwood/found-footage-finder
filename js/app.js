@@ -290,8 +290,6 @@ const app = {
         multiInfoP.classList.add('multi-info');
         multiInfoP.innerText = app.data.locals.questionMultiAnswers[app.toLocale(app.data.locale)];
         app.html.mainHeader.parentNode.insertBefore(multiInfoP, app.html.mainHeader.nextSibling);
-        console.log('Les réponses après la question', app.data.quizStep+1, ' : ', app.data.answers);
-
         
         // Si ce n'est pas la 1ère question
         if (app.data.quizStep === 0) {
@@ -299,7 +297,6 @@ const app = {
         }
         else {
             // On récupère les films restants par rapport à la réponse précédente
-            
             const moviesLeft = [];
             const currentFlags = app.data.answers[app.data.quizStep-1];
 
@@ -310,10 +307,7 @@ const app = {
                     }
                 }       
             }
-
             app.data.movies = moviesLeft;
-
-            console.table('*********Les datas des films qu\'il me reste :', app.data.movies);
 
             // ON RECUPERE LA LISTE DES REPONSES PERTINENTES POUR L'UTILISATEUR
             const relevantAnswers = [];
@@ -457,7 +451,6 @@ const app = {
     },
     // ---- TEMP END DISPLAY
     displayEndQuiz: () => {
-        console.log('****** Mon résultat final :', app.data.movies);
         app.glitch();
         app.html.appHeader.appendChild(app.html.appTitle);
 
@@ -491,12 +484,11 @@ const app = {
         // Display SVOD-VOD option
         let noStreamingCounter = 1;
         const noStreamingMovies = [];
+
         for (const movie of app.data.movies) {
-            
             theMovieDb.movies.getProviders({ 'id': [movie.tmdb_id] }, (rawData) => {
                 const data = JSON.parse(rawData);
-
-                if (data.results[app.data.locale.slice-2] === undefined) {
+                if (data.results[app.data.locale.slice(-2)] === undefined) {
                     noStreamingCounter++;
                     noStreamingMovies.push(movie.id);
                 } 
@@ -524,7 +516,6 @@ const app = {
     // ---- DISPLAY RESULT
     displayResults: (noStreamingMovies) => {
         app.glitch();
-
         // Catching SVOD-VOD button state and removing unavailable movies if need be
         const svodOption = document.querySelector('.vod-option-active');
         if (svodOption !== null) {
@@ -796,6 +787,13 @@ const app = {
 
     },
     navigateResults: (callbackNext, callbackCancel, clickTargetNext, clickTargetCancel) => {
+        const removeListeners = () => {
+            document.removeEventListener('keyup', cancelListener);
+            clickTargetCancel.removeEventListener('click', cancelListener);
+            document.removeEventListener('keyup', nextListener);
+            clickTargetNext.removeEventListener('click', nextListener);
+        };
+
         const nextListener = (event) => {
             event.preventDefault();
             event.stopPropagation();
@@ -804,22 +802,18 @@ const app = {
                 if (event.type === 'keyup') {
                     for (const key of app.data.nextKeys) {
                         if (event.code === key) {
-                            document.removeEventListener('keyup', nextListener);
-                            clickTargetNext.removeEventListener('click', nextListener);
+                            removeListeners();
                             callbackNext();
                         }
                     }
                 } else if (event.type === 'click') {
-                    document.removeEventListener('keyup', nextListener);
-                    clickTargetNext.removeEventListener('click', nextListener);
+                    removeListeners();
                     callbackNext();
                 }
             } else {
-                document.removeEventListener('keyup', nextListener);
-                clickTargetNext.removeEventListener('click', nextListener);
+                removeListeners();
                 callbackCancel();
             }
-            
         };
 
         const cancelListener = (event) => {
@@ -830,18 +824,15 @@ const app = {
                 if (event.type === 'keyup') {
                     for (const key of app.data.cancelKeys) {
                         if (event.code === key) {
+                            removeListeners();
                             callbackCancel();
                         }
                     }
                 } else if (event.type === 'click') {
+                    removeListeners();
                     callbackCancel();
                 }
             }
-            document.removeEventListener('keyup', cancelListener);
-            clickTargetCancel.removeEventListener('click', cancelListener);
-            document.removeEventListener('keyup', nextListener);
-            clickTargetNext.removeEventListener('click', nextListener);
-            
         };
 
         document.addEventListener('keyup', nextListener);
