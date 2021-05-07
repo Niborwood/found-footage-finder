@@ -64,7 +64,7 @@ const app = {
     },
     init: () => {
         // Get localized strings
-        fetch('/data/locale/locale.json')
+        fetch('./data/locale/locale.json')
             .then(response => {
                 return response.json();
             })
