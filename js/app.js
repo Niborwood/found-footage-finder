@@ -62,7 +62,6 @@ const app = {
     toLocale: (locale) => {
         return locale.replace('-', '');
     },
-
     init: () => {
         // Get localized strings
         fetch('/data/locale/locale.json')
@@ -142,12 +141,14 @@ const app = {
             if (app.data.animations) {
                 event.target.classList.toggle('skip-animations-active');
                 app.data.animations = false;
+                splashDiv.style.backgroundImage = 'none';
                 findMeDiv.removeAttribute('id');
                 meText.removeAttribute('id');
                 findText.removeAttribute('id');
             } else {
                 event.target.classList.toggle('skip-animations-active');
                 app.data.animations = true;
+                splashDiv.style.backgroundImage = 'url(../img/noise.gif)';
                 findMeDiv.setAttribute('id', 'find-me');
                 findText.setAttribute('id', 'find');
                 meText.setAttribute('id', 'me');
@@ -741,7 +742,7 @@ const app = {
     },
     // ---- CALLBACK ERROR TMDB
     tmdbError: () => {
-        app.html.mainHeader.innerText = 'Erreur API TMDB';
+        app.html.mainHeader.innerText = 'TMDB API Error';
     },
 
     // ---- HANDLE KEYBOARDS & CLICK => EL, CALLBACKS
