@@ -746,5 +746,26 @@
         "tmdb_id": 146203,
         "flags": ["ff", "common", "usa", "10s", "paranormal", ["demon", "possession"]],
         "score": 40
+    },
+    {
+        "_title": "108 - Rec 2",
+        "id": 108,
+        "tmdb_id": 10664,
+        "flags": ["ff", "common", "europe", "00s", "monsters", ["zombie", "blockbuster"]],
+        "score": 50
+    },
+    {
+        "_title": "109 - The Collingswood Story",
+        "id": 109,
+        "tmdb_id": 54511,
+        "flags": ["ff", "rare", "ysa", "00s", "monsters", ["webcam"]],
+        "score": 40
+    },
+    {
+        "_title": "110 - Long Pigs",
+        "id": 110,
+        "tmdb_id": 74727,
+        "flags": ["mockumentary", "rare", "ysa", "00s", "monsters", ["gore", "serial-killer"]],
+        "score": 50
     }
 ]
