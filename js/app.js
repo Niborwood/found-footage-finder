@@ -148,7 +148,7 @@ const app = {
             } else {
                 event.target.classList.toggle('skip-animations-active');
                 app.data.animations = true;
-                splashDiv.style.backgroundImage = 'url(../img/noise.gif)';
+                splashDiv.style.backgroundImage = 'url(\'img/noise.gif\')';
                 findMeDiv.setAttribute('id', 'find-me');
                 findText.setAttribute('id', 'find');
                 meText.setAttribute('id', 'me');
