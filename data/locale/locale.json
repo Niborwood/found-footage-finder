@@ -6,7 +6,7 @@
         },
         "headlineMain": {
             "frFR": "VOTRE TAPE N'ATTEND QUE",
-            "enUS": "THERE'S A TAPE AWAITING"
+            "enUS": "THERE'S A TAPE WAITING FOR"
         },
         "headlineEm": {
             "frFR": "Vous.",
@@ -23,6 +23,10 @@
         "questionSkip": {
             "frFR": "Passer cette question (tout me va)",
             "enUS": "Skip this question (anything goes)"
+        },
+        "questionNext": {
+            "frFR": "Question suivante",
+            "enUS": "Next question"
         },
         "resultReady": {
             "frFR": "VOTRE FOUND FOOTAGE EST PRÊT.",

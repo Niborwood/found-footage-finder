@@ -355,7 +355,7 @@ const app = {
         const nextStepStr = document.createElement('p');
         nextStepStr.classList.add('next-question');
         const skipQuestionString = app.data.locals.questionSkip[app.toLocale(app.data.locale)];
-        const nextQuestionString = 'Question suivante <span class="forward">▶▶</span>';
+        const nextQuestionString = `${app.data.locals.questionNext[app.toLocale(app.data.locale)]} <span class="forward">▶▶</span>`;
         nextStepStr.innerHTML = skipQuestionString;
         app.html.mainSection.appendChild(nextStepStr);
 
