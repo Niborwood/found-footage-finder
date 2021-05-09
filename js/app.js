@@ -155,7 +155,6 @@ const app = {
             }
         };
         skipAnimationsP.addEventListener('click', skipAnimations);
-
         
         // Event Listener :: Init app
         const findMeTrigger = () => {
@@ -185,7 +184,6 @@ const app = {
                 // Wait for display-fade animation to end to fire EL :: keyup & click (to launch the game)
                 setTimeout(() => {
                     app.nextAction('next', launchButton, app.reset);
-
                 }, 8000);
             };
 
@@ -253,6 +251,10 @@ const app = {
         app.html.mainSection.innerText = '';
         app.html.mainSection.classList.remove('section-result', 'delayed-display-fade');
         app.html.mainButton.remove();
+
+        // Launch audio background
+        const bgAudio = new Audio('/misc/bga.ogg');
+        bgAudio.play();
 
         if (app.data.quizStep !== 0) {
             app.html.main.prepend(app.html.mainHeader);
@@ -334,7 +336,6 @@ const app = {
             }
         } 
         
-        
     },
     displayAnswers: (answers) => {
 
@@ -362,6 +363,8 @@ const app = {
         const buttons = [...document.getElementsByClassName('answer-button')];
         for (const button of buttons) {
             button.addEventListener('click', function (event) {
+                const audio = new Audio('/misc/blip-c.ogg');
+                audio.play();
                 event.target.classList.toggle('button-clicked');
                 const buttonsClicked = document.getElementsByClassName('button-clicked');
                 if (nextStepStr.innerHTML === skipQuestionString && buttonsClicked.length !== 0) {
